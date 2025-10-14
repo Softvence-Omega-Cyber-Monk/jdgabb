@@ -1,0 +1,28 @@
+import { NextFunction, Request, Response } from "express";
+import catchAsync from "../../utils/catchAsync";
+import { sendResponse } from "../../utils/sendResponse";
+import { userServices } from "./user.services";
+import AppError from "../../utils/AppError";
+
+const registerUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    if (!req.body.email && !req.body.password) {
+        throw new AppError(400, "email & password must be required");
+    }
+
+    const result = await userServices.registerUser(req.body);
+
+    sendResponse(res, {
+        success: true,
+        message: "User registraction successfully",
+        statusCode: 201,
+        data: result,
+    })
+});
+
+
+
+
+export const userController = {
+    registerUser
+}
