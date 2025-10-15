@@ -10,12 +10,15 @@ import { authServices } from "./auth.services";
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await authServices.userLogin(req.body);
-    setAuthCookie(res, result.tokens);
+    // setAuthCookie(res, result.tokens);
     sendResponse(res, {
         success: true,
         statusCode: 200,
         message: "User login Success",
-        data: result
+        data: {
+            user : result.user,
+            accessToken : result.tokens.accessToken
+        }
     })
 });
 
@@ -31,8 +34,15 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
     };
 
     const token = createJwtToken(user);
-    setAuthCookie(res, token);
-
+    // setAuthCookie(res, token);
+    res.status(200).json({
+        success: true,
+        message: "Authentication success",
+        data: {
+            user: user,
+            accessToken: token.accessToken
+        }
+    })
     res.redirect(`${envVers.FRONTEND_URL}`);
 });
 

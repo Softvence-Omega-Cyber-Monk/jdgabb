@@ -7,7 +7,7 @@ const authProviderSchema = new mongoose.Schema<IAuthprovider>({
         type: String,
         required: true
     },
-    prividerId: {
+    providerId: {
         type: String,
         required: true
     }

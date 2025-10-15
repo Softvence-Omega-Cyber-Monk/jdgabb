@@ -3,7 +3,7 @@ import { Types } from "mongoose";
 
 export interface IAuthprovider {
     provider: "Google" | "Credentials", // google | credential,
-    prividerId: string
+    providerId: string
 };
 
 

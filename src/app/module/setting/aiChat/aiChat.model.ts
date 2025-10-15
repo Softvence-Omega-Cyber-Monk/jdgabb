@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-enum EContextMemory {
+export enum EContextMemory {
     ResetPerTask = "Reset per task",
     RememberAcrossProjectTask = "Remember across project task",
     RememberEverything = "Remember everything"

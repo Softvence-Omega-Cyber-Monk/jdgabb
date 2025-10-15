@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import AppError from "../../utils/AppError";
 import { AiChatModel } from "../setting/aiChat/aiChat.model";
 import { AppearanceModel } from "../setting/appearance/appearance.model";
@@ -23,7 +24,7 @@ const registerUser = async (payload: Partial<IUser>) => {
             throw new AppError(400, "User already exists");
         }
 
-        const authProvider: IAuthprovider = { prividerId: payload?.email as string, provider: "Credentials" };
+        const authProvider: IAuthprovider = { providerId: payload?.email as string, provider: "Credentials" };
 
         const result = await User.create([{ ...payload, auths: [authProvider] }], { session });
 
@@ -49,7 +50,7 @@ const registerUser = async (payload: Partial<IUser>) => {
         return result[0];
 
     } catch (error: any) {
-    
+
         await session.abortTransaction();
         session.endSession();
 
@@ -59,6 +60,136 @@ const registerUser = async (payload: Partial<IUser>) => {
 };
 
 
+const getSingleUser = async (id: string) => {
+    const result = User.findById(id);
+    return result;
+};
+
+
+const getSingleUserData = async (id: string) => {
+    const result = await User.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(id) } },
+        {
+            $lookup: {
+                from: "aiChats",
+                localField: "_id",
+                foreignField: "userId",
+                as: "aiChat"
+            }
+        },
+        { $unwind: { path: "$aiChat", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "appearances",
+                localField: "_id",
+                foreignField: "userId",
+                as: "appearance"
+            }
+        },
+        { $unwind: { path: "$appearance", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "collaborations",
+                localField: "_id",
+                foreignField: "userId",
+                as: "collaboration"
+            }
+        },
+        { $unwind: { path: "$collaboration", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "languages",
+                localField: "_id",
+                foreignField: "userId",
+                as: "language"
+            }
+        },
+        { $unwind: { path: "$language", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "notifications",
+                localField: "_id",
+                foreignField: "userId",
+                as: "notification"
+            }
+        },
+        { $unwind: { path: "$notification", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "privacys",
+                localField: "_id",
+                foreignField: "userId",
+                as: "privacy"
+            }
+        },
+        { $unwind: { path: "$privacy", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "productivitys",
+                localField: "_id",
+                foreignField: "userId",
+                as: "productivity"
+            }
+        },
+        { $unwind: { path: "$productivity", preserveNullAndEmptyArrays: true } },
+        {
+            $lookup: {
+                from: "projectTasks",
+                localField: "_id",
+                foreignField: "userId",
+                as: "projectTask"
+            }
+        },
+        { $unwind: { path: "$projectTask", preserveNullAndEmptyArrays: true } }
+    ]);
+    return result
+};
+
+
+
+
+// const getSingleUserData = async (id: string) => {
+//     const result = await User.aggregate([
+//         { $match: { _id: new mongoose.Types.ObjectId(id) } },
+//         {
+//             $lookup: { from: "aichats", localField: "_id", foreignField: "userId", as: "aiChat" }
+//         },
+//         { $unwind: { path: "$aiChat", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "appearances", localField: "_id", foreignField: "userId", as: "appearance" }
+//         },
+//         { $unwind: { path: "$appearance", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "collaborations", localField: "_id", foreignField: "userId", as: "collaboration" }
+//         },
+//         { $unwind: { path: "$collaboration", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "languages", localField: "_id", foreignField: "userId", as: "language" }
+//         },
+//         { $unwind: { path: "$language", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "notifications", localField: "_id", foreignField: "userId", as: "notification" }
+//         },
+//         { $unwind: { path: "$notification", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "privacies", localField: "_id", foreignField: "userId", as: "privacy" }
+//         },
+//         { $unwind: { path: "$privacy", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "productivityenhancements", localField: "_id", foreignField: "userId", as: "productivity" }
+//         },
+//         { $unwind: { path: "$productivity", preserveNullAndEmptyArrays: true } },
+//         {
+//             $lookup: { from: "projecttasks", localField: "_id", foreignField: "userId", as: "projectTask" }
+//         },
+//         { $unwind: { path: "$projectTask", preserveNullAndEmptyArrays: true } }
+//     ]);
+//     return result;
+// };
+
+
 export const userServices = {
-    registerUser
+    registerUser,
+    getSingleUser,
+    getSingleUserData
 };

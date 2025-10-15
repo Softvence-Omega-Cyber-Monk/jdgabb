@@ -20,9 +20,38 @@ const registerUser = catchAsync(async (req: Request, res: Response, next: NextFu
     })
 });
 
+const getSingleUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const userId = req.params.id;
+
+    const result = await userServices.getSingleUser(userId as string);
+
+    sendResponse(res, {
+        success: true,
+        message: "User info retrived successfully",
+        statusCode: 200,
+        data: result
+    })
+});
+
+const userSettingInfo = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const userId = req.authUser._id;
+ 
+    const result = await userServices.getSingleUserData(userId as string);
+
+    sendResponse(res, {
+        success: true,
+        message: "User Setting info retrived successfully",
+        statusCode: 200,
+        data: result
+    })
+})
 
 
 
 export const userController = {
-    registerUser
+    registerUser,
+    getSingleUser,
+    userSettingInfo
 }
