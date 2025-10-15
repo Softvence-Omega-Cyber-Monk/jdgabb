@@ -15,7 +15,7 @@ const updateNotificationByUserID = async(id : string , updatedData : Partial<typ
     return result;
 }
 
-export const collabrationServices = {
+export const notificationServices = {
     findNotificationByUserId,
     updateNotificationByUserID
 }

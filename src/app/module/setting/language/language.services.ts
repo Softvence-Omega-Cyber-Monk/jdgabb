@@ -14,7 +14,7 @@ const updateLanguageByUserID = async(id : string , updatedData : Partial<typeof 
     return result;
 }
 
-export const collabrationServices = {
+export const languageServices = {
     findLanguageByUserId,
     updateLanguageByUserID
 }

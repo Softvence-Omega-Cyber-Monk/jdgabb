@@ -12,7 +12,7 @@ const updatePrivicyByUserID = async(id : string , updatedData : Partial<typeof P
     return result;
 }
 
-export const collabrationServices = {
+export const productivityServices = {
     findPrivicyByUserId,
     updatePrivicyByUserID
 }

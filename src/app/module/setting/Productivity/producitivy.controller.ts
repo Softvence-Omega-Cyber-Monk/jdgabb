@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../../utils/catchAsync";
-import { praivicyServices } from "./privacy.services";
 import { sendResponse } from "../../../utils/sendResponse";
+import { productivityServices } from "./productivity.services";
 
-const getPraivacy = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+const getProducitivy = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    const result = await praivicyServices.findPrivicyByUserId(id as string);
+    const result = await productivityServices.findPrivicyByUserId(id as string);
 
     sendResponse(res, {
         success: false,
@@ -13,13 +13,13 @@ const getPraivacy = catchAsync(async (req: Request, res: Response, next: NextFun
         message: "Praivicy setting retrived success",
         data: result
     })
-
 });
+
 
 const updatePraivicy = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     const updatedData = req.body;
-    const result = await praivicyServices.updatePrivicyByUserID(id as string, updatedData);
+    const result = await productivityServices.updatePrivicyByUserID(id as string, updatedData);
     sendResponse(res, {
         success: true,
         statusCode: 200,
@@ -28,7 +28,8 @@ const updatePraivicy = catchAsync(async (req: Request, res: Response, next: Next
     })
 });
 
-export const praivicyController = {
-    getPraivacy,
+
+export const productiviryController = {
+    getProducitivy,
     updatePraivicy
-};
+}

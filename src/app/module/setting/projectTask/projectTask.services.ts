@@ -13,7 +13,7 @@ const updateProjectTaskByUserID = async(id : string , updatedData : Partial<type
     return result;
 }
 
-export const collabrationServices = {
+export const projectTaskServices = {
     findProjectTaskByUserId,
     updateProjectTaskByUserID
 }
