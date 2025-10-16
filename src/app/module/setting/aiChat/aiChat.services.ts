@@ -1,4 +1,3 @@
-import { sendResponse } from "../../../utils/sendResponse";
 import { IAiChat } from "./aiChat.interfaces";
 import { AiChatModel } from "./aiChat.model"
 
@@ -9,7 +8,6 @@ const getAiChatByUserId = async (userId: string) => {
 
 const updateAiChatByUserID = async (userId: string, updateData: Partial<IAiChat>) => {
     const result = await AiChatModel.findOneAndUpdate({userId}, updateData, { new: true, runValidators: true });
-    console.log(result);
     return result;
 }
 
