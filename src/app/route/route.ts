@@ -1,4 +1,5 @@
 import authRouter from "../module/auth/auth.router";
+import projectRouter from "../module/project/project.route";
 import aiChatRouter from "../module/setting/aiChat/aiChat.route";
 import appearanceRouter from "../module/setting/appearance/appearance.route";
 import collabrationRoute from "../module/setting/collaboration/collaboration.route";
@@ -21,6 +22,11 @@ export const moduleRoute = [
         routes: userRouter
     },
     {
+        path: "/project",
+        routes: projectRouter
+    },
+    // Setting Releted Api Endpoients
+    {
         path: "/appearance",
         routes: appearanceRouter
     },
@@ -41,16 +47,16 @@ export const moduleRoute = [
         routes: notificationRouter
     },
     {
-        path : "/privacy",
-        routes : praivicyRouter
+        path: "/privacy",
+        routes: praivicyRouter
     },
     {
-        path : "/producitivy",
-        routes : producitivyRoute
+        path: "/producitivy",
+        routes: producitivyRoute
     },
     {
-        path : "/projectTask",
-        routes : projectTaskRouter
+        path: "/projectTask",
+        routes: projectTaskRouter
     }
 ];
 
