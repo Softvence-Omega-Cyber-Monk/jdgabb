@@ -13,7 +13,7 @@ const userLogin = async (payload: Partial<IUser>) => {
     };
 
     if (!existUser.password && existUser.auths.some((providerObj) => providerObj.provider === "Google")) {
-        throw new AppError(400, "You are registered with Google authentication. To log in using email and password, please first log in with Google and set a password, then try again.")
+        throw new AppError(400, "You are registered with Google authentication.")
     }
 
     const matchPassword = await bcrypt.compare(payload.password as string, existUser.password as string);
@@ -33,7 +33,25 @@ const userLogin = async (payload: Partial<IUser>) => {
 
 };
 
+const changePassword = async (payload: Partial<IUser>) => {
+
+    const findUser = await User.findOne({ email: payload.email });
+
+    if (!findUser?.password && findUser?.auths.some((provider) => provider.provider === "Google")) {
+        throw new AppError(400, "You are registered with Google authentication. Please don't try set password.");
+    }
+
+    const findndUser = await User.findOneAndUpdate({ email: payload.email }, { password: payload.password }, { new: true, runValidators: true });
+    return findndUser;
+};
+
+const deleteUser = async (userId: string) => {
+    const findUser = await User.findByIdAndUpdate(userId, { isDeleted: true }, { new: true, runValidators: true });
+    return findUser;
+}
 
 export const authServices = {
-    userLogin
+    userLogin,
+    changePassword,
+    deleteUser
 }

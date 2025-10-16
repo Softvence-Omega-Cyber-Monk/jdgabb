@@ -16,13 +16,34 @@ const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunct
         statusCode: 200,
         message: "User login Success",
         data: {
-            user : result.user,
-            accessToken : result.tokens.accessToken
+            user: result.user,
+            accessToken: result.tokens.accessToken
         }
     })
 });
 
+const changePassword = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    await authServices.changePassword(req.body);
+    sendResponse(res, {
+        success: true,
+        message: "Password change success",
+        statusCode: 200,
+        data: null
+    })
 
+})
+const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
+    await authServices.deleteUser(id as string);
+
+    sendResponse(res, {
+        success: true,
+        message: "User deleted success",
+        statusCode: 200,
+        data: null
+    })
+
+})
 // Google Login / Register
 
 const googleCallBackController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -48,5 +69,7 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
 
 export const authController = {
     googleCallBackController,
-    loginUser
+    loginUser,
+    changePassword,
+    deleteUser
 }

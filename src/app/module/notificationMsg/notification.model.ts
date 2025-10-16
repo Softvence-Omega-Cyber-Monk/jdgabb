@@ -22,4 +22,4 @@ const notificationMsgSchema = new mongoose.Schema({
 });
 
 
-export const notificationMsgModel = mongoose.model("notificationMsg" , notificationMsgSchema);
+export const notificationMsgModel = mongoose.model("notificationMsg", notificationMsgSchema);

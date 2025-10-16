@@ -29,7 +29,7 @@ export const protectUser = (...auths: string[]) => async (req: Request, res: Res
             throw new AppError(401, "You are not permited access this route!");
         }
 
-        if (auths && !auths.includes(findUser.role)) {
+        if (auths.length && !auths.includes(findUser.role)) {
             throw new AppError(401, "You are not permited access this route!");
         }
 
