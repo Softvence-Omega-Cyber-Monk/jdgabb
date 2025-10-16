@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.moduleRoute = void 0;
 const auth_router_1 = __importDefault(require("../module/auth/auth.router"));
+const project_route_1 = __importDefault(require("../module/project/project.route"));
 const aiChat_route_1 = __importDefault(require("../module/setting/aiChat/aiChat.route"));
 const appearance_route_1 = __importDefault(require("../module/setting/appearance/appearance.route"));
 const collaboration_route_1 = __importDefault(require("../module/setting/collaboration/collaboration.route"));
@@ -23,6 +24,11 @@ exports.moduleRoute = [
         path: "/user",
         routes: user_router_1.default
     },
+    {
+        path: "/project",
+        routes: project_route_1.default
+    },
+    // Setting Releted Api Endpoients
     {
         path: "/appearance",
         routes: appearance_route_1.default
