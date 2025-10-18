@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { projectServices } from "./project.services";
 import mongoose from "mongoose";
+import { Project } from "./project.model";
 
 const createProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -52,11 +53,26 @@ const addDetails = catchAsync(async (req: Request, res: Response, next: NextFunc
         message: "Task Details added success",
         data: result
     })
+});
+
+const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const id = req.params.id;
+
+
+    const result = await Project.findById(id);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Project retrived successfully",
+        data: result
+    })
 })
 
 export const projectController = {
     createProject,
     addTask,
     addSubTask,
-    addDetails
+    addDetails,
+    getProject
 }

@@ -4,9 +4,11 @@ import { projectController } from "./project.controller";
 const projectRouter = Router();
 
 
-projectRouter.post("/create/:id", projectController.createProject);
+
 projectRouter.patch("/addTask", projectController.addTask);
 projectRouter.patch("/addSubTask", projectController.addSubTask);
-projectRouter.patch("/addDetails" , projectController.addDetails)
+projectRouter.patch("/addDetails", projectController.addDetails);
+projectRouter.get("/get/:id", projectController.getProject);
+projectRouter.post("/create/:id", projectController.createProject);
 
 export default projectRouter;
