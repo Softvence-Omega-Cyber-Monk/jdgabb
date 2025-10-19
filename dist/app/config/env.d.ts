@@ -3,6 +3,7 @@ interface IEnv {
     PORT: string;
     DEV_ENVIRONMENT: string;
     FRONTEND_URL: string;
+    OPEN_AI_API_SECRATE: string;
     PASSPORT: {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLINT_SECRATE: string;

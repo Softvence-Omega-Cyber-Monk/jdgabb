@@ -3,6 +3,7 @@ export declare const authServices: {
     userLogin: (payload: Partial<IUser>) => Promise<{
         user: {
             _id: import("mongoose").Types.ObjectId;
+            oldPassword?: string;
             username: string;
             email: string;
             profile?: string;

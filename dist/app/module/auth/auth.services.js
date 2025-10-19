@@ -31,8 +31,16 @@ const userLogin = async (payload) => {
 };
 const changePassword = async (payload) => {
     const findUser = await userModel_1.User.findOne({ email: payload.email });
+    if (!findUser) {
+        throw new AppError_1.default(404, "User not found");
+    }
     if (!findUser?.password && findUser?.auths.some((provider) => provider.provider === "Google")) {
         throw new AppError_1.default(400, "You are registered with Google authentication. Please don't try set password.");
+    }
+    ;
+    const matchPassword = await bcrypt_1.default.compare(payload.oldPassword, findUser?.password);
+    if (!matchPassword) {
+        throw new AppError_1.default(400, "Old password not match.");
     }
     const findndUser = await userModel_1.User.findOneAndUpdate({ email: payload.email }, { password: payload.password }, { new: true, runValidators: true });
     return findndUser;

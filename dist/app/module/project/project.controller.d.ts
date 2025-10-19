@@ -4,5 +4,7 @@ export declare const projectController: {
     addTask: (req: Request, res: Response, next: NextFunction) => void;
     addSubTask: (req: Request, res: Response, next: NextFunction) => void;
     addDetails: (req: Request, res: Response, next: NextFunction) => void;
+    getProject: (req: Request, res: Response, next: NextFunction) => void;
+    askQuestion: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

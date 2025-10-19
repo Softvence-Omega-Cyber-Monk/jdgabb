@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryBuilder = void 0;
 // Searchable Filde Example
 // export const tourSearchableFild = ["title" , "description" , "location"];
-const excludeFild = [""];
+// const excludeFild = [""]
 // example
-// const excludeFild = ["searchTerm" , "sort" , "fields" , "page" , "limit" , "transection_id" , "amount" , "status"];
+const excludeFild = ["searchTerm", "sort", "fields", "page", "limit", "transection_id", "amount", "status"];
 class QueryBuilder {
     queryModel;
     query;
@@ -65,4 +65,22 @@ class QueryBuilder {
     }
 }
 exports.QueryBuilder = QueryBuilder;
+;
+class PracticesQueryBuilder {
+    QueryModel;
+    Query;
+    constructor(QeuryModel, Query) {
+        this.QueryModel = QeuryModel;
+        this.Query = Query;
+    }
+    ;
+    filter() {
+        const filter = { ...this.Query };
+        for (const value of excludeFild) {
+            delete filter[value];
+        }
+        this.QueryModel = this.QueryModel.find(filter);
+        return this;
+    }
+}
 //# sourceMappingURL=QueryBuilder.js.map

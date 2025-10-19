@@ -7,7 +7,7 @@ exports.envVers = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const envChecker = () => {
-    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE"];
+    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE"];
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
             throw new Error(`Required env messing : ${key}`);
@@ -18,6 +18,7 @@ const envChecker = () => {
         PORT: process.env.PORT,
         DEV_ENVIRONMENT: process.env.DEV_ENVIRONMENT,
         FRONTEND_URL: process.env.FRONTEND_URL,
+        OPEN_AI_API_SECRATE: process.env.OPEN_AI_API_SECRATE,
         PASSPORT: {
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
             GOOGLE_CLINT_SECRATE: process.env.GOOGLE_CLINT_SECRATE,
