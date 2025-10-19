@@ -3,9 +3,9 @@ import { Query } from "mongoose";
 // Searchable Filde Example
 // export const tourSearchableFild = ["title" , "description" , "location"];
 
-const excludeFild = [""]
+// const excludeFild = [""]
 // example
-// const excludeFild = ["searchTerm" , "sort" , "fields" , "page" , "limit" , "transection_id" , "amount" , "status"];
+const excludeFild = ["searchTerm", "sort", "fields", "page", "limit", "transection_id", "amount", "status"];
 
 export class QueryBuilder<T> {
     public queryModel: Query<T[], T>;
@@ -78,6 +78,32 @@ export class QueryBuilder<T> {
 
         return { page, limit, total: totalDocumtnt, totalPage }
 
+    }
+
+};
+
+
+class PracticesQueryBuilder<T> {
+    public QueryModel: Query<T[], T>;
+    public Query: Record<string, string>;
+
+    constructor(QeuryModel: Query<T[], T>, Query: Record<string, string>) {
+        this.QueryModel = QeuryModel;
+        this.Query = Query;
+    };
+
+
+    filter(): this {
+
+        const filter = { ...this.Query };
+
+        for (const value of excludeFild) {
+            delete filter[value];
+        }
+
+        this.QueryModel = this.QueryModel.find(filter);
+
+        return this;
     }
 
 }

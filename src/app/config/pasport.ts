@@ -4,7 +4,6 @@ import { envVers } from "./env";
 import { User } from "../module/user/userModel";
 import { Strategy as LocalStrategy } from "passport-local";
 import bcrypt from "bcrypt";
-import AppError from "../utils/AppError";
 import { AiChatModel } from "../module/setting/aiChat/aiChat.model";
 import { AppearanceModel } from "../module/setting/appearance/appearance.model";
 import { CollaborationModel } from "../module/setting/collaboration/collaboration.model";

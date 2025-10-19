@@ -2,8 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { projectServices } from "./project.services";
-import mongoose from "mongoose";
 import { Project } from "./project.model";
+import { OpenAi } from "../../config/openAi";
+
+
 
 const createProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -67,6 +69,22 @@ const getProject = catchAsync(async (req: Request, res: Response, next: NextFunc
         message: "Project retrived successfully",
         data: result
     })
+});
+
+
+const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { prompt } = req.body;
+
+    const response = await OpenAi.chat.completions.create({
+        model: "",
+        messages: [
+            { role: "system", content: "Your a helpful assistent" },
+            { role: "user", content: prompt }
+        ]
+    });
+
+    res.status(200).json({ message: response.choices[0]?.message.content })
 })
 
 export const projectController = {
@@ -74,5 +92,6 @@ export const projectController = {
     addTask,
     addSubTask,
     addDetails,
-    getProject
+    getProject,
+    askQuestion
 }

@@ -15,6 +15,7 @@ export enum Role {
 
 export interface IUser {
     _id?: Types.ObjectId,
+    oldPassword?: string,
     username: string,
     email: string,
     password?: string,

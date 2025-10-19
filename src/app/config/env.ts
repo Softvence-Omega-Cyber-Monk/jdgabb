@@ -7,6 +7,7 @@ interface IEnv {
     PORT: string,
     DEV_ENVIRONMENT: string,
     FRONTEND_URL: string,
+    OPEN_AI_API_SECRATE : string,
     PASSPORT: {
         GOOGLE_CLIENT_ID: string,
         GOOGLE_CLINT_SECRATE: string,
@@ -20,7 +21,7 @@ interface IEnv {
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL" , "JWT_ACCESS_SECRATE" , "JWT_REFRESH_SECRATE"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL" , "JWT_ACCESS_SECRATE" , "JWT_REFRESH_SECRATE" , "OPEN_AI_API_SECRATE"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -33,7 +34,8 @@ const envChecker = (): IEnv => {
         PORT: process.env.PORT as string,
         DEV_ENVIRONMENT: process.env.DEV_ENVIRONMENT as string,
         FRONTEND_URL: process.env.FRONTEND_URL as string,
-
+        OPEN_AI_API_SECRATE: process.env.OPEN_AI_API_SECRATE as string,
+        
         PASSPORT: {
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
             GOOGLE_CLINT_SECRATE: process.env.GOOGLE_CLINT_SECRATE as string,

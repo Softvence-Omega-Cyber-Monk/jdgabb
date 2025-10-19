@@ -10,5 +10,6 @@ projectRouter.patch("/addSubTask", projectController.addSubTask);
 projectRouter.patch("/addDetails", projectController.addDetails);
 projectRouter.get("/get/:id", projectController.getProject);
 projectRouter.post("/create/:id", projectController.createProject);
+projectRouter.post("/chat" , projectController.askQuestion);
 
 export default projectRouter;
