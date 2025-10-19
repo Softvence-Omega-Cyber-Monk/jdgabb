@@ -38,7 +38,7 @@ const changePassword = async (payload: Partial<IUser>) => {
     const findUser = await User.findOne({ email: payload.email });
 
     if(!findUser){
-        throw new AppError(403 , "User not found");
+        throw new AppError(404 , "User not found");
     }
 
     if (!findUser?.password && findUser?.auths.some((provider) => provider.provider === "Google")) {
