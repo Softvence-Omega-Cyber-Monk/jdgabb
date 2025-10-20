@@ -3,7 +3,10 @@ import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { projectServices } from "./project.services";
 import { Project } from "./project.model";
-import { OpenAi } from "../../config/openAi";
+import axios from "axios";
+import { envVers } from "../../config/env";
+import mongoose from "mongoose";
+import AppError from "../../utils/AppError";
 
 
 
@@ -72,19 +75,65 @@ const getProject = catchAsync(async (req: Request, res: Response, next: NextFunc
 });
 
 
+const getAllProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const result = await Project.find({});
+    res.status(200).json(result);
+})
+
 const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.params.id;
 
-    const { prompt } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+        throw new AppError(400, "Invalid mongoDb objectId");
+    }
 
-    const response = await OpenAi.chat.completions.create({
-        model: "",
-        messages: [
-            { role: "system", content: "Your a helpful assistent" },
-            { role: "user", content: prompt }
-        ]
-    });
+    const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
 
-    res.status(200).json({ message: response.choices[0]?.message.content })
+    if(!result){
+        throw new AppError(400 , "Please try again.");
+    }
+
+    const updateQuestion = await Project.findByIdAndUpdate(
+        projectId,
+        {
+            $push: {
+                answered_questions: {
+                    question: result.data.question,
+                    answer: null,
+                },
+            },
+        },
+        { new: true }
+    );
+
+    res.status(200).json({
+        success: true,
+        AiQuestion: result.data,
+        storedData: updateQuestion
+    })
+});
+
+const ansQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { projectid, questionsId, answer } = req.body;
+
+    const updatedProject = await Project.findOneAndUpdate(
+        { _id: projectid, "answered_questions._id": questionsId },
+        { $set: { "answered_questions.$.answer": answer } },
+        { new: true }
+    );
+
+    if (!updatedProject) {
+        throw new AppError(400, "Project or question not found")
+    }
+
+
+    sendResponse(res, {
+        success: true,
+        message: "Answer added successfully!",
+        statusCode: 200,
+        data: updatedProject
+    })
 })
 
 export const projectController = {
@@ -93,5 +142,7 @@ export const projectController = {
     addSubTask,
     addDetails,
     getProject,
-    askQuestion
+    askQuestion,
+    getAllProject,
+    ansQuestion
 }

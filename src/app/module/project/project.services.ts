@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { Project } from "./project.model";
 import { IProject } from "./project.interfaces";
+import { User } from "../user/userModel";
 
 
 const createProject = async (userId: string, goal: string) => {

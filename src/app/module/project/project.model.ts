@@ -28,6 +28,13 @@ const projectSchema = new mongoose.Schema(
             }
         ],
 
+        chat: [
+            {
+                question: { type: String },
+                answer: { type: String },
+            }
+        ],
+
         visibility: {
             type: String,
             enum: ["private", "restricted"],
