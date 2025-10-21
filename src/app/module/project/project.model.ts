@@ -12,23 +12,25 @@ const projectSchema = new mongoose.Schema(
             required: true,
             trim: true
         },
-
         tasks: [
             {
-                task: { type: String },
-                subtasks: [{ type: String }],
-                details: { type: String }
+                task: { type: String, required: true },
+                details: { type: String, default: null },
+                taskDueDate: { type: Date, default: null },
+                isDeleted: { type: Boolean, default: false },
+                isStar: { type: Boolean, default: false },
+                subtasks: [
+                    {
+                        title: { type: String, required: true },
+                        subTaskDueDate: { type: Date, default: null },
+                        isStar: { type: Boolean, default: false },
+                        isDeleted: { type: Boolean, default: false }
+                    }
+                ],
             }
         ],
 
         answered_questions: [
-            {
-                question: { type: String },
-                answer: { type: String },
-            }
-        ],
-
-        chat: [
             {
                 question: { type: String },
                 answer: { type: String },

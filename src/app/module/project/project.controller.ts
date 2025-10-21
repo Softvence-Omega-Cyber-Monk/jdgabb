@@ -7,6 +7,7 @@ import axios from "axios";
 import { envVers } from "../../config/env";
 import mongoose from "mongoose";
 import AppError from "../../utils/AppError";
+import { OpenAi } from "../../config/openAi";
 
 
 
@@ -36,10 +37,32 @@ const addTask = catchAsync(async (req: Request, res: Response, next: NextFunctio
     });
 });
 
+const findSingleTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { projectId, taskId } = req.body;
+
+    if (!projectId || !taskId) {
+        throw new AppError(400, "ProjectId & task id must be required");
+    };
+
+    const result = await projectServices.findSingleTask(projectId, taskId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task retrived successfully",
+        data: result
+    })
+});
+
 const addSubTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { projectId, taskId, subTaskData } = req.body;
-    const result = await projectServices.addSubTask(projectId, taskId, subTaskData);
+    const { projectId, taskId, subtaskTitle, subTaskDueDate } = req.body;
+    if (!projectId || !taskId || !subtaskTitle) {
+        throw new AppError(400, "ProjectId, taskId & subtaskTitle must be required")
+    }
+
+    const result = await projectServices.addSubTask(projectId, taskId, subtaskTitle, subTaskDueDate);
 
     sendResponse(res, {
         statusCode: 200,
@@ -89,8 +112,8 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
 
     const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
 
-    if(!result){
-        throw new AppError(400 , "Please try again.");
+    if (!result) {
+        throw new AppError(400, "Please try again.");
     }
 
     const updateQuestion = await Project.findByIdAndUpdate(
@@ -134,7 +157,75 @@ const ansQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
         statusCode: 200,
         data: updatedProject
     })
-})
+});
+
+const askQuestionOpenAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { prompt } = req.body;
+
+    const result = await OpenAi.chat.completions.create({
+        model: "gpt-3.5-turbo",
+        messages: [
+            {
+                role: "system", content: "You are a helpful assistant."
+            },
+            {
+                role: "user", content: prompt
+            }
+        ]
+    })
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Question ai",
+        data: result.choices[0]?.message.content
+    })
+});
+
+const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, isStar } = req.body;
+
+    if (!projectId || !taskId || !isStar) {
+        throw new AppError(400, "Project ID, Task ID and isStar (boolean) are required");
+    }
+
+    const result = await projectServices.updateTaskStar(projectId, taskId, isStar);
+
+    if (!result) {
+        throw new AppError(404, "Task not found");
+    }
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task star status updated successfully",
+        data: result,
+    });
+});
+
+
+const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, subtaskId, isStar } = req.body;
+    
+    if (!projectId || !taskId || !subtaskId || typeof isStar !== "boolean") {
+        throw new AppError(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
+    }
+
+    const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, isStar);
+
+    if (!result) {
+        throw new AppError(404, "Subtask not found");
+    }
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Subtask star status updated successfully",
+        data: result,
+    });
+}
+);
 
 export const projectController = {
     createProject,
@@ -144,5 +235,9 @@ export const projectController = {
     getProject,
     askQuestion,
     getAllProject,
-    ansQuestion
-}
+    ansQuestion,
+    askQuestionOpenAi,
+    findSingleTask,
+    updateTaskStar,
+    updateSubtaskStar
+};
