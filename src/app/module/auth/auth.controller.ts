@@ -64,7 +64,6 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
             accessToken: token.accessToken
         }
     })
-    res.redirect(`${envVers.FRONTEND_URL}`);
 });
 
 export const authController = {
