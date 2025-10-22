@@ -7,7 +7,6 @@ exports.authController = void 0;
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const createJwtToken_1 = require("../../utils/createJwtToken");
-const env_1 = require("../../config/env");
 const sendResponse_1 = require("../../utils/sendResponse");
 const auth_services_1 = require("./auth.services");
 const loginUser = (0, catchAsync_1.default)(async (req, res, next) => {
@@ -49,9 +48,10 @@ const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next
         throw new AppError_1.default(404, "User not found , Google login faild");
     }
     ;
+    console.log(user);
     const token = (0, createJwtToken_1.createJwtToken)(user);
     // setAuthCookie(res, token);
-    res.status(200).json({
+    res.status(200).send({
         success: true,
         message: "Authentication success",
         data: {
@@ -59,7 +59,7 @@ const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next
             accessToken: token.accessToken
         }
     });
-    res.redirect(`${env_1.envVers.FRONTEND_URL}`);
+    res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
 exports.authController = {
     googleCallBackController,

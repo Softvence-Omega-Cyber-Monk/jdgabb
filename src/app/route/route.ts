@@ -1,4 +1,5 @@
 import authRouter from "../module/auth/auth.router";
+import homeRoute from "../module/home/home.route";
 import projectRouter from "../module/project/project.route";
 import aiChatRouter from "../module/setting/aiChat/aiChat.route";
 import appearanceRouter from "../module/setting/appearance/appearance.route";
@@ -24,6 +25,10 @@ export const moduleRoute = [
     {
         path: "/project",
         routes: projectRouter
+    },
+    {
+        path: "/home",
+        routes: homeRoute
     },
     // Setting Releted Api Endpoients
     {
