@@ -1,20 +1,12 @@
 import mongoose, { Types } from "mongoose";
 import { Project } from "./project.model";
+import AppError from "../../utils/AppError";
 
 
 const createProject = async (userId: string, goal: string) => {
     const result = await Project.create({ userId: userId, goal: goal });
     return result
 };
-
-// const addTask = async (projectId: string, task: { task: string }) => {
-//     const result = await Project.findOneAndUpdate({ _id: projectId }, {
-//         $push: {
-//             tasks: task
-//         }
-//     }, { new: true });
-//     return result;
-// };
 
 
 const addTask = async (projectId: string, task: { task: string, subtasks?: string[], details?: string, taskDueData?: Date }) => {
@@ -37,20 +29,41 @@ const addTask = async (projectId: string, task: { task: string, subtasks?: strin
 };
 
 
+const findSingleTask = async (projectid: string, taskId: string) => {
+    const result = await Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });
+    return result?.tasks[0];
+};
 
-// const addSubTask = async (projectId: string, taskId: string, subTaskData: string) => {
+const updateTaskStar = async (projectId: string, taskId: string, isStar: boolean) => {
+    const result = await Project.findOneAndUpdate(
+        { _id: projectId, "tasks._id": taskId },
+        { $set: { "tasks.$.isStar": isStar } },
+        { new: true, runValidators: true }
+    );
 
-//     const result = await Project.findOneAndUpdate(
-//         { _id: projectId, "tasks._id": taskId },
+    return result;
+};
 
-//         { $push: { "tasks.$.subtasks": subTaskData } },
 
-//         { new: true, runValidators: true }
-//     );
+const softDeleteTask = async (projectId: string, taskId: string) => {
+    const result = await Project.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
+        { $set: { "tasks.$.isDeleted": true } },
+        { new: true, runValidators: true }
+    );
 
-//     return result;
-// };
+    return result;
+};
 
+const permanentDeleteTask = async (projectId: string, taskId: string) => {
+    const result = await Project.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(projectId) },
+        { $pull: { tasks: { _id: new mongoose.Types.ObjectId(taskId) } } },
+        { new: true }
+    );
+
+    return result;
+};
 
 const addSubTask = async (projectId: string, taskId: string, subtaskTitle: string, subTaskDueDate?: Date) => {
     const dataToPush = {
@@ -67,11 +80,27 @@ const addSubTask = async (projectId: string, taskId: string, subtaskTitle: strin
     return result;
 };
 
+const findSingleSubTask = async (projectId: string, taskId: string, subTaskId: string) => {
+    const result = await Project.aggregate([
+        { $match: { _id: new mongoose.Types.ObjectId(projectId) } },
+        { $unwind: "$tasks" },
+        { $match: { "tasks._id": new mongoose.Types.ObjectId(taskId) } },
+        { $unwind: "$tasks.subtasks" },
+        { $match: { "tasks.subtasks._id": new mongoose.Types.ObjectId(subTaskId) } },
+        {
+            $project: {
+                _id: 0,
+                subtask: "$tasks.subtasks"
+            }
+        }
+    ]);
 
-const findSingleTask = async (projectid: string, taskId: string) => {
-    const result = await Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });
-    return result?.tasks[0];
-}
+    if (!result.length) {
+        throw new AppError(400, "Subtask not found");
+    }
+
+    return result[0]?.subtask;
+};
 
 
 const addOrUpdateTaskDetails = async (
@@ -88,40 +117,23 @@ const addOrUpdateTaskDetails = async (
     return result;
 };
 
-const updateTaskStar = async (projectId: string, taskId: string, isStar: boolean) => {
-    const result = await Project.findOneAndUpdate(
-        { _id: projectId, "tasks._id": taskId },
-        { $set: { "tasks.$.isStar": isStar } },
-        { new: true, runValidators: true }
-    );
 
-    return result;
-};
-
-// Incomplite
-const updateSubtaskStar = async (
-    projectId: string,
-    taskId: string,
-    subtaskId: string,
-    isStar: boolean
-) => {
-    console.log("Project ID:", projectId);
-    console.log("Task ID:", taskId);
-    console.log("Subtask ID:", subtaskId);
-    console.log("Is Star:", isStar);
-
+const updateSubtaskStar = async (projectId: string, taskId: string, subtaskId: string, isStar: string) => {
     const result = await Project.findOneAndUpdate(
         {
             _id: new mongoose.Types.ObjectId(projectId),
-            "tasks._id": new mongoose.Types.ObjectId(taskId),
-            "tasks.subtasks._id": new mongoose.Types.ObjectId(subtaskId),
-        },
-        { 
-            $set: { "tasks.$.subtasks.$[subtask].isStar": isStar }
         },
         {
-            arrayFilters: [{ "subtask._id": new mongoose.Types.ObjectId(subtaskId) }],
-            new: true,
+            $set: {
+                "tasks.$[task].subtasks.$[subtask].isStar": isStar
+            }
+        },
+        {
+            arrayFilters: [
+                { "task._id": new mongoose.Types.ObjectId(taskId) },
+                { "subtask._id": new mongoose.Types.ObjectId(subtaskId) }
+            ],
+            new: true
         }
     );
 
@@ -140,6 +152,9 @@ export const projectServices = {
     addSubTask,
     addOrUpdateTaskDetails,
     findSingleTask,
+    findSingleSubTask,
     updateTaskStar,
-    updateSubtaskStar
+    updateSubtaskStar,
+    softDeleteTask,
+    permanentDeleteTask
 }

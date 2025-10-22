@@ -66,21 +66,4 @@ class QueryBuilder {
 }
 exports.QueryBuilder = QueryBuilder;
 ;
-class PracticesQueryBuilder {
-    QueryModel;
-    Query;
-    constructor(QeuryModel, Query) {
-        this.QueryModel = QeuryModel;
-        this.Query = Query;
-    }
-    ;
-    filter() {
-        const filter = { ...this.Query };
-        for (const value of excludeFild) {
-            delete filter[value];
-        }
-        this.QueryModel = this.QueryModel.find(filter);
-        return this;
-    }
-}
 //# sourceMappingURL=QueryBuilder.js.map

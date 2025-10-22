@@ -55,6 +55,25 @@ const findSingleTask = catchAsync(async (req: Request, res: Response, next: Next
     })
 });
 
+const findSingleSubtask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, subTaskId } = req.params;
+
+    if (!projectId || !taskId || !subTaskId) {
+        throw new AppError(400, "ProjectId , taskId & SubtaskId is must be required")
+    };
+
+    const result = await projectServices.findSingleSubTask(projectId, taskId, subTaskId);
+
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Subtask Retrived successfully.",
+        data: result
+    })
+
+});
+
 const addSubTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { projectId, taskId, subtaskTitle, subTaskDueDate } = req.body;
@@ -101,7 +120,7 @@ const getProject = catchAsync(async (req: Request, res: Response, next: NextFunc
 const getAllProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await Project.find({});
     res.status(200).json(result);
-})
+});
 
 const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const projectId = req.params.id;
@@ -204,11 +223,10 @@ const updateTaskStar = catchAsync(async (req: Request, res: Response, next: Next
     });
 });
 
-
 const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { projectId, taskId, subtaskId, isStar } = req.body;
-    
-    if (!projectId || !taskId || !subtaskId || typeof isStar !== "boolean") {
+
+    if (!projectId || !taskId || !subtaskId || !isStar) {
         throw new AppError(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
     }
 
@@ -227,6 +245,44 @@ const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: N
 }
 );
 
+
+const softDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId } = req.params;
+
+    if (!projectId || !taskId) {
+        throw new AppError(200, "ProjectId & TaskId must be required");
+    };
+
+    const result = await projectServices.softDeleteTask(projectId, taskId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task soft deketed success.",
+        data: result,
+    });
+});
+
+const permanentDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { projectId, taskId } = req.body;
+
+    if (!projectId || !taskId) {
+        throw new AppError(200, "ProjectId & TaskId must be required");
+    };
+
+    const result = await projectServices.permanentDeleteTask(projectId, taskId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task Premanently deleted success",
+        data: result,
+    });
+})
+
+
+
 export const projectController = {
     createProject,
     addTask,
@@ -238,6 +294,9 @@ export const projectController = {
     ansQuestion,
     askQuestionOpenAi,
     findSingleTask,
+    findSingleSubtask,
     updateTaskStar,
-    updateSubtaskStar
+    updateSubtaskStar,
+    softDeleteTask,
+    permanentDeleteTask
 };

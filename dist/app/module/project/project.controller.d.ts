@@ -6,5 +6,14 @@ export declare const projectController: {
     addDetails: (req: Request, res: Response, next: NextFunction) => void;
     getProject: (req: Request, res: Response, next: NextFunction) => void;
     askQuestion: (req: Request, res: Response, next: NextFunction) => void;
+    getAllProject: (req: Request, res: Response, next: NextFunction) => void;
+    ansQuestion: (req: Request, res: Response, next: NextFunction) => void;
+    askQuestionOpenAi: (req: Request, res: Response, next: NextFunction) => void;
+    findSingleTask: (req: Request, res: Response, next: NextFunction) => void;
+    findSingleSubtask: (req: Request, res: Response, next: NextFunction) => void;
+    updateTaskStar: (req: Request, res: Response, next: NextFunction) => void;
+    updateSubtaskStar: (req: Request, res: Response, next: NextFunction) => void;
+    softDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
+    permanentDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

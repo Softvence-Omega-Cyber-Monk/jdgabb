@@ -18,9 +18,19 @@ const projectSchema = new mongoose_1.default.Schema({
     },
     tasks: [
         {
-            task: { type: String },
-            subtasks: [{ type: String }],
-            details: { type: String }
+            task: { type: String, required: true },
+            details: { type: String, default: null },
+            taskDueDate: { type: Date, default: null },
+            isDeleted: { type: Boolean, default: false },
+            isStar: { type: Boolean, default: false },
+            subtasks: [
+                {
+                    title: { type: String, required: true },
+                    subTaskDueDate: { type: Date, default: null },
+                    isStar: { type: Boolean, default: false },
+                    isDeleted: { type: Boolean, default: false }
+                }
+            ],
         }
     ],
     answered_questions: [

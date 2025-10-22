@@ -8,6 +8,10 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = require("../../utils/sendResponse");
 const project_services_1 = require("./project.services");
 const project_model_1 = require("./project.model");
+const axios_1 = __importDefault(require("axios"));
+const env_1 = require("../../config/env");
+const mongoose_1 = __importDefault(require("mongoose"));
+const AppError_1 = __importDefault(require("../../utils/AppError"));
 const openAi_1 = require("../../config/openAi");
 const createProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const id = req.params.id;
@@ -31,9 +35,40 @@ const addTask = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+const findSingleTask = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId } = req.body;
+    if (!projectId || !taskId) {
+        throw new AppError_1.default(400, "ProjectId & task id must be required");
+    }
+    ;
+    const result = await project_services_1.projectServices.findSingleTask(projectId, taskId);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task retrived successfully",
+        data: result
+    });
+});
+const findSingleSubtask = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, subTaskId } = req.params;
+    if (!projectId || !taskId || !subTaskId) {
+        throw new AppError_1.default(400, "ProjectId , taskId & SubtaskId is must be required");
+    }
+    ;
+    const result = await project_services_1.projectServices.findSingleSubTask(projectId, taskId, subTaskId);
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Subtask Retrived successfully.",
+        data: result
+    });
+});
 const addSubTask = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { projectId, taskId, subTaskData } = req.body;
-    const result = await project_services_1.projectServices.addSubTask(projectId, taskId, subTaskData);
+    const { projectId, taskId, subtaskTitle, subTaskDueDate } = req.body;
+    if (!projectId || !taskId || !subtaskTitle) {
+        throw new AppError_1.default(400, "ProjectId, taskId & subtaskTitle must be required");
+    }
+    const result = await project_services_1.projectServices.addSubTask(projectId, taskId, subtaskTitle, subTaskDueDate);
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
@@ -61,16 +96,125 @@ const getProject = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+const getAllProject = (0, catchAsync_1.default)(async (req, res, next) => {
+    const result = await project_model_1.Project.find({});
+    res.status(200).json(result);
+});
 const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
+    const projectId = req.params.id;
+    if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
+        throw new AppError_1.default(400, "Invalid mongoDb objectId");
+    }
+    const result = await axios_1.default.post(`${env_1.envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
+    if (!result) {
+        throw new AppError_1.default(400, "Please try again.");
+    }
+    const updateQuestion = await project_model_1.Project.findByIdAndUpdate(projectId, {
+        $push: {
+            answered_questions: {
+                question: result.data.question,
+                answer: null,
+            },
+        },
+    }, { new: true });
+    res.status(200).json({
+        success: true,
+        AiQuestion: result.data,
+        storedData: updateQuestion
+    });
+});
+const ansQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectid, questionsId, answer } = req.body;
+    const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectid, "answered_questions._id": questionsId }, { $set: { "answered_questions.$.answer": answer } }, { new: true });
+    if (!updatedProject) {
+        throw new AppError_1.default(400, "Project or question not found");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        message: "Answer added successfully!",
+        statusCode: 200,
+        data: updatedProject
+    });
+});
+const askQuestionOpenAi = (0, catchAsync_1.default)(async (req, res, next) => {
     const { prompt } = req.body;
-    const response = await openAi_1.OpenAi.chat.completions.create({
-        model: "",
+    const result = await openAi_1.OpenAi.chat.completions.create({
+        model: "gpt-3.5-turbo",
         messages: [
-            { role: "system", content: "Your a helpful assistent" },
-            { role: "user", content: prompt }
+            {
+                role: "system", content: "You are a helpful assistant."
+            },
+            {
+                role: "user", content: prompt
+            }
         ]
     });
-    res.status(200).json({ message: response.choices[0]?.message.content });
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Question ai",
+        data: result.choices[0]?.message.content
+    });
+});
+const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, isStar } = req.body;
+    if (!projectId || !taskId || !isStar) {
+        throw new AppError_1.default(400, "Project ID, Task ID and isStar (boolean) are required");
+    }
+    const result = await project_services_1.projectServices.updateTaskStar(projectId, taskId, isStar);
+    if (!result) {
+        throw new AppError_1.default(404, "Task not found");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task star status updated successfully",
+        data: result,
+    });
+});
+const updateSubtaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, subtaskId, isStar } = req.body;
+    if (!projectId || !taskId || !subtaskId || !isStar) {
+        throw new AppError_1.default(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
+    }
+    const result = await project_services_1.projectServices.updateSubtaskStar(projectId, taskId, subtaskId, isStar);
+    if (!result) {
+        throw new AppError_1.default(404, "Subtask not found");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Subtask star status updated successfully",
+        data: result,
+    });
+});
+const softDeleteTask = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId } = req.params;
+    if (!projectId || !taskId) {
+        throw new AppError_1.default(200, "ProjectId & TaskId must be required");
+    }
+    ;
+    const result = await project_services_1.projectServices.softDeleteTask(projectId, taskId);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task soft deketed success.",
+        data: result,
+    });
+});
+const permanentDeleteTask = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId } = req.body;
+    if (!projectId || !taskId) {
+        throw new AppError_1.default(200, "ProjectId & TaskId must be required");
+    }
+    ;
+    const result = await project_services_1.projectServices.permanentDeleteTask(projectId, taskId);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task Premanently deleted success",
+        data: result,
+    });
 });
 exports.projectController = {
     createProject,
@@ -78,6 +222,15 @@ exports.projectController = {
     addSubTask,
     addDetails,
     getProject,
-    askQuestion
+    askQuestion,
+    getAllProject,
+    ansQuestion,
+    askQuestionOpenAi,
+    findSingleTask,
+    findSingleSubtask,
+    updateTaskStar,
+    updateSubtaskStar,
+    softDeleteTask,
+    permanentDeleteTask
 };
 //# sourceMappingURL=project.controller.js.map

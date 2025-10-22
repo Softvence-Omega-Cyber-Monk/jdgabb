@@ -15,7 +15,7 @@ const passport_1 = __importDefault(require("passport"));
 const express_session_1 = __importDefault(require("express-session"));
 exports.app = (0, express_1.default)();
 exports.app.use((0, cors_1.default)({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "*"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
 }));
