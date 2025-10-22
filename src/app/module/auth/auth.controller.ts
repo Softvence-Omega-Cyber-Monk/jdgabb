@@ -54,6 +54,8 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
         throw new AppError(404, "User not found , Google login faild");
     };
 
+    console.log(user);
+
     const token = createJwtToken(user);
     // setAuthCookie(res, token);
     res.status(200).send({
@@ -64,6 +66,7 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
             accessToken: token.accessToken
         }
     })
+    res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
 
 export const authController = {
