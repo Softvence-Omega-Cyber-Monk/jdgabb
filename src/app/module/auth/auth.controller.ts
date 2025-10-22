@@ -56,7 +56,7 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
 
     const token = createJwtToken(user);
     // setAuthCookie(res, token);
-    res.status(200).json({
+    res.status(200).send({
         success: true,
         message: "Authentication success",
         data: {
