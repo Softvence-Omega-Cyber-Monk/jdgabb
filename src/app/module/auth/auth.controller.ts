@@ -5,6 +5,15 @@ import { createJwtToken } from "../../utils/createJwtToken";
 import { sendResponse } from "../../utils/sendResponse";
 import { authServices } from "./auth.services";
 import { User } from "../user/userModel";
+import { AiChatModel } from "../setting/aiChat/aiChat.model";
+import { AppearanceModel } from "../setting/appearance/appearance.model";
+import { CollaborationModel } from "../setting/collaboration/collaboration.model";
+import { languageModel } from "../setting/language/language.model";
+import { NotificationModel } from "../setting/notifications/notifications.model";
+import { PrivacyModel } from "../setting/privacy/privacy.model";
+import { ProductivityEnhancements } from "../setting/Productivity/productivity.model";
+import { ProjectTaskModel } from "../setting/projectTask/projectTask.model";
+import { HistoryChatModel } from "../hostory/history.model";
 
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -82,6 +91,19 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
 
     if (!user) {
         user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+
+        await Promise.all([
+            AiChatModel.create({ userId: user._id }),
+            AppearanceModel.create({ userId: user._id }),
+            CollaborationModel.create({ userId: user._id }),
+            languageModel.create({ userId: user._id }),
+            NotificationModel.create({ userId: user._id }),
+            PrivacyModel.create({ userId: user._id }),
+            ProductivityEnhancements.create({ userId: user._id }),
+            ProjectTaskModel.create({ userId: user._id }),
+            HistoryChatModel.create({ userId: user._id })
+        ]);
+
     } else {
         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
         if (!hasGoogleAuth) {
