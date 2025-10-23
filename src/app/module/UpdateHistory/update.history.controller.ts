@@ -15,9 +15,7 @@ const createChatHistory = catchAsync(async (req: Request, res: Response, next: N
     });
 });
 
-
 const findUserChat = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
     const userId = req.params.id;
 
     const result = await UpdateChatHestory.find({ userId: userId });
