@@ -295,12 +295,60 @@ const permanentDeleteSubTask = (0, catchAsync_1.default)(async (req, res, next) 
         data: result,
     });
 });
-const createProjectTaskSubtaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
-    const projectId = req.body.projectId;
-    const prompt = req.body.prompt;
-    const aiApiResponse = await axios_1.default.get(`${env_1.envVers.AI_ROOT_URL}/project_tasks/${projectId}?prompt=${prompt}`);
-    res.status(200).json({ res: aiApiResponse });
-});
+// const createProjectTaskSubtaskWithAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const projectId = req.params.id;
+//     const aiApiResponse = await axios.get(`https://project-helper-ai-agent.onrender.com/projects/project_tasks/${projectId}`);
+//     res.status(200).json({res : aiApiResponse.data});
+// });
+const createProjectTaskSubtaskWithAi = async (req, res, next) => {
+    try {
+        const projectId = req.params.id;
+        const aiApiResponse = await axios_1.default.get(`https://project-helper-ai-agent.onrender.com/projects/project_tasks/${projectId}`);
+        const aiData = aiApiResponse.data;
+        if (!aiData || !aiData.tasks) {
+            return res
+                .status(400)
+                .json({ success: false, message: "Invalid AI response format" });
+        }
+        const project = await project_model_1.Project.findById(projectId);
+        if (!project) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Project not found" });
+        }
+        ;
+        const formattedTasks = aiData.tasks.map((task) => ({
+            task: task.task,
+            details: task.details || null,
+            taskDueDate: task.datetime ? new Date(task.datetime) : null,
+            isDeleted: false,
+            isComplite: false,
+            isStar: false,
+            subtasks: task.subtasks?.map((sub) => ({
+                title: sub.subtask,
+                subTaskDueDate: sub.datetime ? new Date(sub.datetime) : null,
+                isStar: false,
+                isDeleted: false,
+                isComplite: false,
+            })) || [],
+        }));
+        project.tasks = formattedTasks;
+        await project.save();
+        res.status(200).json({
+            success: true,
+            message: "Project tasks & subtasks added successfully from AI",
+            data: project,
+        });
+    }
+    catch (error) {
+        console.error("AI Integration Error:", error.message);
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            stack: error.stack,
+        });
+    }
+};
 exports.projectController = {
     createProject,
     updateProjectTitle,

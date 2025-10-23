@@ -17,6 +17,6 @@ export declare const projectController: {
     softDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteSubTask: (req: Request, res: Response, next: NextFunction) => void;
-    createProjectTaskSubtaskWithAi: (req: Request, res: Response, next: NextFunction) => void;
+    createProjectTaskSubtaskWithAi: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
 };
 //# sourceMappingURL=project.controller.d.ts.map

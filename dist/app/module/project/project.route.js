@@ -13,6 +13,7 @@ projectRouter.patch("/addDetails", project_controller_1.projectController.addDet
 projectRouter.patch("/answer", project_controller_1.projectController.ansQuestion);
 projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);
+projectRouter.post("/createtTaskSubTaskWithAi/:id", project_controller_1.projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
 projectRouter.post("/create/:id", project_controller_1.projectController.createProject);
 projectRouter.get("/askQuestion/:id", project_controller_1.projectController.askQuestion);
