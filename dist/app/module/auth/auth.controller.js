@@ -9,6 +9,7 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const createJwtToken_1 = require("../../utils/createJwtToken");
 const sendResponse_1 = require("../../utils/sendResponse");
 const auth_services_1 = require("./auth.services");
+const userModel_1 = require("../user/userModel");
 const loginUser = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await auth_services_1.authServices.userLogin(req.body);
     // setAuthCookie(res, result.tokens);
@@ -61,10 +62,42 @@ const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next
     });
     res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
+const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { username, email } = req.body;
+    if (!username || !email) {
+        throw new AppError_1.default(400, "Username & Email are required");
+    }
+    let user = await userModel_1.User.findOne({ email });
+    if (!user) {
+        user = await userModel_1.User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+    }
+    else {
+        const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
+        if (!hasGoogleAuth) {
+            user.auths.push({
+                provider: "Google",
+                providerId: email,
+            });
+            await user.save();
+        }
+    }
+    ;
+    const token = (0, createJwtToken_1.createJwtToken)(user);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Google authentication success",
+        data: {
+            accessToken: token.accessToken,
+            user,
+        },
+    });
+});
 exports.authController = {
     googleCallBackController,
     loginUser,
     changePassword,
-    deleteUser
+    deleteUser,
+    googleFirebaseLogin
 };
 //# sourceMappingURL=auth.controller.js.map

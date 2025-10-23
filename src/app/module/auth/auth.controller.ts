@@ -4,6 +4,7 @@ import AppError from "../../utils/AppError";
 import { createJwtToken } from "../../utils/createJwtToken";
 import { sendResponse } from "../../utils/sendResponse";
 import { authServices } from "./auth.services";
+import { User } from "../user/userModel";
 
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -67,9 +68,49 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
     res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
 
+
+const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { username, email } = req.body;
+
+    if (!username || !email) {
+        throw new AppError(400, "Username & Email are required");
+    }
+
+
+    let user = await User.findOne({ email });
+
+
+    if (!user) {
+        user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+    } else {
+        const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
+        if (!hasGoogleAuth) {
+            user.auths.push({
+                provider: "Google",
+                providerId: email,
+            });
+            await user.save();
+        }
+    };
+
+    const token = createJwtToken(user);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Google authentication success",
+        data: {
+            accessToken: token.accessToken,
+            user,
+        },
+    });
+});
+
+
 export const authController = {
     googleCallBackController,
     loginUser,
     changePassword,
-    deleteUser
+    deleteUser,
+    googleFirebaseLogin
 }

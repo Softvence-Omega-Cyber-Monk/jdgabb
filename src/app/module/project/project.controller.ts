@@ -308,8 +308,6 @@ const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: N
   });
 });
 
-
-
 const softDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { projectId, taskId } = req.params;
 
@@ -326,6 +324,7 @@ const softDeleteTask = catchAsync(async (req: Request, res: Response, next: Next
         data: result,
     });
 });
+
 const permanentDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { projectId, taskId } = req.body;
@@ -343,6 +342,7 @@ const permanentDeleteTask = catchAsync(async (req: Request, res: Response, next:
         data: result,
     });
 })
+
 const permanentDeleteSubTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { projectId, taskId, subTaskId } = req.body;
