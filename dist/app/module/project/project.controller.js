@@ -50,7 +50,7 @@ const findSingleTask = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const findSingleSubtask = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { projectId, taskId, subTaskId } = req.params;
+    const { projectId, taskId, subTaskId } = req.body;
     if (!projectId || !taskId || !subTaskId) {
         throw new AppError_1.default(400, "ProjectId , taskId & SubtaskId is must be required");
     }
@@ -216,6 +216,20 @@ const permanentDeleteTask = (0, catchAsync_1.default)(async (req, res, next) => 
         data: result,
     });
 });
+const permanentDeleteSubTask = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, subTaskId } = req.body;
+    if (!projectId || !taskId || !subTaskId) {
+        throw new AppError_1.default(200, "ProjectId , TaskId & subTaskId must be required");
+    }
+    ;
+    const result = await project_services_1.projectServices.permanentDeleteSubtask(projectId, taskId, subTaskId);
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task Premanently deleted success",
+        data: result,
+    });
+});
 exports.projectController = {
     createProject,
     addTask,
@@ -231,6 +245,7 @@ exports.projectController = {
     updateTaskStar,
     updateSubtaskStar,
     softDeleteTask,
-    permanentDeleteTask
+    permanentDeleteTask,
+    permanentDeleteSubTask
 };
 //# sourceMappingURL=project.controller.js.map

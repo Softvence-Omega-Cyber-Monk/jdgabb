@@ -33,15 +33,17 @@ const addUserChatToHistory = async (req, res) => {
                 message: "User history not found",
             });
         }
-        existingHistory.history.push({
+        const newChat = {
             user,
             timeStamp: new Date(),
-        });
+        };
+        existingHistory.history.push(newChat);
         await existingHistory.save();
+        const createdChat = existingHistory.history[existingHistory.history.length - 1];
         res.status(200).json({
             success: true,
             message: "Chat added successfully",
-            data: existingHistory,
+            data: createdChat,
         });
     }
     catch (error) {

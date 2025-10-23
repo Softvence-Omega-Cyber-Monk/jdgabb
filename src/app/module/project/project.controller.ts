@@ -56,7 +56,7 @@ const findSingleTask = catchAsync(async (req: Request, res: Response, next: Next
 });
 
 const findSingleSubtask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { projectId, taskId, subTaskId } = req.params;
+    const { projectId, taskId, subTaskId } = req.body;
 
     if (!projectId || !taskId || !subTaskId) {
         throw new AppError(400, "ProjectId , taskId & SubtaskId is must be required")
@@ -262,7 +262,6 @@ const softDeleteTask = catchAsync(async (req: Request, res: Response, next: Next
         data: result,
     });
 });
-
 const permanentDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const { projectId, taskId } = req.body;
@@ -272,6 +271,23 @@ const permanentDeleteTask = catchAsync(async (req: Request, res: Response, next:
     };
 
     const result = await projectServices.permanentDeleteTask(projectId, taskId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task Premanently deleted success",
+        data: result,
+    });
+})
+const permanentDeleteSubTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { projectId, taskId, subTaskId } = req.body;
+
+    if (!projectId || !taskId || !subTaskId) {
+        throw new AppError(200, "ProjectId , TaskId & subTaskId must be required");
+    };
+
+    const result = await projectServices.permanentDeleteSubtask(projectId, taskId, subTaskId);
 
     sendResponse(res, {
         statusCode: 200,
@@ -298,5 +314,6 @@ export const projectController = {
     updateTaskStar,
     updateSubtaskStar,
     softDeleteTask,
-    permanentDeleteTask
+    permanentDeleteTask,
+    permanentDeleteSubTask
 };

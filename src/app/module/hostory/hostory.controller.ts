@@ -24,13 +24,13 @@ const addUserChatToHistory = async (req: Request, res: Response) => {
     try {
         const { userId, user } = req.body;
 
-
         if (!userId) {
             return res.status(400).json({
                 success: false,
                 message: "UserId must be required",
             });
         }
+
         const objectUserId = new mongoose.Types.ObjectId(userId);
 
         const existingHistory = await HistoryChatModel.findOne({ userId: objectUserId });
@@ -42,21 +42,25 @@ const addUserChatToHistory = async (req: Request, res: Response) => {
             });
         }
 
-        existingHistory.history.push({
+
+        const newChat = {
             user,
             timeStamp: new Date(),
-        });
+        };
 
+
+        existingHistory.history.push(newChat);
 
         await existingHistory.save();
 
 
+        const createdChat = existingHistory.history[existingHistory.history.length - 1];
+
         res.status(200).json({
             success: true,
             message: "Chat added successfully",
-            data: existingHistory,
+            data: createdChat,
         });
-
     } catch (error: any) {
         res.status(500).json({
             success: false,
@@ -65,6 +69,7 @@ const addUserChatToHistory = async (req: Request, res: Response) => {
         });
     }
 };
+
 
 
 const addAIChatToHistory = async (req: Request, res: Response) => {

@@ -145,6 +145,28 @@ const updateSubtaskStar = async (projectId: string, taskId: string, subtaskId: s
 };
 
 
+const permanentDeleteSubtask = async (
+    projectId: string,
+    taskId: string,
+    subtaskId: string
+) => {
+    const result = await Project.findOneAndUpdate(
+        {
+            _id: new mongoose.Types.ObjectId(projectId),
+            "tasks._id": new mongoose.Types.ObjectId(taskId),
+        },
+        {
+            $pull: {
+                "tasks.$.subtasks": { _id: new mongoose.Types.ObjectId(subtaskId) },
+            },
+        },
+        { new: true }
+    );
+
+    return result;
+};
+
+
 
 export const projectServices = {
     createProject,
@@ -156,5 +178,6 @@ export const projectServices = {
     updateTaskStar,
     updateSubtaskStar,
     softDeleteTask,
-    permanentDeleteTask
+    permanentDeleteTask,
+    permanentDeleteSubtask
 }

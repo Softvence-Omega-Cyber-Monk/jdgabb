@@ -15,5 +15,6 @@ export declare const projectController: {
     updateSubtaskStar: (req: Request, res: Response, next: NextFunction) => void;
     softDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
+    permanentDeleteSubTask: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map
