@@ -1,39 +1,102 @@
-import express, { NextFunction, Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
+import  { NextFunction, Request, Response } from "express";
+import { UpdateChatHestory } from "../UpdateHistory/update.history.model";
 
 
-const chatbot = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { message } = req.body;
+// const chatbot = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { message , userId } = req.body;
+//     const emptyMsg = "Hey there! My name’s Ollie, and I’m here to help you with your to-dos! I can create projects, tasks, add details, due dates all based on our conversation! *Tap the screen* or type *“next”* in the chat bar below when you’re ready. ";
 
+//     const createMsg = "Okie Dokie! Here’s your project! Go ahead and tap <Project 1> to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.";
+
+//     const addMsg = "What would you like to add?";
+
+//     const nextMsg = "Great! Type into the chat bar below what sort of project you want to start. We can think of an idea together - do you want to be healthier, start a business, find love, find your passion, save time, or speed through your homework? What's a goal you have? It can be anything!";
+
+//     const defaultText = "Sorry, I didn't quite catch that. Try typing 'Add' , 'Next' or 'Create'";
+
+//     if (!message) {
+//         await UpdateChatHestory.create({ userId: userId, isFile: true, text: message })
+//         res.json({
+//             response: emptyMsg
+//         });
+//     };
+
+//     if (message.toLowerCase().trim() === "create") {
+//         await UpdateChatHestory.create({ userId: userId, isFile: true, text: createMsg })
+//         res.json({
+//             response: createMsg
+//         })
+//     }
+
+//     if (message.toLowerCase().trim() === "add") {
+//         await UpdateChatHestory.create({ userId: userId, isFile: true, text: addMsg })
+//         res.json({
+//             response: addMsg
+//         });
+//     };
+
+//     if (message.toLowerCase().trim() === "next") {
+//         await UpdateChatHestory.create({ userId: userId, isFile: true, text: nextMsg })
+//         res.json({
+//             response: nextMsg
+//         })
+//     }
+//     await UpdateChatHestory.create({ userId: userId, isFile: true, text: defaultText }),
+//         res.json({
+
+//             response: defaultText
+//         });
+// });
+
+
+export const chatbot = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const { message, userId } = req.body;
+
+    const emptyMsg = "Hey there! My name’s Ollie, and I’m here to help you with your to-dos! I can create projects, tasks, add details, due dates all based on our conversation! *Tap the screen* or type *“next”* in the chat bar below when you’re ready.";
+    const createMsg = "Okie Dokie! Here’s your project! Go ahead and tap <Project 1> to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.";
+    const addMsg = "What would you like to add?";
+    const nextMsg = "Great! Type into the chat bar below what sort of project you want to start. We can think of an idea together - do you want to be healthier, start a business, find love, find your passion, save time, or speed through your homework? What's a goal you have? It can be anything!";
+    const defaultText = "Sorry, I didn't quite catch that. Try typing 'Add' , 'Next' or 'Create'";
+
+    // 1️⃣ message না থাকলে
     if (!message) {
-        res.json({
-            response:
-                "Hey there! My name’s Ollie, and I’m here to help you with your to-dos! I can create projects, tasks, add details, due dates all based on our conversation! *Tap the screen* or type *“next”* in the chat bar below when you’re ready. "
-        });
+      await UpdateChatHestory.create({ userId, isFile: true, text: emptyMsg });
+      res.json({ response: emptyMsg });
+      return;
     }
 
+    // 2️⃣ create command
     if (message.toLowerCase().trim() === "create") {
-        res.json({
-            response: "Okie Dokie! Here’s your project! Go ahead and tap <Project 1> to see the tasks inside! I can also undo the action I just made if you tap the Undo button below."
-        })
+      await UpdateChatHestory.create({ userId, isFile: true, text: createMsg });
+      res.json({ response: createMsg });
+      return;
     }
 
+    // 3️⃣ add command
     if (message.toLowerCase().trim() === "add") {
-        res.json({
-            response: "What would you like to add?"
-        });
-    };
-
-    if (message.toLowerCase().trim() === "next") {
-        res.json({
-            response: "Great! Type into the chat bar below what sort of project you want to start. We can think of an idea together - do you want to be healthier, start a business, find love, find your passion, save time, or speed through your homework? What's a goal you have? It can be anything!"
-        })
+      await UpdateChatHestory.create({ userId, isFile: true, text: addMsg });
+      res.json({ response: addMsg });
+      return;
     }
 
-    res.json({
-        response: "Sorry, I didn't quite catch that. Try typing 'Add' , 'Next' or 'Create'"
-    });
-});
+    // 4️⃣ next command
+    if (message.toLowerCase().trim() === "next") {
+      await UpdateChatHestory.create({ userId, isFile: true, text: nextMsg });
+      res.json({ response: nextMsg });
+      return;
+    }
+
+    // 5️⃣ default fallback
+    await UpdateChatHestory.create({ userId, isFile: true, text: defaultText });
+    res.json({ response: defaultText });
+    return;
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error", error });
+  }
+};
 
 
 export const AichatBotController = {

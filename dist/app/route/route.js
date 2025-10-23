@@ -17,6 +17,7 @@ const notifications_route_1 = __importDefault(require("../module/setting/notific
 const privacy_route_1 = __importDefault(require("../module/setting/privacy/privacy.route"));
 const producitivy_route_1 = __importDefault(require("../module/setting/Productivity/producitivy.route"));
 const projectTask_route_1 = __importDefault(require("../module/setting/projectTask/projectTask.route"));
+const update_history_route_1 = __importDefault(require("../module/UpdateHistory/update.history.route"));
 const user_router_1 = __importDefault(require("../module/user/user.router"));
 exports.moduleRoute = [
     {
@@ -42,6 +43,10 @@ exports.moduleRoute = [
     {
         path: "/history",
         routes: history_route_1.default
+    },
+    {
+        path: "/updateHistory",
+        routes: update_history_route_1.default
     },
     // Setting Releted Api Endpoients
     {
