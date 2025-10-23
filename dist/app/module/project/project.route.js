@@ -11,12 +11,12 @@ projectRouter.patch("/updateSubTaskStar", project_controller_1.projectController
 projectRouter.patch("/addSubTask", project_controller_1.projectController.addSubTask);
 projectRouter.patch("/addDetails", project_controller_1.projectController.addDetails);
 projectRouter.patch("/answer", project_controller_1.projectController.ansQuestion);
-projectRouter.post("/openAi", project_controller_1.projectController.askQuestionOpenAi);
+projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
+projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
 projectRouter.post("/create/:id", project_controller_1.projectController.createProject);
 projectRouter.get("/askQuestion/:id", project_controller_1.projectController.askQuestion);
-projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
-projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);
+projectRouter.patch("/update/title/:id", project_controller_1.projectController.updateProjectTitle);
 projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
 exports.default = projectRouter;
 //# sourceMappingURL=project.route.js.map

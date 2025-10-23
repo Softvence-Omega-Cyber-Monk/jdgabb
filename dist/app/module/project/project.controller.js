@@ -25,6 +25,22 @@ const createProject = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
+    const projectId = req.params.id;
+    const title = req.body.title;
+    if (!title) {
+        res.status(400).json({ success: false, message: "Title is required" });
+    }
+    const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $set: { goal: title } }, { new: true, runValidators: true });
+    if (!updatedProject) {
+        res.status(404).json({ success: false, message: "Project not found" });
+    }
+    res.status(200).json({
+        success: true,
+        message: "Project title updated successfully",
+        data: updatedProject,
+    });
+});
 const addTask = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectId, task } = req.body;
     const result = await project_services_1.projectServices.addTask(projectId, task);
@@ -279,8 +295,15 @@ const permanentDeleteSubTask = (0, catchAsync_1.default)(async (req, res, next) 
         data: result,
     });
 });
+const createProjectTaskSubtaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
+    const projectId = req.body.projectId;
+    const prompt = req.body.prompt;
+    const aiApiResponse = await axios_1.default.get(`${env_1.envVers.AI_ROOT_URL}/project_tasks/${projectId}?prompt=${prompt}`);
+    res.status(200).json({ res: aiApiResponse });
+});
 exports.projectController = {
     createProject,
+    updateProjectTitle,
     addTask,
     addSubTask,
     addDetails,
@@ -295,6 +318,7 @@ exports.projectController = {
     updateSubtaskStar,
     softDeleteTask,
     permanentDeleteTask,
-    permanentDeleteSubTask
+    permanentDeleteSubTask,
+    createProjectTaskSubtaskWithAi
 };
 //# sourceMappingURL=project.controller.js.map

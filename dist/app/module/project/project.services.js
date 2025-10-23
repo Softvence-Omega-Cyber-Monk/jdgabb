@@ -154,6 +154,6 @@ exports.projectServices = {
     updateSubtaskStar,
     softDeleteTask,
     permanentDeleteTask,
-    permanentDeleteSubtask
+    permanentDeleteSubtask,
 };
 //# sourceMappingURL=project.services.js.map

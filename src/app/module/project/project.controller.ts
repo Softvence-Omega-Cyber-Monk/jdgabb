@@ -26,6 +26,32 @@ const createProject = catchAsync(async (req: Request, res: Response, next: NextF
     })
 });
 
+const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.params.id;
+    const title = req.body.title;
+
+    if (!title) {
+        res.status(400).json({ success: false, message: "Title is required" });
+    }
+
+    const updatedProject = await Project.findOneAndUpdate(
+        { _id: projectId },
+        { $set: { goal: title } },
+        { new: true, runValidators: true }
+    );
+
+    if (!updatedProject) {
+        res.status(404).json({ success: false, message: "Project not found" });
+    }
+
+    res.status(200).json({
+        success: true,
+        message: "Project title updated successfully",
+        data: updatedProject,
+    });
+});
+
+
 const addTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { projectId, task } = req.body;
     const result = await projectServices.addTask(projectId, task);
@@ -279,33 +305,33 @@ const updateTaskStar = catchAsync(async (req: Request, res: Response, next: Next
 
 
 const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { projectId, taskId, subtaskId, isStar, isComplite } = req.body;
+    const { projectId, taskId, subtaskId, isStar, isComplite } = req.body;
 
-  if (!projectId || !taskId || !subtaskId) {
-    throw new AppError(400, "Project ID, Task ID, and Subtask ID are required");
-  }
+    if (!projectId || !taskId || !subtaskId) {
+        throw new AppError(400, "Project ID, Task ID, and Subtask ID are required");
+    }
 
-  const updates: { isStar?: boolean; isComplite?: boolean } = {};
+    const updates: { isStar?: boolean; isComplite?: boolean } = {};
 
-  if (typeof isStar === "boolean") updates.isStar = isStar;
-  if (typeof isComplite === "boolean") updates.isComplite = isComplite;
+    if (typeof isStar === "boolean") updates.isStar = isStar;
+    if (typeof isComplite === "boolean") updates.isComplite = isComplite;
 
-  if (Object.keys(updates).length === 0) {
-    throw new AppError(400, "No valid fields to update (isStar or isComplite)");
-  }
+    if (Object.keys(updates).length === 0) {
+        throw new AppError(400, "No valid fields to update (isStar or isComplite)");
+    }
 
-  const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, updates);
+    const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, updates);
 
-  if (!result) {
-    throw new AppError(404, "Subtask not found");
-  }
+    if (!result) {
+        throw new AppError(404, "Subtask not found");
+    }
 
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: "Subtask updated successfully",
-    data: result,
-  });
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Subtask updated successfully",
+        data: result,
+    });
 });
 
 const softDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -359,12 +385,23 @@ const permanentDeleteSubTask = catchAsync(async (req: Request, res: Response, ne
         message: "Task Premanently deleted success",
         data: result,
     });
+});
+
+
+const createProjectTaskSubtaskWithAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.body.projectId;
+    const prompt = req.body.prompt;
+    const aiApiResponse = await axios.get(`${envVers.AI_ROOT_URL}/project_tasks/${projectId}?prompt=${prompt}`);
+    res.status(200).json({res : aiApiResponse});
 })
+
+
 
 
 
 export const projectController = {
     createProject,
+    updateProjectTitle,
     addTask,
     addSubTask,
     addDetails,
@@ -379,5 +416,6 @@ export const projectController = {
     updateSubtaskStar,
     softDeleteTask,
     permanentDeleteTask,
-    permanentDeleteSubTask
+    permanentDeleteSubTask,
+    createProjectTaskSubtaskWithAi
 };

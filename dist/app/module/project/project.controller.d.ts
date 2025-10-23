@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 export declare const projectController: {
     createProject: (req: Request, res: Response, next: NextFunction) => void;
+    updateProjectTitle: (req: Request, res: Response, next: NextFunction) => void;
     addTask: (req: Request, res: Response, next: NextFunction) => void;
     addSubTask: (req: Request, res: Response, next: NextFunction) => void;
     addDetails: (req: Request, res: Response, next: NextFunction) => void;
@@ -16,5 +17,6 @@ export declare const projectController: {
     softDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteSubTask: (req: Request, res: Response, next: NextFunction) => void;
+    createProjectTaskSubtaskWithAi: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

@@ -1,6 +1,8 @@
 import mongoose, { Types } from "mongoose";
 import { Project } from "./project.model";
 import AppError from "../../utils/AppError";
+import axios from "axios";
+import { envVers } from "../../config/env";
 
 
 const createProject = async (userId: string, goal: string) => {
@@ -212,7 +214,6 @@ const updateSubtaskStar = async (
 };
 
 
-
 const permanentDeleteSubtask = async (
     projectId: string,
     taskId: string,
@@ -236,6 +237,8 @@ const permanentDeleteSubtask = async (
 
 
 
+
+
 export const projectServices = {
     createProject,
     addTask,
@@ -247,5 +250,5 @@ export const projectServices = {
     updateSubtaskStar,
     softDeleteTask,
     permanentDeleteTask,
-    permanentDeleteSubtask
+    permanentDeleteSubtask,
 }
