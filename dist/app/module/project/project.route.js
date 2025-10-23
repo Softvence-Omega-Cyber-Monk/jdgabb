@@ -14,7 +14,8 @@ projectRouter.patch("/answer", project_controller_1.projectController.ansQuestio
 projectRouter.post("/openAi", project_controller_1.projectController.askQuestionOpenAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
 projectRouter.post("/create/:id", project_controller_1.projectController.createProject);
-projectRouter.post("/askQuestion/:id", project_controller_1.projectController.askQuestion);
+projectRouter.get("/askQuestion/:id", project_controller_1.projectController.askQuestion);
 projectRouter.get("/find/:projectId/:taskId/:subTaskId", project_controller_1.projectController.findSingleSubtask);
+projectRouter.delete("/deleteTask/:id", project_controller_1.projectController.permanentDeleteTask);
 exports.default = projectRouter;
 //# sourceMappingURL=project.route.js.map

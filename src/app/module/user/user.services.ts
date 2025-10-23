@@ -10,6 +10,7 @@ import { ProductivityEnhancements } from "../setting/Productivity/productivity.m
 import { ProjectTaskModel } from "../setting/projectTask/projectTask.model";
 import { IAuthprovider, IUser } from "./user.interface";
 import { User } from "./userModel";
+import { HistoryChatModel } from "../hostory/history.model";
 
 
 const registerUser = async (payload: Partial<IUser>) => {
@@ -43,6 +44,7 @@ const registerUser = async (payload: Partial<IUser>) => {
         await PrivacyModel.create([{ userId }], { session });
         await ProductivityEnhancements.create([{ userId }], { session });
         await ProjectTaskModel.create([{ userId }], { session });
+        await HistoryChatModel.create([{ userId: userId }], { session });
 
         await session.commitTransaction();
         session.endSession();

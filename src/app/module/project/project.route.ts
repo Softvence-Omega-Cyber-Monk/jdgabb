@@ -15,8 +15,8 @@ projectRouter.patch("/answer", projectController.ansQuestion);
 projectRouter.post("/openAi", projectController.askQuestionOpenAi);
 projectRouter.get("/get/:id", projectController.getProject);
 projectRouter.post("/create/:id", projectController.createProject);
-projectRouter.post("/askQuestion/:id", projectController.askQuestion);
+projectRouter.get("/askQuestion/:id", projectController.askQuestion);
 projectRouter.get("/find/:projectId/:taskId/:subTaskId", projectController.findSingleSubtask);
-
+projectRouter.delete("/deleteTask/:id" , projectController.permanentDeleteTask);
 
 export default projectRouter;

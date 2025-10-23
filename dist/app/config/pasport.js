@@ -17,6 +17,7 @@ const notifications_model_1 = require("../module/setting/notifications/notificat
 const privacy_model_1 = require("../module/setting/privacy/privacy.model");
 const productivity_model_1 = require("../module/setting/Productivity/productivity.model");
 const projectTask_model_1 = require("../module/setting/projectTask/projectTask.model");
+const history_model_1 = require("../module/hostory/history.model");
 passport_1.default.use(new passport_local_1.Strategy({
     usernameField: "email",
     passwordField: "password"
@@ -69,6 +70,7 @@ passport_1.default.use(new passport_google_oauth20_1.Strategy({
                 privacy_model_1.PrivacyModel.create({ userId: user._id }),
                 productivity_model_1.ProductivityEnhancements.create({ userId: user._id }),
                 projectTask_model_1.ProjectTaskModel.create({ userId: user._id }),
+                history_model_1.HistoryChatModel.create({ userId: user._id })
             ]);
         }
         ;

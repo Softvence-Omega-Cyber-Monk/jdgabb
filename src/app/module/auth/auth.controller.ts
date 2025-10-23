@@ -2,8 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import AppError from "../../utils/AppError";
 import { createJwtToken } from "../../utils/createJwtToken";
-import { setAuthCookie } from "../../utils/setAuthCookie";
-import { envVers } from "../../config/env";
 import { sendResponse } from "../../utils/sendResponse";
 import { authServices } from "./auth.services";
 

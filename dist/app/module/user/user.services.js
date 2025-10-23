@@ -15,6 +15,7 @@ const privacy_model_1 = require("../setting/privacy/privacy.model");
 const productivity_model_1 = require("../setting/Productivity/productivity.model");
 const projectTask_model_1 = require("../setting/projectTask/projectTask.model");
 const userModel_1 = require("./userModel");
+const history_model_1 = require("../hostory/history.model");
 const registerUser = async (payload) => {
     const session = await userModel_1.User.startSession();
     session.startTransaction();
@@ -37,6 +38,7 @@ const registerUser = async (payload) => {
         await privacy_model_1.PrivacyModel.create([{ userId }], { session });
         await productivity_model_1.ProductivityEnhancements.create([{ userId }], { session });
         await projectTask_model_1.ProjectTaskModel.create([{ userId }], { session });
+        await history_model_1.HistoryChatModel.create([{ userId: userId }], { session });
         await session.commitTransaction();
         session.endSession();
         return result[0];

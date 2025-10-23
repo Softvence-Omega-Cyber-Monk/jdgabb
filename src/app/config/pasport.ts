@@ -12,6 +12,7 @@ import { NotificationModel } from "../module/setting/notifications/notifications
 import { PrivacyModel } from "../module/setting/privacy/privacy.model";
 import { ProductivityEnhancements } from "../module/setting/Productivity/productivity.model";
 import { ProjectTaskModel } from "../module/setting/projectTask/projectTask.model";
+import { HistoryChatModel } from "../module/hostory/history.model";
 
 
 passport.use(new LocalStrategy({
@@ -74,6 +75,7 @@ passport.use(
           PrivacyModel.create({ userId: user._id }),
           ProductivityEnhancements.create({ userId: user._id }),
           ProjectTaskModel.create({ userId: user._id }),
+          HistoryChatModel.create({ userId: user._id })
         ]);
 
       };
