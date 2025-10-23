@@ -202,14 +202,45 @@ const askQuestionOpenAi = catchAsync(async (req: Request, res: Response, next: N
     })
 });
 
-const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { projectId, taskId, isStar } = req.body;
+// const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { projectId, taskId, isStar } = req.body;
 
-    if (!projectId || !taskId || !isStar) {
-        throw new AppError(400, "Project ID, Task ID and isStar (boolean) are required");
+//     if (!projectId || !taskId || !isStar) {
+//         throw new AppError(400, "Project ID, Task ID and isStar (boolean) are required");
+//     }
+
+//     const result = await projectServices.updateTaskStar(projectId, taskId, isStar);
+
+//     if (!result) {
+//         throw new AppError(404, "Task not found");
+//     }
+
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Task star status updated successfully",
+//         data: result,
+//     });
+// });
+
+const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, isStar, isComplite } = req.body;
+
+    if (!projectId || !taskId) {
+        throw new AppError(400, "Project ID and Task ID are required");
     }
 
-    const result = await projectServices.updateTaskStar(projectId, taskId, isStar);
+
+    const updates: { isStar?: boolean; isComplite?: boolean } = {};
+
+    if (typeof isStar === "boolean") updates.isStar = isStar;
+    if (typeof isComplite === "boolean") updates.isComplite = isComplite;
+
+    if (Object.keys(updates).length === 0) {
+        throw new AppError(400, "No valid fields to update (isStar or isComplite)");
+    }
+
+    const result = await projectServices.updateTaskStar(projectId, taskId, updates);
 
     if (!result) {
         throw new AppError(404, "Task not found");
@@ -218,32 +249,65 @@ const updateTaskStar = catchAsync(async (req: Request, res: Response, next: Next
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: "Task star status updated successfully",
+        message: "Task updated successfully",
         data: result,
     });
 });
 
+
+// const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { projectId, taskId, subtaskId, isStar } = req.body;
+
+//     if (!projectId || !taskId || !subtaskId || !isStar) {
+//         throw new AppError(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
+//     }
+
+//     const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, isStar);
+
+//     if (!result) {
+//         throw new AppError(404, "Subtask not found");
+//     }
+
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Subtask star status updated successfully",
+//         data: result,
+//     });
+// }
+// );
+
+
 const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { projectId, taskId, subtaskId, isStar } = req.body;
+  const { projectId, taskId, subtaskId, isStar, isComplite } = req.body;
 
-    if (!projectId || !taskId || !subtaskId || !isStar) {
-        throw new AppError(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
-    }
+  if (!projectId || !taskId || !subtaskId) {
+    throw new AppError(400, "Project ID, Task ID, and Subtask ID are required");
+  }
 
-    const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, isStar);
+  const updates: { isStar?: boolean; isComplite?: boolean } = {};
 
-    if (!result) {
-        throw new AppError(404, "Subtask not found");
-    }
+  if (typeof isStar === "boolean") updates.isStar = isStar;
+  if (typeof isComplite === "boolean") updates.isComplite = isComplite;
 
-    sendResponse(res, {
-        statusCode: 200,
-        success: true,
-        message: "Subtask star status updated successfully",
-        data: result,
-    });
-}
-);
+  if (Object.keys(updates).length === 0) {
+    throw new AppError(400, "No valid fields to update (isStar or isComplite)");
+  }
+
+  const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, updates);
+
+  if (!result) {
+    throw new AppError(404, "Subtask not found");
+  }
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Subtask updated successfully",
+    data: result,
+  });
+});
+
 
 
 const softDeleteTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {

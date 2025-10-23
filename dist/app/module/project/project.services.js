@@ -26,8 +26,27 @@ const findSingleTask = async (projectid, taskId) => {
     const result = await project_model_1.Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });
     return result?.tasks[0];
 };
-const updateTaskStar = async (projectId, taskId, isStar) => {
-    const result = await project_model_1.Project.findOneAndUpdate({ _id: projectId, "tasks._id": taskId }, { $set: { "tasks.$.isStar": isStar } }, { new: true, runValidators: true });
+// const updateTaskStar = async (projectId: string, taskId: string, isStar: boolean) => {
+//     const result = await Project.findOneAndUpdate(
+//         { _id: projectId, "tasks._id": taskId },
+//         { $set: { "tasks.$.isStar": isStar } },
+//         { new: true, runValidators: true }
+//     );
+//     return result;
+// };
+const updateTaskStar = async (projectId, taskId, updates) => {
+    const updateFields = {};
+    if (typeof updates.isStar === "boolean") {
+        updateFields["tasks.$.isStar"] = updates.isStar;
+    }
+    ;
+    if (typeof updates.isComplite === "boolean") {
+        updateFields["tasks.$.isComplite"] = updates.isComplite;
+    }
+    if (Object.keys(updateFields).length === 0) {
+        throw new Error("No valid fields to update");
+    }
+    const result = await project_model_1.Project.findOneAndUpdate({ _id: new mongoose_1.default.Types.ObjectId(projectId), "tasks._id": new mongoose_1.default.Types.ObjectId(taskId) }, { $set: updateFields }, { new: true, runValidators: true });
     return result;
 };
 const softDeleteTask = async (projectId, taskId) => {
@@ -69,23 +88,48 @@ const addOrUpdateTaskDetails = async (projectId, taskId, detailsText) => {
     const result = await project_model_1.Project.findOneAndUpdate({ _id: projectId, "tasks._id": taskId }, { $set: { "tasks.$.details": detailsText } }, { new: true });
     return result;
 };
-const updateSubtaskStar = async (projectId, taskId, subtaskId, isStar) => {
-    const result = await project_model_1.Project.findOneAndUpdate({
-        _id: new mongoose_1.default.Types.ObjectId(projectId),
-    }, {
-        $set: {
-            "tasks.$[task].subtasks.$[subtask].isStar": isStar
-        }
-    }, {
+// const updateSubtaskStar = async (projectId: string, taskId: string, subtaskId: string, isStar: string) => {
+//     const result = await Project.findOneAndUpdate(
+//         {
+//             _id: new mongoose.Types.ObjectId(projectId),
+//         },
+//         {
+//             $set: {
+//                 "tasks.$[task].subtasks.$[subtask].isStar": isStar
+//             }
+//         },
+//         {
+//             arrayFilters: [
+//                 { "task._id": new mongoose.Types.ObjectId(taskId) },
+//                 { "subtask._id": new mongoose.Types.ObjectId(subtaskId) }
+//             ],
+//             new: true
+//         }
+//     );
+//     if (!result) {
+//         console.log("No subtask found or updated.");
+//     }
+//     return result;
+// };
+const updateSubtaskStar = async (projectId, taskId, subtaskId, updates) => {
+    const updateFields = {};
+    if (typeof updates.isStar === "boolean") {
+        updateFields["tasks.$[task].subtasks.$[subtask].isStar"] = updates.isStar;
+    }
+    if (typeof updates.isComplite === "boolean") {
+        updateFields["tasks.$[task].subtasks.$[subtask].isComplite"] = updates.isComplite;
+    }
+    if (Object.keys(updateFields).length === 0) {
+        throw new Error("No valid fields to update (isStar or isComplite)");
+    }
+    const result = await project_model_1.Project.findOneAndUpdate({ _id: new mongoose_1.default.Types.ObjectId(projectId) }, { $set: updateFields }, {
         arrayFilters: [
             { "task._id": new mongoose_1.default.Types.ObjectId(taskId) },
-            { "subtask._id": new mongoose_1.default.Types.ObjectId(subtaskId) }
+            { "subtask._id": new mongoose_1.default.Types.ObjectId(subtaskId) },
         ],
-        new: true
+        new: true,
+        runValidators: true,
     });
-    if (!result) {
-        console.log("No subtask found or updated.");
-    }
     return result;
 };
 const permanentDeleteSubtask = async (projectId, taskId, subtaskId) => {

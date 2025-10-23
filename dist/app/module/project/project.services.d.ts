@@ -915,7 +915,10 @@ export declare const projectServices: {
         }>;
     }) | undefined>;
     findSingleSubTask: (projectId: string, taskId: string, subTaskId: string) => Promise<any>;
-    updateTaskStar: (projectId: string, taskId: string, isStar: boolean) => Promise<(mongoose.Document<unknown, {}, {
+    updateTaskStar: (projectId: string, taskId: string, updates: {
+        isStar?: boolean;
+        isComplite?: boolean;
+    }) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;
         tasks: Types.DocumentArray<{
@@ -1129,7 +1132,10 @@ export declare const projectServices: {
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
-    updateSubtaskStar: (projectId: string, taskId: string, subtaskId: string, isStar: string) => Promise<(mongoose.Document<unknown, {}, {
+    updateSubtaskStar: (projectId: string, taskId: string, subtaskId: string, updates: {
+        isStar?: boolean;
+        isComplite?: boolean;
+    }) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;
         tasks: Types.DocumentArray<{
