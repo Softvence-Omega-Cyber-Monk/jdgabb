@@ -172,22 +172,6 @@ const askQuestionOpenAi = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result.choices[0]?.message.content
     });
 });
-// const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const { projectId, taskId, isStar } = req.body;
-//     if (!projectId || !taskId || !isStar) {
-//         throw new AppError(400, "Project ID, Task ID and isStar (boolean) are required");
-//     }
-//     const result = await projectServices.updateTaskStar(projectId, taskId, isStar);
-//     if (!result) {
-//         throw new AppError(404, "Task not found");
-//     }
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Task star status updated successfully",
-//         data: result,
-//     });
-// });
 const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectId, taskId, isStar, isComplite } = req.body;
     if (!projectId || !taskId) {
@@ -212,23 +196,6 @@ const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result,
     });
 });
-// const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const { projectId, taskId, subtaskId, isStar } = req.body;
-//     if (!projectId || !taskId || !subtaskId || !isStar) {
-//         throw new AppError(400, "Project ID, Task ID, Subtask ID and isStar (boolean) are required");
-//     }
-//     const result = await projectServices.updateSubtaskStar(projectId, taskId, subtaskId, isStar);
-//     if (!result) {
-//         throw new AppError(404, "Subtask not found");
-//     }
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Subtask star status updated successfully",
-//         data: result,
-//     });
-// }
-// );
 const updateSubtaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectId, taskId, subtaskId, isStar, isComplite } = req.body;
     if (!projectId || !taskId || !subtaskId) {
@@ -295,11 +262,7 @@ const permanentDeleteSubTask = (0, catchAsync_1.default)(async (req, res, next) 
         data: result,
     });
 });
-// const createProjectTaskSubtaskWithAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const projectId = req.params.id;
-//     const aiApiResponse = await axios.get(`https://project-helper-ai-agent.onrender.com/projects/project_tasks/${projectId}`);
-//     res.status(200).json({res : aiApiResponse.data});
-// });
+// Replace Ai root api url
 const createProjectTaskSubtaskWithAi = async (req, res, next) => {
     try {
         const projectId = req.params.id;
@@ -349,6 +312,26 @@ const createProjectTaskSubtaskWithAi = async (req, res, next) => {
         });
     }
 };
+const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
+    const prompt = req.body.prompt;
+    const userId = req.body.userId;
+    if (!prompt && !userId) {
+        throw new AppError_1.default(200, "User id & User prompt must be required");
+    }
+    const aiResponse = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+        "user_text ": prompt
+    });
+    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
+    const createProject = await project_model_1.Project.create({ userId: userId, goal: aiResponse.data.title });
+    res.status(200).json({
+        message: "Project creation successfully", data: {
+            userPrompt: prompt,
+            aiResponseTitle: aiResponse.data.title,
+            concatinateText,
+            project: createProject
+        }
+    });
+});
 exports.projectController = {
     createProject,
     updateProjectTitle,
@@ -367,6 +350,7 @@ exports.projectController = {
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubTask,
-    createProjectTaskSubtaskWithAi
+    createProjectTaskSubtaskWithAi,
+    createProjectWithAi
 };
 //# sourceMappingURL=project.controller.js.map

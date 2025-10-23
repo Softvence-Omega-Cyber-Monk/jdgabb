@@ -3,6 +3,7 @@ import catchAsync from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { userServices } from "./user.services";
 import AppError from "../../utils/AppError";
+import { User } from "./userModel";
 
 const registerUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -37,7 +38,7 @@ const getSingleUser = catchAsync(async (req: Request, res: Response, next: NextF
 const userSettingInfo = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
     const userId = req.authUser._id;
- 
+
     const result = await userServices.getSingleUserData(userId as string);
 
     sendResponse(res, {
@@ -46,12 +47,25 @@ const userSettingInfo = catchAsync(async (req: Request, res: Response, next: Nex
         statusCode: 200,
         data: result
     })
-})
+});
 
+const userDeleted = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+
+    const deleteUser = await User.findOneAndDelete({ _id: userId });
+
+    if (!deleteUser) {
+        throw new AppError(400, "User not deleted");
+    };
+
+    res.status(200).json({ success: true, message: "User deleted success" });
+
+});
 
 
 export const userController = {
     registerUser,
     getSingleUser,
-    userSettingInfo
+    userSettingInfo,
+    userDeleted
 }

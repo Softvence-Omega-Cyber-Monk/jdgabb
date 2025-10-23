@@ -1,8 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import { Project } from "./project.model";
 import AppError from "../../utils/AppError";
-import axios from "axios";
-import { envVers } from "../../config/env";
 
 
 const createProject = async (userId: string, goal: string) => {
@@ -36,17 +34,6 @@ const findSingleTask = async (projectid: string, taskId: string) => {
     return result?.tasks[0];
 };
 
-// const updateTaskStar = async (projectId: string, taskId: string, isStar: boolean) => {
-//     const result = await Project.findOneAndUpdate(
-//         { _id: projectId, "tasks._id": taskId },
-//         { $set: { "tasks.$.isStar": isStar } },
-//         { new: true, runValidators: true }
-//     );
-
-//     return result;
-// };
-
-
 
 const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }
 ) => {
@@ -74,7 +61,6 @@ const updateTaskStar = async (projectId: string, taskId: string, updates: { isSt
 
     return result;
 };
-
 
 
 const softDeleteTask = async (projectId: string, taskId: string) => {
@@ -150,33 +136,6 @@ const addOrUpdateTaskDetails = async (
 };
 
 
-// const updateSubtaskStar = async (projectId: string, taskId: string, subtaskId: string, isStar: string) => {
-//     const result = await Project.findOneAndUpdate(
-//         {
-//             _id: new mongoose.Types.ObjectId(projectId),
-//         },
-//         {
-//             $set: {
-//                 "tasks.$[task].subtasks.$[subtask].isStar": isStar
-//             }
-//         },
-//         {
-//             arrayFilters: [
-//                 { "task._id": new mongoose.Types.ObjectId(taskId) },
-//                 { "subtask._id": new mongoose.Types.ObjectId(subtaskId) }
-//             ],
-//             new: true
-//         }
-//     );
-
-//     if (!result) {
-//         console.log("No subtask found or updated.");
-//     }
-
-//     return result;
-// };
-
-
 const updateSubtaskStar = async (
     projectId: string,
     taskId: string,
@@ -234,9 +193,6 @@ const permanentDeleteSubtask = async (
 
     return result;
 };
-
-
-
 
 
 export const projectServices = {

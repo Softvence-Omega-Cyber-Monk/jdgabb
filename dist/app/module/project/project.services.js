@@ -26,14 +26,6 @@ const findSingleTask = async (projectid, taskId) => {
     const result = await project_model_1.Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });
     return result?.tasks[0];
 };
-// const updateTaskStar = async (projectId: string, taskId: string, isStar: boolean) => {
-//     const result = await Project.findOneAndUpdate(
-//         { _id: projectId, "tasks._id": taskId },
-//         { $set: { "tasks.$.isStar": isStar } },
-//         { new: true, runValidators: true }
-//     );
-//     return result;
-// };
 const updateTaskStar = async (projectId, taskId, updates) => {
     const updateFields = {};
     if (typeof updates.isStar === "boolean") {
@@ -88,29 +80,6 @@ const addOrUpdateTaskDetails = async (projectId, taskId, detailsText) => {
     const result = await project_model_1.Project.findOneAndUpdate({ _id: projectId, "tasks._id": taskId }, { $set: { "tasks.$.details": detailsText } }, { new: true });
     return result;
 };
-// const updateSubtaskStar = async (projectId: string, taskId: string, subtaskId: string, isStar: string) => {
-//     const result = await Project.findOneAndUpdate(
-//         {
-//             _id: new mongoose.Types.ObjectId(projectId),
-//         },
-//         {
-//             $set: {
-//                 "tasks.$[task].subtasks.$[subtask].isStar": isStar
-//             }
-//         },
-//         {
-//             arrayFilters: [
-//                 { "task._id": new mongoose.Types.ObjectId(taskId) },
-//                 { "subtask._id": new mongoose.Types.ObjectId(subtaskId) }
-//             ],
-//             new: true
-//         }
-//     );
-//     if (!result) {
-//         console.log("No subtask found or updated.");
-//     }
-//     return result;
-// };
 const updateSubtaskStar = async (projectId, taskId, subtaskId, updates) => {
     const updateFields = {};
     if (typeof updates.isStar === "boolean") {

@@ -10,6 +10,7 @@ projectRouter.patch("/updateTaskStar", project_controller_1.projectController.up
 projectRouter.patch("/updateSubTaskStar", project_controller_1.projectController.updateSubtaskStar);
 projectRouter.patch("/addSubTask", project_controller_1.projectController.addSubTask);
 projectRouter.patch("/addDetails", project_controller_1.projectController.addDetails);
+projectRouter.post("/generateTitle", project_controller_1.projectController.createProjectWithAi);
 projectRouter.patch("/answer", project_controller_1.projectController.ansQuestion);
 projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);

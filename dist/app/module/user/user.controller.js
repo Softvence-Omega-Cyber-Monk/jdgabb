@@ -8,6 +8,7 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = require("../../utils/sendResponse");
 const user_services_1 = require("./user.services");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
+const userModel_1 = require("./userModel");
 const registerUser = (0, catchAsync_1.default)(async (req, res, next) => {
     if (!req.body.email && !req.body.password) {
         throw new AppError_1.default(400, "email & password must be required");
@@ -40,9 +41,19 @@ const userSettingInfo = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+const userDeleted = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.params.id;
+    const deleteUser = await userModel_1.User.findOneAndDelete({ _id: userId });
+    if (!deleteUser) {
+        throw new AppError_1.default(400, "User not deleted");
+    }
+    ;
+    res.status(200).json({ success: true, message: "User deleted success" });
+});
 exports.userController = {
     registerUser,
     getSingleUser,
-    userSettingInfo
+    userSettingInfo,
+    userDeleted
 };
 //# sourceMappingURL=user.controller.js.map

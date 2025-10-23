@@ -10,6 +10,6 @@ const userRouter = Router();
 
 userRouter.post("/register", validateRequest(createUserValidationZodSchema), userController.registerUser);
 userRouter.get("/info/:id", userController.getSingleUser);
-userRouter.get("/setting/:id" , protectUser(Role.USER) , userController.userSettingInfo);
-
+userRouter.get("/setting/:id", protectUser(Role.USER), userController.userSettingInfo);
+userRouter.delete("/delete/:id", userController.userDeleted)
 export default userRouter;
