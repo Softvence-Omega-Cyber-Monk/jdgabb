@@ -17,7 +17,7 @@ export const sendNotification = async (
         if (!user || !user?.fcmToken) {
             console.log(`❌ No FCM token for user ${userId}`);
             return;
-        }
+        };
 
         const message = {
             notification: { title, body },

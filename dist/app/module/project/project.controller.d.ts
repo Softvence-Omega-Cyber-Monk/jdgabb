@@ -19,5 +19,7 @@ export declare const projectController: {
     permanentDeleteSubTask: (req: Request, res: Response, next: NextFunction) => void;
     createProjectTaskSubtaskWithAi: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>> | undefined>;
     createProjectWithAi: (req: Request, res: Response, next: NextFunction) => void;
+    getStarredTasks: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    getCompletedTasks: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
 };
 //# sourceMappingURL=project.controller.d.ts.map

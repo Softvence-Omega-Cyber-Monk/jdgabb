@@ -332,6 +332,71 @@ const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => 
         }
     });
 });
+const getStarredTasks = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid project ID",
+            });
+        }
+        const project = await project_model_1.Project.findById(projectId, {
+            tasks: 1,
+        });
+        if (!project) {
+            return res.status(404).json({
+                success: false,
+                message: "Project not found",
+            });
+        }
+        ;
+        const starredTasks = project.tasks.filter((task) => task.isStar === true);
+        return res.status(200).json({
+            success: true,
+            count: starredTasks.length,
+            tasks: starredTasks,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching starred tasks:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
+const getCompletedTasks = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid project ID",
+            });
+        }
+        const project = await project_model_1.Project.findById(projectId, { tasks: 1 });
+        if (!project) {
+            return res.status(404).json({
+                success: false,
+                message: "Project not found",
+            });
+        }
+        const completedTasks = project.tasks.filter((task) => task.isComplite === true);
+        return res.status(200).json({
+            success: true,
+            count: completedTasks.length,
+            tasks: completedTasks,
+        });
+    }
+    catch (error) {
+        console.error("Error fetching completed tasks:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+};
 exports.projectController = {
     createProject,
     updateProjectTitle,
@@ -351,6 +416,8 @@ exports.projectController = {
     permanentDeleteTask,
     permanentDeleteSubTask,
     createProjectTaskSubtaskWithAi,
-    createProjectWithAi
+    createProjectWithAi,
+    getStarredTasks,
+    getCompletedTasks
 };
 //# sourceMappingURL=project.controller.js.map

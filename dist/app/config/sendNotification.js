@@ -12,6 +12,7 @@ const sendNotification = async (userId, title, body) => {
             console.log(`❌ No FCM token for user ${userId}`);
             return;
         }
+        ;
         const message = {
             notification: { title, body },
             token: user.fcmToken,
