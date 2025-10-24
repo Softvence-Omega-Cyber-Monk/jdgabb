@@ -8,6 +8,7 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const AppError_1 = __importDefault(require("../utils/AppError"));
 const userModel_1 = require("../module/user/userModel");
 const env_1 = require("../config/env");
+const sendNotification_1 = require("../config/sendNotification");
 const checkChatAccess = async (req, res, next) => {
     try {
         const accessToken = req.headers?.authorization;
@@ -24,12 +25,14 @@ const checkChatAccess = async (req, res, next) => {
             if (now > expireDate) {
                 user.subscriptionTypeDate = undefined;
                 await user.save();
+                (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "Your subscription has expired. Please renew.");
                 throw new AppError_1.default(403, "Your subscription has expired. Please renew.");
             }
             req.authUser = user;
             return next();
         }
         if (user.chatUsed >= user.chatLimit) {
+            (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "Free chat limit reached. Please upgrade your plan.");
             throw new AppError_1.default(403, "Free chat limit reached. Please upgrade your plan.");
         }
         ;

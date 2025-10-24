@@ -1,3 +1,4 @@
+import { sendNotification } from "../../config/sendNotification";
 import AppError from "../../utils/AppError";
 import { createJwtToken } from "../../utils/createJwtToken";
 import { IUser } from "../user/user.interface";
@@ -60,6 +61,7 @@ const userLogin = async (payload: Partial<IUser>) => {
         await existUser.save();
     }
 
+    sendNotification(String(existUser?._id), "New Notification", "You are successfully login");
 
     const tokens = createJwtToken(existUser);
 

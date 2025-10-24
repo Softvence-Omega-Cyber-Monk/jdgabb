@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import AppError from "../utils/AppError";
 import { User } from "../module/user/userModel";
 import { envVers } from "../config/env";
+import { sendNotification } from "../config/sendNotification";
 
 export const checkChatAccess = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -27,7 +28,7 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
 
                 user.subscriptionTypeDate = undefined;
                 await user.save();
-
+                sendNotification(String(user?._id), "New Notification", "Your subscription has expired. Please renew.")
                 throw new AppError(403, "Your subscription has expired. Please renew.");
             }
 
@@ -38,6 +39,7 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
 
 
         if (user.chatUsed >= user.chatLimit) {
+            sendNotification(String(user?._id), "New Notification", "Free chat limit reached. Please upgrade your plan.")
             throw new AppError(403, "Free chat limit reached. Please upgrade your plan.");
         };
 
