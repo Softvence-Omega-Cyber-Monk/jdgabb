@@ -11,7 +11,7 @@ if (!firebase_admin_1.default.apps.length) {
         credential: firebase_admin_1.default.credential.cert({
             projectId: env_1.envVers.FIREBASE.FIREBASE_PROJECT_ID,
             clientEmail: env_1.envVers.FIREBASE.FIREBASE_CLIENT_EMAIL,
-            privateKey: env_1.envVers.FIREBASE.FIREBASE_PRIVATE_KEY
+            privateKey: env_1.envVers.FIREBASE.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
         })
     });
 }

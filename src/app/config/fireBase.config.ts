@@ -6,7 +6,7 @@ if (!admin.apps.length) {
         credential: admin.credential.cert({
             projectId: envVers.FIREBASE.FIREBASE_PROJECT_ID,
             clientEmail: envVers.FIREBASE.FIREBASE_CLIENT_EMAIL,
-            privateKey: envVers.FIREBASE.FIREBASE_PRIVATE_KEY
+            privateKey: envVers.FIREBASE.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
         })
     });
 };
