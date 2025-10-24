@@ -16,7 +16,12 @@ const authProviderSchema = new mongoose.Schema<IAuthprovider>({
     _id: false
 });
 
-
+export enum ESubcription {
+    FREE = "0d",
+    WEEKLY = "7d",
+    TWO_WEEK = "14d",
+    MONTHLY = "30d"
+}
 
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -43,6 +48,17 @@ const userSchema = new mongoose.Schema<IUser>({
     isVerifid: {
         type: Boolean,
         default: false
+    },
+    subscriptionTypeDate: {
+        type: Date
+    },
+    chatLimit: {
+        type: Number,
+        default: 20
+    },
+    chatUsed: {
+        type: Number,
+        default: 0
     },
     role: {
         type: String,
@@ -71,4 +87,8 @@ userSchema.pre("findOneAndUpdate", async function (next) {
     next();
 });
 
-export const User = mongoose.model<IUser>("user", userSchema)
+export const User = mongoose.model<IUser>("user", userSchema);
+
+
+
+

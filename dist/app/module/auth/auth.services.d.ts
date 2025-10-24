@@ -10,6 +10,10 @@ export declare const authServices: {
             isDeleted?: string;
             isVerifid?: boolean;
             role: import("../user/user.interface").Role;
+            chatLimit: number;
+            subscriptionTypeDate: Date | undefined;
+            subscriptionType: string;
+            chatUsed: number;
             auths: import("../user/user.interface").IAuthprovider[];
             fcmToken: string;
             URL: string;

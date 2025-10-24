@@ -18,7 +18,7 @@ import { HistoryChatModel } from "../hostory/history.model";
 
 const loginUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const result = await authServices.userLogin(req.body);
-    // setAuthCookie(res, result.tokens);
+
     sendResponse(res, {
         success: true,
         statusCode: 200,
@@ -78,20 +78,76 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
 });
 
 
+// const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { username, email } = req.body;
+
+//     if (!username || !email) {
+//         throw new AppError(400, "Username & Email are required");
+//     }
+
+
+//     let user = await User.findOne({ email });
+
+
+//     if (!user) {
+//         user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+
+//         await Promise.all([
+//             AiChatModel.create({ userId: user._id }),
+//             AppearanceModel.create({ userId: user._id }),
+//             CollaborationModel.create({ userId: user._id }),
+//             languageModel.create({ userId: user._id }),
+//             NotificationModel.create({ userId: user._id }),
+//             PrivacyModel.create({ userId: user._id }),
+//             ProductivityEnhancements.create({ userId: user._id }),
+//             ProjectTaskModel.create({ userId: user._id }),
+//             HistoryChatModel.create({ userId: user._id })
+//         ]);
+
+//     } else {
+//         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
+//         if (!hasGoogleAuth) {
+//             user.auths.push({
+//                 provider: "Google",
+//                 providerId: email,
+//             });
+//             await user.save();
+//         }
+//     };
+
+//     const token = createJwtToken(user);
+
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Google authentication success",
+//         data: {
+//             accessToken: token.accessToken,
+//             user,
+//         },
+//     });
+// });
+
 const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email } = req.body;
+    const { username, email, fcmToken } = req.body;
 
-    if (!username || !email) {
-        throw new AppError(400, "Username & Email are required");
+    if (!username || !email || !fcmToken) {
+        throw new AppError(400, "Username, Email & fcmToken are required");
     }
-
 
     let user = await User.findOne({ email });
 
-
     if (!user) {
-        user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+       
+        user = await User.create({
+            username,
+            email,
+            isVerifid: true,
+            fcmToken: fcmToken,
+            auths: [{ provider: "Google", providerId: email }]
+        });
 
+       
         await Promise.all([
             AiChatModel.create({ userId: user._id }),
             AppearanceModel.create({ userId: user._id }),
@@ -105,26 +161,30 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
         ]);
 
     } else {
+       
         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
         if (!hasGoogleAuth) {
             user.auths.push({
                 provider: "Google",
                 providerId: email,
             });
-            await user.save();
         }
-    };
 
-    const token = createJwtToken(user);
+        if (fcmToken) {
+            user.fcmToken = fcmToken;
+        }
 
-    sendResponse(res, {
-        statusCode: 200,
+        await user.save();
+    }
+
+   
+    const { password, ...rest } = user.toObject();
+    const tokens = createJwtToken(user);
+
+    res.status(200).json({
         success: true,
-        message: "Google authentication success",
-        data: {
-            accessToken: token.accessToken,
-            user,
-        },
+        user: rest,
+        tokens
     });
 });
 

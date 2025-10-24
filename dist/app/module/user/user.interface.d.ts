@@ -17,6 +17,10 @@ export interface IUser extends Document {
     isDeleted?: string;
     isVerifid?: boolean;
     role: Role;
+    chatLimit: number;
+    subscriptionTypeDate: Date | undefined;
+    subscriptionType: string;
+    chatUsed: number;
     auths: IAuthprovider[];
     fcmToken: string;
 }

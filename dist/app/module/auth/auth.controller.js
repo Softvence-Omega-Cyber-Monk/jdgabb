@@ -21,7 +21,6 @@ const projectTask_model_1 = require("../setting/projectTask/projectTask.model");
 const history_model_1 = require("../hostory/history.model");
 const loginUser = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await auth_services_1.authServices.userLogin(req.body);
-    // setAuthCookie(res, result.tokens);
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,
@@ -71,14 +70,60 @@ const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next
     });
     res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
+// const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { username, email } = req.body;
+//     if (!username || !email) {
+//         throw new AppError(400, "Username & Email are required");
+//     }
+//     let user = await User.findOne({ email });
+//     if (!user) {
+//         user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+//         await Promise.all([
+//             AiChatModel.create({ userId: user._id }),
+//             AppearanceModel.create({ userId: user._id }),
+//             CollaborationModel.create({ userId: user._id }),
+//             languageModel.create({ userId: user._id }),
+//             NotificationModel.create({ userId: user._id }),
+//             PrivacyModel.create({ userId: user._id }),
+//             ProductivityEnhancements.create({ userId: user._id }),
+//             ProjectTaskModel.create({ userId: user._id }),
+//             HistoryChatModel.create({ userId: user._id })
+//         ]);
+//     } else {
+//         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
+//         if (!hasGoogleAuth) {
+//             user.auths.push({
+//                 provider: "Google",
+//                 providerId: email,
+//             });
+//             await user.save();
+//         }
+//     };
+//     const token = createJwtToken(user);
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Google authentication success",
+//         data: {
+//             accessToken: token.accessToken,
+//             user,
+//         },
+//     });
+// });
 const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { username, email } = req.body;
-    if (!username || !email) {
-        throw new AppError_1.default(400, "Username & Email are required");
+    const { username, email, fcmToken } = req.body;
+    if (!username || !email || !fcmToken) {
+        throw new AppError_1.default(400, "Username, Email & fcmToken are required");
     }
     let user = await userModel_1.User.findOne({ email });
     if (!user) {
-        user = await userModel_1.User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
+        user = await userModel_1.User.create({
+            username,
+            email,
+            isVerifid: true,
+            fcmToken: fcmToken,
+            auths: [{ provider: "Google", providerId: email }]
+        });
         await Promise.all([
             aiChat_model_1.AiChatModel.create({ userId: user._id }),
             appearance_model_1.AppearanceModel.create({ userId: user._id }),
@@ -98,19 +143,18 @@ const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => 
                 provider: "Google",
                 providerId: email,
             });
-            await user.save();
         }
+        if (fcmToken) {
+            user.fcmToken = fcmToken;
+        }
+        await user.save();
     }
-    ;
-    const token = (0, createJwtToken_1.createJwtToken)(user);
-    (0, sendResponse_1.sendResponse)(res, {
-        statusCode: 200,
+    const { password, ...rest } = user.toObject();
+    const tokens = (0, createJwtToken_1.createJwtToken)(user);
+    res.status(200).json({
         success: true,
-        message: "Google authentication success",
-        data: {
-            accessToken: token.accessToken,
-            user,
-        },
+        user: rest,
+        tokens
     });
 });
 exports.authController = {

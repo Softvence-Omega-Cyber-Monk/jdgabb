@@ -13,7 +13,7 @@ export enum Role {
 }
 
 
-export interface IUser extends Document{
+export interface IUser extends Document {
     _id?: Types.ObjectId,
     oldPassword?: string,
     username: string,
@@ -23,6 +23,10 @@ export interface IUser extends Document{
     isDeleted?: string,
     isVerifid?: boolean,
     role: Role,
+    chatLimit: number,
+    subscriptionTypeDate: Date | undefined,
+    subscriptionType: string,
+    chatUsed: number,
     auths: IAuthprovider[],
     fcmToken: string
 };
