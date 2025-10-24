@@ -31,6 +31,9 @@ const userSchema = new mongoose_1.default.Schema({
     password: {
         type: String
     },
+    fcmToken: {
+        type: String
+    },
     profile: {
         type: String
     },

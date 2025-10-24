@@ -46,31 +46,26 @@ const chatbot = async (req, res, next) => {
         const addMsg = "What would you like to add?";
         const nextMsg = "Great! Type into the chat bar below what sort of project you want to start. We can think of an idea together - do you want to be healthier, start a business, find love, find your passion, save time, or speed through your homework? What's a goal you have? It can be anything!";
         const defaultText = "Sorry, I didn't quite catch that. Try typing 'Add' , 'Next' or 'Create'";
-        // 1️⃣ message না থাকলে
         if (!message) {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: emptyMsg });
             res.json({ response: emptyMsg });
             return;
         }
-        // 2️⃣ create command
         if (message.toLowerCase().trim() === "create") {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: createMsg });
             res.json({ response: createMsg });
             return;
         }
-        // 3️⃣ add command
         if (message.toLowerCase().trim() === "add") {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: addMsg });
             res.json({ response: addMsg });
             return;
         }
-        // 4️⃣ next command
         if (message.toLowerCase().trim() === "next") {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: nextMsg });
             res.json({ response: nextMsg });
             return;
         }
-        // 5️⃣ default fallback
         await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: defaultText });
         res.json({ response: defaultText });
         return;

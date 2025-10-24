@@ -11,21 +11,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -37,21 +37,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -63,21 +63,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;
@@ -115,21 +115,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -141,21 +141,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -167,21 +167,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;
@@ -222,21 +222,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -248,21 +248,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -274,21 +274,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;
@@ -331,21 +331,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -357,21 +357,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -383,21 +383,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;
@@ -435,21 +435,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -461,21 +461,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -487,21 +487,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;
@@ -542,21 +542,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
@@ -568,21 +568,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }> & {
@@ -594,21 +594,21 @@ export declare const Project: mongoose.Model<{
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }, mongoose.Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }> & {
             isDeleted: boolean;
+            title: string;
             isComplite: boolean;
             isStar: boolean;
-            title: string;
             subTaskDueDate: NativeDate;
         }>;
     }>;

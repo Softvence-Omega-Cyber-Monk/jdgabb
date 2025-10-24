@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema<IUser>({
     password: {
         type: String
     },
+    fcmToken: {
+        type: String
+    },
     profile: {
         type: String
     },

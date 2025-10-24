@@ -15,6 +15,11 @@ interface IEnv {
         JWT_ACCESS_SECRATE: string;
         JWT_REFRESH_SECRATE: string;
     };
+    FIREBASE: {
+        FIREBASE_PROJECT_ID: string;
+        FIREBASE_CLIENT_EMAIL: string;
+        FIREBASE_PRIVATE_KEY: string;
+    };
 }
 export declare const envVers: IEnv;
 export {};

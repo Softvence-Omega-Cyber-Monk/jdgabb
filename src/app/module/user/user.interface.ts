@@ -13,7 +13,7 @@ export enum Role {
 }
 
 
-export interface IUser {
+export interface IUser extends Document{
     _id?: Types.ObjectId,
     oldPassword?: string,
     username: string,
@@ -24,4 +24,5 @@ export interface IUser {
     isVerifid?: boolean,
     role: Role,
     auths: IAuthprovider[],
+    fcmToken: string
 };
