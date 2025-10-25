@@ -21,7 +21,7 @@ projectRouter.post("/create/:id", projectController.createProject);
 projectRouter.get("/askQuestion/:id", projectController.askQuestion);
 projectRouter.patch("/update/title/:id", projectController.updateProjectTitle);
 projectRouter.delete("/delete/suTask", projectController.permanentDeleteSubTask);
-projectRouter.get("/starred-tasks/:projectId", projectController.getStarredTasks);
+projectRouter.get("/starred-tasks/:userId", projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", projectController.getCompletedTasks);
 
 export default projectRouter;

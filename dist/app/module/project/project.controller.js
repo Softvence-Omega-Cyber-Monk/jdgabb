@@ -363,37 +363,75 @@ const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => 
         }
     });
 });
+// const getStarredTasks = async (req: Request, res: Response) => {
+//     try {
+//         const { projectId } = req.params;
+//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid project ID",
+//             });
+//         }
+//         const project = await Project.findById(projectId, {
+//             tasks: 1,
+//         });
+//         if (!project) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Project not found",
+//             });
+//         };
+//         const starredTasks = project.tasks.filter((task) => task.isStar === true);
+//         return res.status(200).json({
+//             success: true,
+//             count: starredTasks.length,
+//             tasks: starredTasks,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching starred tasks:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error",
+//         });
+//     }
+// };
 const getStarredTasks = async (req, res) => {
     try {
-        const { projectId } = req.params;
-        if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
+        const { userId } = req.params;
+        if (!mongoose_1.default.Types.ObjectId.isValid(userId)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid project ID",
+                message: "Invalid user ID",
             });
         }
-        const project = await project_model_1.Project.findById(projectId, {
-            tasks: 1,
-        });
-        if (!project) {
+        const projects = await project_model_1.Project.find({ userId }, { tasks: 1, goal: 1 });
+        if (!projects.length) {
             return res.status(404).json({
                 success: false,
-                message: "Project not found",
+                message: "No projects found for this user",
             });
         }
-        ;
-        const starredTasks = project.tasks.filter((task) => task.isStar === true);
+        const starredTasksSummary = projects.map(project => {
+            const starredTasks = project.tasks.filter(task => task.isStar);
+            return {
+                projectId: project._id,
+                goal: project.goal,
+                starredTasksCount: starredTasks.length,
+                starredTasks: starredTasks
+            };
+        }).filter(proj => proj.starredTasksCount > 0);
+        const totalStarredTasks = starredTasksSummary.reduce((acc, proj) => acc + proj.starredTasksCount, 0);
         return res.status(200).json({
             success: true,
-            count: starredTasks.length,
-            tasks: starredTasks,
+            count: totalStarredTasks,
+            tasks: starredTasksSummary
         });
     }
     catch (error) {
         console.error("Error fetching starred tasks:", error);
         return res.status(500).json({
             success: false,
-            message: "Internal server error",
+            message: "Internal server error"
         });
     }
 };

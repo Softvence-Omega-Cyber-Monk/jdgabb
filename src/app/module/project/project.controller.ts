@@ -476,46 +476,102 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
 
 
 
+// const getStarredTasks = async (req: Request, res: Response) => {
+//     try {
+//         const { projectId } = req.params;
+
+
+//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid project ID",
+//             });
+//         }
+
+
+//         const project = await Project.findById(projectId, {
+//             tasks: 1,
+//         });
+
+//         if (!project) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Project not found",
+//             });
+//         };
+
+//         const starredTasks = project.tasks.filter((task) => task.isStar === true);
+
+//         return res.status(200).json({
+//             success: true,
+//             count: starredTasks.length,
+//             tasks: starredTasks,
+//         });
+
+//     } catch (error) {
+//         console.error("Error fetching starred tasks:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error",
+//         });
+//     }
+// };
+
+
+
 const getStarredTasks = async (req: Request, res: Response) => {
     try {
-        const { projectId } = req.params;
+        const { userId } = req.params;
 
-
-        if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+        if (!mongoose.Types.ObjectId.isValid(userId as string)) {
             return res.status(400).json({
                 success: false,
-                message: "Invalid project ID",
+                message: "Invalid user ID",
+            });
+        }
+
+        const projects = await Project.find({ userId }, { tasks: 1, goal: 1 });
+
+        if (!projects.length) {
+            return res.status(404).json({
+                success: false,
+                message: "No projects found for this user",
             });
         }
 
 
-        const project = await Project.findById(projectId, {
-            tasks: 1,
-        });
+        const starredTasksSummary = projects.map(project => {
+            const starredTasks = project.tasks.filter(task => task.isStar);
 
-        if (!project) {
-            return res.status(404).json({
-                success: false,
-                message: "Project not found",
-            });
-        };
+            return {
+                projectId: project._id,
+                goal: project.goal,
+                starredTasksCount: starredTasks.length,
+                starredTasks: starredTasks
+            };
+        }).filter(proj => proj.starredTasksCount > 0);
 
-        const starredTasks = project.tasks.filter((task) => task.isStar === true);
+        const totalStarredTasks = starredTasksSummary.reduce(
+            (acc, proj) => acc + proj.starredTasksCount,
+            0
+        );
 
         return res.status(200).json({
             success: true,
-            count: starredTasks.length,
-            tasks: starredTasks,
+            count: totalStarredTasks,
+            tasks: starredTasksSummary
         });
 
     } catch (error) {
         console.error("Error fetching starred tasks:", error);
         return res.status(500).json({
             success: false,
-            message: "Internal server error",
+            message: "Internal server error"
         });
     }
 };
+
+
 
 
 // const getStarredTasks = async (req: Request, res: Response) => {

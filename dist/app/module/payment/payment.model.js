@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.EPaymentType = exports.EPaymentStatus = void 0;
+exports.Payment = exports.EPaymentType = exports.EPaymentStatus = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 var EPaymentStatus;
 (function (EPaymentStatus) {
@@ -70,4 +70,5 @@ const paymentSchema = new mongoose_1.Schema({
     timestamps: true,
     versionKey: false
 });
+exports.Payment = mongoose_1.default.model("payment", paymentSchema);
 //# sourceMappingURL=payment.model.js.map
