@@ -35,66 +35,85 @@ const findSingleTask = async (projectid: string, taskId: string) => {
 };
 
 
-// const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }
+const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }
+) => {
+    const updateFields: Record<string, any> = {};
+
+
+    if (typeof updates.isStar === "boolean") {
+        updateFields["tasks.$.isStar"] = updates.isStar;
+    };
+
+    if (typeof updates.isComplite === "boolean") {
+        updateFields["tasks.$.isComplite"] = updates.isComplite;
+    }
+
+
+    if (Object.keys(updateFields).length === 0) {
+        throw new Error("No valid fields to update");
+    }
+
+    const result = await Project.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
+        { $set: updateFields },
+        { new: true, runValidators: true }
+    );
+
+    return result;
+};
+
+
+// const updateTaskStar = async (
+//   projectId: string,
+//   taskId: string,
+//   updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string }
 // ) => {
-//     const updateFields: Record<string, any> = {};
+//   const updateFields: Record<string, any> = {};
 
+//   if (typeof updates.isStar === "boolean") {
+//     updateFields["tasks.$.isStar"] = updates.isStar;
+//   }
 
-//     if (typeof updates.isStar === "boolean") {
-//         updateFields["tasks.$.isStar"] = updates.isStar;
-//     };
+//   if (typeof updates.isComplite === "boolean") {
+//     updateFields["tasks.$.isComplite"] = updates.isComplite;
+//   }
 
-//     if (typeof updates.isComplite === "boolean") {
-//         updateFields["tasks.$.isComplite"] = updates.isComplite;
-//     }
+//   if (updates.taskDueDate) {
+//     updateFields["tasks.$.taskDueDate"] = new Date(updates.taskDueDate);
+//   }
 
+//   if (Object.keys(updateFields).length === 0) {
+//     throw new Error("No valid fields to update");
+//   }
 
-//     if (Object.keys(updateFields).length === 0) {
-//         throw new Error("No valid fields to update");
-//     }
+//   const result = await Project.findOneAndUpdate(
+//     { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
+//     { $set: updateFields },
+//     { new: true, runValidators: true }
+//   );
 
-//     const result = await Project.findOneAndUpdate(
-//         { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
-//         { $set: updateFields },
-//         { new: true, runValidators: true }
-//     );
-
-//     return result;
+//   return result;
 // };
 
 
-const updateTaskStar = async (
-  projectId: string,
-  taskId: string,
-  updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string }
+
+const updateTaskDueDate = async (
+    projectId: string,
+    taskId: string,
+    taskDueDate: Date | string
 ) => {
-  const updateFields: Record<string, any> = {};
+    if (!taskDueDate) {
+        throw new Error("taskDueDate is required");
+    }
 
-  if (typeof updates.isStar === "boolean") {
-    updateFields["tasks.$.isStar"] = updates.isStar;
-  }
+    const result = await Project.findOneAndUpdate(
+        { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
+        { $set: { "tasks.$.taskDueDate": new Date(taskDueDate) } },
+        { new: true, runValidators: true }
+    );
 
-  if (typeof updates.isComplite === "boolean") {
-    updateFields["tasks.$.isComplite"] = updates.isComplite;
-  }
-
-  if (updates.taskDueDate) {
-    updateFields["tasks.$.taskDueDate"] = new Date(updates.taskDueDate);
-  }
-
-  if (Object.keys(updateFields).length === 0) {
-    throw new Error("No valid fields to update");
-  }
-
-  const result = await Project.findOneAndUpdate(
-    { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
-    { $set: updateFields },
-    { new: true, runValidators: true }
-  );
-
-  return result;
+    return result;
 };
-
 
 
 const softDeleteTask = async (projectId: string, taskId: string) => {
@@ -245,5 +264,6 @@ export const projectServices = {
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubtask,
-    deleteProject
+    deleteProject,
+    updateTaskDueDate
 }

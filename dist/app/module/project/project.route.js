@@ -22,5 +22,6 @@ projectRouter.patch("/update/title/:id", project_controller_1.projectController.
 projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
 projectRouter.get("/starred-tasks/:userId", project_controller_1.projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", project_controller_1.projectController.getCompletedTasks);
+projectRouter.patch("/update/taskDate", project_controller_1.projectController.updateTaskDueDateController);
 exports.default = projectRouter;
 //# sourceMappingURL=project.route.js.map

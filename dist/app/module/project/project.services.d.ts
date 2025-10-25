@@ -918,7 +918,6 @@ export declare const projectServices: {
     updateTaskStar: (projectId: string, taskId: string, updates: {
         isStar?: boolean;
         isComplite?: boolean;
-        taskDueDate?: Date | string;
     }) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;
@@ -1993,6 +1992,220 @@ export declare const projectServices: {
         _id: Types.ObjectId;
     }) | null>;
     deleteProject: (projectId: string) => Promise<(mongoose.Document<unknown, {}, {
+        userId: Types.ObjectId;
+        goal: string;
+        tasks: Types.DocumentArray<{
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }> & {
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }>;
+        answered_questions: Types.DocumentArray<{
+            question?: string | null;
+            answer?: string | null;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            question?: string | null;
+            answer?: string | null;
+        }> & {
+            question?: string | null;
+            answer?: string | null;
+        }>;
+        visibility: "private" | "restricted";
+        sharedWith: Types.DocumentArray<{
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }> & {
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }>;
+        linkAccess: boolean;
+    } & mongoose.DefaultTimestampProps, {}, {
+        timestamps: true;
+        versionKey: false;
+    }> & {
+        userId: Types.ObjectId;
+        goal: string;
+        tasks: Types.DocumentArray<{
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }> & {
+            isDeleted: boolean;
+            task: string;
+            details: string;
+            taskDueDate: NativeDate;
+            isComplite: boolean;
+            isStar: boolean;
+            subtasks: Types.DocumentArray<{
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }> & {
+                isDeleted: boolean;
+                title: string;
+                isComplite: boolean;
+                isStar: boolean;
+                subTaskDueDate: NativeDate;
+            }>;
+        }>;
+        answered_questions: Types.DocumentArray<{
+            question?: string | null;
+            answer?: string | null;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            question?: string | null;
+            answer?: string | null;
+        }> & {
+            question?: string | null;
+            answer?: string | null;
+        }>;
+        visibility: "private" | "restricted";
+        sharedWith: Types.DocumentArray<{
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }, Types.Subdocument<mongoose.mongo.BSON.ObjectId, any, {
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }> & {
+            role: "viewer";
+            userId?: Types.ObjectId | null;
+        }>;
+        linkAccess: boolean;
+    } & mongoose.DefaultTimestampProps & {
+        _id: Types.ObjectId;
+    }) | null>;
+    updateTaskDueDate: (projectId: string, taskId: string, taskDueDate: Date | string) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;
         tasks: Types.DocumentArray<{

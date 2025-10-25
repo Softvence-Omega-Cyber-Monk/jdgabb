@@ -211,16 +211,41 @@ const askQuestionOpenAi = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result.choices[0]?.message.content
     });
 });
+const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, isStar, isComplite } = req.body;
+    if (!projectId || !taskId) {
+        throw new AppError_1.default(400, "Project ID and Task ID are required");
+    }
+    const updates = {};
+    if (typeof isStar === "boolean")
+        updates.isStar = isStar;
+    if (typeof isComplite === "boolean")
+        updates.isComplite = isComplite;
+    if (Object.keys(updates).length === 0) {
+        throw new AppError_1.default(400, "No valid fields to update (isStar or isComplite)");
+    }
+    const result = await project_services_1.projectServices.updateTaskStar(projectId, taskId, updates);
+    if (!result) {
+        throw new AppError_1.default(404, "Task not found");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task updated successfully",
+        data: result,
+    });
+});
 // const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const { projectId, taskId, isStar, isComplite } = req.body;
+//     const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
 //     if (!projectId || !taskId) {
 //         throw new AppError(400, "Project ID and Task ID are required");
 //     }
-//     const updates: { isStar?: boolean; isComplite?: boolean } = {};
+//     const updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string } = {};
 //     if (typeof isStar === "boolean") updates.isStar = isStar;
 //     if (typeof isComplite === "boolean") updates.isComplite = isComplite;
+//     if (taskDueDate) updates.taskDueDate = taskDueDate;
 //     if (Object.keys(updates).length === 0) {
-//         throw new AppError(400, "No valid fields to update (isStar or isComplite)");
+//         throw new AppError(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
 //     }
 //     const result = await projectServices.updateTaskStar(projectId, taskId, updates);
 //     if (!result) {
@@ -233,29 +258,19 @@ const askQuestionOpenAi = (0, catchAsync_1.default)(async (req, res, next) => {
 //         data: result,
 //     });
 // });
-const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
-    if (!projectId || !taskId) {
-        throw new AppError_1.default(400, "Project ID and Task ID are required");
+const updateTaskDueDateController = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, taskDueDate } = req.body;
+    if (!projectId || !taskId || !taskDueDate) {
+        throw new AppError_1.default(400, "Project ID, Task ID, and taskDueDate are required");
     }
-    const updates = {};
-    if (typeof isStar === "boolean")
-        updates.isStar = isStar;
-    if (typeof isComplite === "boolean")
-        updates.isComplite = isComplite;
-    if (taskDueDate)
-        updates.taskDueDate = taskDueDate;
-    if (Object.keys(updates).length === 0) {
-        throw new AppError_1.default(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
-    }
-    const result = await project_services_1.projectServices.updateTaskStar(projectId, taskId, updates);
+    const result = await project_services_1.projectServices.updateTaskDueDate(projectId, taskId, taskDueDate);
     if (!result) {
-        throw new AppError_1.default(404, "Task not found");
+        throw new AppError_1.default(404, "Task not found in the given project");
     }
     (0, sendResponse_1.sendResponse)(res, {
-        statusCode: 200,
         success: true,
-        message: "Task updated successfully",
+        statusCode: 200,
+        message: "Task due date updated successfully",
         data: result,
     });
 });
@@ -553,6 +568,7 @@ exports.projectController = {
     createProjectTaskSubtaskWithAi,
     createProjectWithAi,
     getStarredTasks,
-    getCompletedTasks
+    getCompletedTasks,
+    updateTaskDueDateController
 };
 //# sourceMappingURL=project.controller.js.map
