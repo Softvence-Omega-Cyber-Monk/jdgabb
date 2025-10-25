@@ -3,12 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PaymentController = exports.stripeWebhook = void 0;
+exports.PaymentController = void 0;
 const sendResponse_1 = require("../../utils/sendResponse");
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const payment_services_1 = require("./payment.services");
 const stripe_1 = __importDefault(require("stripe"));
 const payment_model_1 = require("./payment.model");
+const mongoose_1 = require("mongoose");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover",
 });
@@ -28,45 +29,56 @@ const createPaymentSession = (0, catchAsync_1.default)(async (req, res, next) =>
 });
 const stripeWebhook = async (req, res) => {
     const sig = req.headers["stripe-signature"];
-    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
-    if (!sig || !endpointSecret) {
-        return res.status(400).send("Missing signature or webhook secret");
-    }
     let event;
+    // 1️⃣ Verify webhook signature
     try {
-        // ⚡ Important: pass raw body (Buffer) for verification
-        event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+        event = stripe.webhooks.constructEvent(req.body, // Raw body, ensure the middleware is set to handle raw body (as explained earlier)
+        sig, process.env.STRIPE_WEBHOOK_SECRET);
+        console.log("✅ Webhook received:", event.type);
     }
     catch (err) {
-        console.error("Webhook signature verification failed:", err.message);
+        console.error("❌ Webhook verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
+    // 2️⃣ Handle Stripe events
     try {
+        const session = event.data.object;
         switch (event.type) {
-            case "checkout.session.completed":
-                const session = event.data.object;
-                await payment_model_1.Payment.findOneAndUpdate({ stripeSessionId: session.id }, { status: "PAID" });
-                console.log("✅ Payment succeeded for session:", session.id);
+            case 'checkout.session.completed':
+                // Payment successful
+                console.log('Payment successful for session:', session.id);
+                // Optional: Save payment information to MongoDB
+                const userId = session?.metadata?.userId; // Extract the userId from metadata
+                const payment = await payment_model_1.Payment.create({
+                    userId: new mongoose_1.Types.ObjectId(userId),
+                    stripeSessionId: session.id,
+                    amount: session?.amount_total / 100, // Convert back to dollars
+                    status: 'PAID', // Mark as paid
+                    paymentType: 'PROMPT', // Payment type if necessary
+                });
+                console.log('Payment information saved to database:', payment);
                 break;
-            case "checkout.session.expired":
-            case "checkout.session.async_payment_failed":
-                const failedSession = event.data.object;
-                await payment_model_1.Payment.findOneAndUpdate({ stripeSessionId: failedSession.id }, { status: "CANCEL" });
-                console.log("❌ Payment failed or expired:", failedSession.id);
+            case 'checkout.session.async_payment_failed':
+                // Handle failed payments
+                console.log('Async payment failed for session:', session.id);
+                break;
+            case 'checkout.session.expired':
+                // Handle expired sessions
+                console.log('Session expired for session:', session.id);
                 break;
             default:
-                console.log(`Unhandled event type: ${event.type}`);
+                console.log("ℹ️ Unhandled Stripe event:", event.type);
         }
-        res.status(200).send("Received"); // Must return 200
+        // Respond with a 200 status to acknowledge receipt of the event
+        return res.status(200).send("Event processed");
     }
-    catch (error) {
-        console.error("Error handling event:", error);
-        res.status(500).send("Internal server error");
+    catch (err) {
+        console.error("Error handling webhook event:", err.message);
+        return res.status(400).send(`Error handling event: ${err.message}`);
     }
 };
-exports.stripeWebhook = stripeWebhook;
 exports.PaymentController = {
     createPaymentSession,
-    stripeWebhook: exports.stripeWebhook
+    stripeWebhook
 };
 //# sourceMappingURL=payment.controller.js.map

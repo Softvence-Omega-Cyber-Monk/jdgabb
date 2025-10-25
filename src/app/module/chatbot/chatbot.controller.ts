@@ -90,6 +90,12 @@ export const chatbot = async (req: Request, res: Response, next: NextFunction): 
       res.json({ response: nextMsg });
       return;
     };
+    if (message.toLowerCase().trim() === "create new project") {
+      await UpdateChatHestory.create({ userId, isFile: false, text: "Create new project" });
+      await UpdateChatHestory.create({ userId, isFile: true, text: nextMsg });
+      res.json({ response: nextMsg });
+      return;
+    };
 
     if (message.toLowerCase().trim() === "undo") {
       await UpdateChatHestory.create({ userId, isFile: false, text: "Undo" });

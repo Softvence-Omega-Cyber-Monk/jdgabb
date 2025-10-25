@@ -31,6 +31,7 @@ const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
     if (!title) {
         res.status(400).json({ success: false, message: "Title is required" });
     }
+    ;
     const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $set: { goal: title } }, { new: true, runValidators: true });
     if (!updatedProject) {
         res.status(404).json({ success: false, message: "Project not found" });
@@ -203,8 +204,30 @@ const askQuestionOpenAi = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result.choices[0]?.message.content
     });
 });
+// const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { projectId, taskId, isStar, isComplite } = req.body;
+//     if (!projectId || !taskId) {
+//         throw new AppError(400, "Project ID and Task ID are required");
+//     }
+//     const updates: { isStar?: boolean; isComplite?: boolean } = {};
+//     if (typeof isStar === "boolean") updates.isStar = isStar;
+//     if (typeof isComplite === "boolean") updates.isComplite = isComplite;
+//     if (Object.keys(updates).length === 0) {
+//         throw new AppError(400, "No valid fields to update (isStar or isComplite)");
+//     }
+//     const result = await projectServices.updateTaskStar(projectId, taskId, updates);
+//     if (!result) {
+//         throw new AppError(404, "Task not found");
+//     }
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Task updated successfully",
+//         data: result,
+//     });
+// });
 const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { projectId, taskId, isStar, isComplite } = req.body;
+    const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
     if (!projectId || !taskId) {
         throw new AppError_1.default(400, "Project ID and Task ID are required");
     }
@@ -213,8 +236,10 @@ const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
         updates.isStar = isStar;
     if (typeof isComplite === "boolean")
         updates.isComplite = isComplite;
+    if (taskDueDate)
+        updates.taskDueDate = taskDueDate;
     if (Object.keys(updates).length === 0) {
-        throw new AppError_1.default(400, "No valid fields to update (isStar or isComplite)");
+        throw new AppError_1.default(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
     }
     const result = await project_services_1.projectServices.updateTaskStar(projectId, taskId, updates);
     if (!result) {

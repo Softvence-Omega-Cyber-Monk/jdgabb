@@ -26,14 +26,35 @@ const findSingleTask = async (projectid, taskId) => {
     const result = await project_model_1.Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });
     return result?.tasks[0];
 };
+// const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }
+// ) => {
+//     const updateFields: Record<string, any> = {};
+//     if (typeof updates.isStar === "boolean") {
+//         updateFields["tasks.$.isStar"] = updates.isStar;
+//     };
+//     if (typeof updates.isComplite === "boolean") {
+//         updateFields["tasks.$.isComplite"] = updates.isComplite;
+//     }
+//     if (Object.keys(updateFields).length === 0) {
+//         throw new Error("No valid fields to update");
+//     }
+//     const result = await Project.findOneAndUpdate(
+//         { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
+//         { $set: updateFields },
+//         { new: true, runValidators: true }
+//     );
+//     return result;
+// };
 const updateTaskStar = async (projectId, taskId, updates) => {
     const updateFields = {};
     if (typeof updates.isStar === "boolean") {
         updateFields["tasks.$.isStar"] = updates.isStar;
     }
-    ;
     if (typeof updates.isComplite === "boolean") {
         updateFields["tasks.$.isComplite"] = updates.isComplite;
+    }
+    if (updates.taskDueDate) {
+        updateFields["tasks.$.taskDueDate"] = new Date(updates.taskDueDate);
     }
     if (Object.keys(updateFields).length === 0) {
         throw new Error("No valid fields to update");

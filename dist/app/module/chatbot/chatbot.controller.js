@@ -72,6 +72,13 @@ const chatbot = async (req, res, next) => {
             return;
         }
         ;
+        if (message.toLowerCase().trim() === "create new project") {
+            await update_history_model_1.UpdateChatHestory.create({ userId, isFile: false, text: "Create new project" });
+            await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: nextMsg });
+            res.json({ response: nextMsg });
+            return;
+        }
+        ;
         if (message.toLowerCase().trim() === "undo") {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: false, text: "Undo" });
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: undoMsg });

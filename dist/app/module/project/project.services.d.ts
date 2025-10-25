@@ -918,6 +918,7 @@ export declare const projectServices: {
     updateTaskStar: (projectId: string, taskId: string, updates: {
         isStar?: boolean;
         isComplite?: boolean;
+        taskDueDate?: Date | string;
     }) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;
