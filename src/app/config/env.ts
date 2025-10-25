@@ -23,11 +23,14 @@ interface IEnv {
         FIREBASE_PROJECT_ID: string,
         FIREBASE_CLIENT_EMAIL: string,
         FIREBASE_PRIVATE_KEY: string
-    }
+    },
+    STRIPE_SECRET_KEY: string,
+    STRIPT_PUBLISHABLE_KEY : string,
+    STRIPE_WEBHOOK_SECRET: string
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET" , "STRIPT_PUBLISHABLE_KEY"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -42,6 +45,9 @@ const envChecker = (): IEnv => {
         FRONTEND_URL: process.env.FRONTEND_URL as string,
         OPEN_AI_API_SECRATE: process.env.OPEN_AI_API_SECRATE as string,
         AI_ROOT_URL: process.env.AI_ROOT_URL as string,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
+        STRIPT_PUBLISHABLE_KEY: process.env.STRIPT_PUBLISHABLE_KEY as string,
         PASSPORT: {
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
             GOOGLE_CLINT_SECRATE: process.env.GOOGLE_CLINT_SECRATE as string,

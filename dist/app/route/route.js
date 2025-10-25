@@ -8,6 +8,7 @@ const auth_router_1 = __importDefault(require("../module/auth/auth.router"));
 const chatbot_route_1 = __importDefault(require("../module/chatbot/chatbot.route"));
 const home_route_1 = __importDefault(require("../module/home/home.route"));
 const history_route_1 = __importDefault(require("../module/hostory/history.route"));
+const payment_route_1 = __importDefault(require("../module/payment/payment.route"));
 const project_route_1 = __importDefault(require("../module/project/project.route"));
 const aiChat_route_1 = __importDefault(require("../module/setting/aiChat/aiChat.route"));
 const appearance_route_1 = __importDefault(require("../module/setting/appearance/appearance.route"));
@@ -80,6 +81,10 @@ exports.moduleRoute = [
     {
         path: "/projectTask",
         routes: projectTask_route_1.default
+    },
+    {
+        path: "/payment",
+        routes: payment_route_1.default
     }
 ];
 //# sourceMappingURL=route.js.map

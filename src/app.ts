@@ -7,6 +7,7 @@ import { moduleRoute } from "./app/route/route";
 import { globalErrorhandler } from "./app/middleware/global.error.handler";
 import passport from "passport";
 import expressSession from "express-session";
+import { PaymentController } from "./app/module/payment/payment.controller";
 
 
 export const app = express();
@@ -30,8 +31,11 @@ app.use(expressSession({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
-
-// Module Route
+app.post(
+  "/api/stripe/webhook",
+  express.raw({ type: "application/json" }),
+  PaymentController.stripeWebhook
+);// Module Route
 moduleRoute.forEach(item => app.use(`/api/v1${item.path}`, item.routes));
 
 

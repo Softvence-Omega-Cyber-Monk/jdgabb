@@ -454,12 +454,13 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
     if (!prompt && !userId) {
         throw new AppError(200, "User id & User prompt must be required");
     }
-
+    await UpdateChatHestory.create({userId : userId , isFile : false , text : prompt})
     const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
         "user_text ": prompt
     });
 
-    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`
+    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
+     await UpdateChatHestory.create({userId : userId , isFile : true , text : concatinateText})
 
     const createProject = await Project.create({ userId: userId, goal: aiResponse.data.title });
 

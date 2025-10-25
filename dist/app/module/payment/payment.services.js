@@ -2,7 +2,11 @@
 // import mongoose from "mongoose";
 // import { User } from "../user/userModel";
 // import { Payment } from "./payment.model";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.paymentService = void 0;
 // const extendSubscription = async (userId: string, daysToAdd: number) => {
 //     const user = await User.findById(userId);
 //     if (!user) throw new Error("User not found");
@@ -106,11 +110,61 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //   const data = await res.json();
 //   window.location.href = data.url;
 // };
-const createPaymentSession = (req, res) => {
+const stripe_1 = __importDefault(require("stripe"));
+const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
+const checkout = async (data) => {
     try {
-        const { userId, amount, paymentType } = req.body;
+        const { userId, email, amount } = data;
+        if (!userId || !email || !amount) {
+            throw new Error("Missing required checkout data");
+        }
+        // 🧩 Create Stripe Checkout Session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            customer_email: email,
+            line_items: [
+                {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: "AI Prompt Credits", // You can make this dynamic
+                        },
+                        unit_amount: amount * 100, // Stripe expects cents
+                    },
+                    quantity: 1,
+                },
+            ],
+            success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+            metadata: {
+                userId: userId.toString(),
+            },
+        });
+        // 💾 Save to MongoDB (optional but recommended)
+        // await Payment.create({
+        //     userId,
+        //     stripeSessionId: session.id,
+        //     amount,
+        //     status: "UNPAID",
+        //     paymentType: "PROMPT",
+        // });
+        // ✅ Return session URL
+        return {
+            success: true,
+            url: session.url,
+        };
     }
     catch (error) {
+        console.error("Checkout error:", error.message);
+        return {
+            success: false,
+            message: "Failed to create Stripe checkout session",
+            error: error.message,
+        };
     }
+};
+exports.paymentService = {
+    checkout
 };
 //# sourceMappingURL=payment.services.js.map

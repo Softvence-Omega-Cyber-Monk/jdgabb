@@ -2,6 +2,7 @@ import authRouter from "../module/auth/auth.router";
 import chatbotRouter from "../module/chatbot/chatbot.route";
 import homeRoute from "../module/home/home.route";
 import historyRoute from "../module/hostory/history.route";
+import PaymentRoute from "../module/payment/payment.route";
 import projectRouter from "../module/project/project.route";
 import aiChatRouter from "../module/setting/aiChat/aiChat.route";
 import appearanceRouter from "../module/setting/appearance/appearance.route";
@@ -77,6 +78,10 @@ export const moduleRoute = [
     {
         path: "/projectTask",
         routes: projectTaskRouter
+    },
+    {
+        path:"/payment",
+        routes:PaymentRoute
     }
 ];
 

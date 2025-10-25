@@ -10,21 +10,21 @@ export declare enum EPaymentType {
 }
 export declare const Payment: mongoose.Model<{
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, {}, {
     timestamps: true;
     versionKey: false;
 }> & {
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps & {
     _id: mongoose.Types.ObjectId;
@@ -33,21 +33,21 @@ export declare const Payment: mongoose.Model<{
     versionKey: false;
 }, {
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
     timestamps: true;
     versionKey: false;
 }>> & mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
-    paymentStauts: EPaymentStatus;
     amount: number;
+    paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps> & {
     _id: mongoose.Types.ObjectId;

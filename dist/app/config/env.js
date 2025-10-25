@@ -7,7 +7,7 @@ exports.envVers = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const envChecker = () => {
-    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY"];
+    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY"];
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
             throw new Error(`Required env messing : ${key}`);
@@ -20,6 +20,9 @@ const envChecker = () => {
         FRONTEND_URL: process.env.FRONTEND_URL,
         OPEN_AI_API_SECRATE: process.env.OPEN_AI_API_SECRATE,
         AI_ROOT_URL: process.env.AI_ROOT_URL,
+        STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+        STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+        STRIPT_PUBLISHABLE_KEY: process.env.STRIPT_PUBLISHABLE_KEY,
         PASSPORT: {
             GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
             GOOGLE_CLINT_SECRATE: process.env.GOOGLE_CLINT_SECRATE,

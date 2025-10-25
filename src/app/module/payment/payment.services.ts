@@ -3,6 +3,7 @@
 // import { Payment } from "./payment.model";
 
 import { Request, Response } from "express";
+import { Types } from "mongoose";
 
 
 // const extendSubscription = async (userId: string, daysToAdd: number) => {
@@ -138,18 +139,64 @@ import { Request, Response } from "express";
 //   const data = await res.json();
 //   window.location.href = data.url;
 // };
-
-
-
-const createPaymentSession = (req: Request, res: Response) => {
+import Stripe from "stripe";
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const checkout = async (data: { userId: Types.ObjectId; email: string; amount: number }) => {
     try {
+        const { userId, email, amount } = data;
 
-        const { userId, amount, paymentType } = req.body;
+        if (!userId || !email || !amount) {
+            throw new Error("Missing required checkout data");
+        }
 
-        
+        // 🧩 Create Stripe Checkout Session
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ["card"],
+            mode: "payment",
+            customer_email: email,
+            line_items: [
+                {
+                    price_data: {
+                        currency: "usd",
+                        product_data: {
+                            name: "AI Prompt Credits", // You can make this dynamic
+                        },
+                        unit_amount: amount * 100, // Stripe expects cents
+                    },
+                    quantity: 1,
+                },
+            ],
+            success_url: `${process.env.CLIENT_URL as string}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.CLIENT_URL as string}/payment-cancel`,
+            metadata: {
+                userId: userId.toString(),
+            },
+        });
 
+        // 💾 Save to MongoDB (optional but recommended)
+        // await Payment.create({
+        //     userId,
+        //     stripeSessionId: session.id,
+        //     amount,
+        //     status: "UNPAID",
+        //     paymentType: "PROMPT",
+        // });
 
-    } catch (error) {
-
+        // ✅ Return session URL
+        return {
+            success: true,
+            url: session.url,
+        };
+    } catch (error: any) {
+        console.error("Checkout error:", error.message);
+        return {
+            success: false,
+            message: "Failed to create Stripe checkout session",
+            error: error.message,
+        };
     }
+};
+
+export const paymentService = {
+    checkout
 }
