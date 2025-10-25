@@ -112,6 +112,9 @@ const permanentDeleteSubtask = async (projectId, taskId, subtaskId) => {
     }, { new: true });
     return result;
 };
+const deleteProject = async (projectId) => {
+    return await project_model_1.Project.findByIdAndDelete(projectId);
+};
 exports.projectServices = {
     createProject,
     addTask,
@@ -124,5 +127,6 @@ exports.projectServices = {
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubtask,
+    deleteProject
 };
 //# sourceMappingURL=project.services.js.map

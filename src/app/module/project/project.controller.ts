@@ -8,6 +8,7 @@ import { envVers } from "../../config/env";
 import mongoose from "mongoose";
 import AppError from "../../utils/AppError";
 import { OpenAi } from "../../config/openAi";
+import { UpdateChatHestory } from "../UpdateHistory/update.history.model";
 
 
 
@@ -128,51 +129,51 @@ const addDetails = catchAsync(async (req: Request, res: Response, next: NextFunc
     })
 });
 
-// const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
-//     const id = req.params.id;
-
-
-//     const result = await Project.findById(id);
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Project retrived successfully",
-//         data: result
-//     })
-// });
-
-
 const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
     const id = req.params.id;
 
+
     const result = await Project.findById(id);
-
-    if (!result) {
-        return sendResponse(res, {
-            statusCode: 404,
-            success: false,
-            message: "Project not found",
-            data: null,
-        });
-    };
-
-    const filteredTasks = result.tasks.filter(
-        (task: any) => task.isStar === false && task.isComplite === false
-    );
-
-    const projectWithFilteredTasks = {
-        ...result.toObject(),
-        tasks: filteredTasks,
-    };
-
     sendResponse(res, {
         statusCode: 200,
         success: true,
-        message: "Project retrieved successfully (filtered)",
-        data: projectWithFilteredTasks,
-    });
+        message: "Project retrived successfully",
+        data: result
+    })
 });
+
+
+// const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const id = req.params.id;
+
+//     const result = await Project.findById(id);
+
+//     if (!result) {
+//         return sendResponse(res, {
+//             statusCode: 404,
+//             success: false,
+//             message: "Project not found",
+//             data: null,
+//         });
+//     };
+
+//     const filteredTasks = result.tasks.filter(
+//         (task: any) => task.isStar === false && task.isComplite === false
+//     );
+
+//     const projectWithFilteredTasks = {
+//         ...result.toObject(),
+//         tasks: filteredTasks,
+//     };
+
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Project retrieved successfully (filtered)",
+//         data: projectWithFilteredTasks,
+//     });
+// });
 
 
 
@@ -184,11 +185,16 @@ const getAllProject = catchAsync(async (req: Request, res: Response, next: NextF
 const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const projectId = req.params.id;
 
+    const findUser = await Project.findOne({ _id: projectId });
+
     if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
         throw new AppError(400, "Invalid mongoDb objectId");
     }
 
-    const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
+    UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
+
+    // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
+    const result = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
 
     if (!result) {
         throw new AppError(400, "Please try again.");
@@ -206,6 +212,8 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
         },
         { new: true }
     );
+
+    UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
 
     res.status(200).json({
         success: true,
@@ -226,7 +234,9 @@ const ansQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
 
     if (!updatedProject) {
         throw new AppError(400, "Project or question not found")
-    }
+    };
+
+    await UpdateChatHestory.create({ userId: updatedProject.userId, isFile: false, text: answer });
 
 
     sendResponse(res, {
@@ -466,51 +476,10 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
 
 
 
-// const getStarredTasks = async (req: Request, res: Response) => {
-//     try {
-//         const { projectId } = req.params;
-
-
-//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid project ID",
-//             });
-//         }
-
-
-//         const project = await Project.findById(projectId, {
-//             tasks: 1,
-//         });
-
-//         if (!project) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Project not found",
-//             });
-//         };
-
-//         const starredTasks = project.tasks.filter((task) => task.isStar === true);
-
-//         return res.status(200).json({
-//             success: true,
-//             count: starredTasks.length,
-//             tasks: starredTasks,
-//         });
-
-//     } catch (error) {
-//         console.error("Error fetching starred tasks:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Internal server error",
-//         });
-//     }
-// };
-
-
 const getStarredTasks = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
+
 
         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
             return res.status(400).json({
@@ -520,33 +489,74 @@ const getStarredTasks = async (req: Request, res: Response) => {
         }
 
 
-        const project = await Project.findById(projectId, { tasks: 1 });
+        const project = await Project.findById(projectId, {
+            tasks: 1,
+        });
 
         if (!project) {
             return res.status(404).json({
                 success: false,
                 message: "Project not found",
             });
-        }
+        };
 
- 
-        const filteredTasks = project.tasks.filter(
-            (task: any) => task.isStar === true || task.isComplite === true
-        );
+        const starredTasks = project.tasks.filter((task) => task.isStar === true);
 
         return res.status(200).json({
             success: true,
-            count: filteredTasks.length,
-            tasks: filteredTasks,
+            count: starredTasks.length,
+            tasks: starredTasks,
         });
+
     } catch (error) {
-        console.error("Error fetching starred/completed tasks:", error);
+        console.error("Error fetching starred tasks:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
         });
     }
 };
+
+
+// const getStarredTasks = async (req: Request, res: Response) => {
+//     try {
+//         const { projectId } = req.params;
+
+//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid project ID",
+//             });
+//         }
+
+
+//         const project = await Project.findById(projectId, { tasks: 1 });
+
+//         if (!project) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Project not found",
+//             });
+//         }
+
+
+//         const filteredTasks = project.tasks.filter(
+//             (task: any) => task.isStar === true || task.isComplite === true
+//         );
+
+//         return res.status(200).json({
+//             success: true,
+//             count: filteredTasks.length,
+//             tasks: filteredTasks,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching starred/completed tasks:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error",
+//         });
+//     }
+// };
 
 
 const getCompletedTasks = async (req: Request, res: Response) => {

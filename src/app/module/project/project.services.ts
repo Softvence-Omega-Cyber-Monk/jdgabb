@@ -194,6 +194,10 @@ const permanentDeleteSubtask = async (
     return result;
 };
 
+const deleteProject = async (projectId: string) => {
+    return await Project.findByIdAndDelete(projectId);
+}
+
 
 export const projectServices = {
     createProject,
@@ -207,4 +211,5 @@ export const projectServices = {
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubtask,
+    deleteProject
 }
