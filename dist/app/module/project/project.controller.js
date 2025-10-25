@@ -28,11 +28,18 @@ const createProject = (0, catchAsync_1.default)(async (req, res, next) => {
 const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
     const projectId = req.params.id;
     const title = req.body.title;
+    const finduser = await project_model_1.Project.findOne({ _id: projectId });
     if (!title) {
         res.status(400).json({ success: false, message: "Title is required" });
     }
     ;
-    const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $set: { goal: title } }, { new: true, runValidators: true });
+    await update_history_model_1.UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
+    const aiResponse = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+        "user_text ": prompt
+    });
+    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
+    const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $set: { goal: aiResponse.data.title } }, { new: true, runValidators: true });
+    await update_history_model_1.UpdateChatHestory.create({ userId: finduser?.userId, isFile: true, text: concatinateText });
     if (!updatedProject) {
         res.status(404).json({ success: false, message: "Project not found" });
     }

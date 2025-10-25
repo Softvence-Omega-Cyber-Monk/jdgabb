@@ -31,18 +31,27 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
     const projectId = req.params.id;
     const title = req.body.title;
 
+    const finduser = await Project.findOne({ _id: projectId });
 
     if (!title) {
         res.status(400).json({ success: false, message: "Title is required" });
     };
 
-   
+    await UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
+
+    const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+        "user_text ": prompt
+    });
+
+    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
 
     const updatedProject = await Project.findOneAndUpdate(
         { _id: projectId },
-        { $set: { goal: title } },
+        { $set: { goal: aiResponse.data.title } },
         { new: true, runValidators: true }
     );
+
+      await UpdateChatHestory.create({ userId: finduser?.userId, isFile: true, text: concatinateText });
 
     if (!updatedProject) {
         res.status(404).json({ success: false, message: "Project not found" });
@@ -307,34 +316,34 @@ const askQuestionOpenAi = catchAsync(async (req: Request, res: Response, next: N
 
 
 const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
+    const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
 
-  if (!projectId || !taskId) {
-    throw new AppError(400, "Project ID and Task ID are required");
-  }
+    if (!projectId || !taskId) {
+        throw new AppError(400, "Project ID and Task ID are required");
+    }
 
-  const updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string } = {};
+    const updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string } = {};
 
-  if (typeof isStar === "boolean") updates.isStar = isStar;
-  if (typeof isComplite === "boolean") updates.isComplite = isComplite;
-  if (taskDueDate) updates.taskDueDate = taskDueDate;
+    if (typeof isStar === "boolean") updates.isStar = isStar;
+    if (typeof isComplite === "boolean") updates.isComplite = isComplite;
+    if (taskDueDate) updates.taskDueDate = taskDueDate;
 
-  if (Object.keys(updates).length === 0) {
-    throw new AppError(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
-  }
+    if (Object.keys(updates).length === 0) {
+        throw new AppError(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
+    }
 
-  const result = await projectServices.updateTaskStar(projectId, taskId, updates);
+    const result = await projectServices.updateTaskStar(projectId, taskId, updates);
 
-  if (!result) {
-    throw new AppError(404, "Task not found");
-  }
+    if (!result) {
+        throw new AppError(404, "Task not found");
+    }
 
-  sendResponse(res, {
-    statusCode: 200,
-    success: true,
-    message: "Task updated successfully",
-    data: result,
-  });
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task updated successfully",
+        data: result,
+    });
 });
 
 
@@ -490,13 +499,13 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
     if (!prompt && !userId) {
         throw new AppError(200, "User id & User prompt must be required");
     }
-    await UpdateChatHestory.create({userId : userId , isFile : false , text : prompt})
+    await UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt })
     const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
         "user_text ": prompt
     });
 
     const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
-     await UpdateChatHestory.create({userId : userId , isFile : true , text : concatinateText})
+    await UpdateChatHestory.create({ userId: userId, isFile: true, text: concatinateText })
 
     const createProject = await Project.create({ userId: userId, goal: aiResponse.data.title });
 
