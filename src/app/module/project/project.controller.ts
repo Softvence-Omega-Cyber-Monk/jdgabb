@@ -43,7 +43,8 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
         "user_text ": prompt
     });
 
-    const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
+
+    const concatinateText = `Alright, I’ve added *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`
 
     const updatedProject = await Project.findOneAndUpdate(
         { _id: projectId },

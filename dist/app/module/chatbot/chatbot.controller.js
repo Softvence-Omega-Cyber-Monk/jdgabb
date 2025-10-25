@@ -43,10 +43,10 @@ const chatbot = async (req, res, next) => {
     try {
         const { message, userId, projectId } = req.body;
         const emptyMsg = "Hey there! My name’s Ollie, and I’m here to help you with your to-dos! I can create projects, tasks, add details, due dates all based on our conversation! *Tap the screen* or type *“next”* in the chat bar below when you’re ready.";
-        const createMsg = "Okie Dokie! Here’s your project! Go ahead and tap <Project 1> to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.";
+        const createMsg = `Okie Dokie! Here’s your project! Go ahead and tap ${message} to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.`;
         const addMsg = "What would you like to add?";
         const nextMsg = "Great! Type into the chat bar below what sort of project you want to start. We can think of an idea together - do you want to be healthier, start a business, find love, find your passion, save time, or speed through your homework? What's a goal you have? It can be anything!";
-        const undoMsg = `Okie Dokie! Here’s your project! Go ahead and tap <Project 1> to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.`;
+        const undoMsg = `Okie Dokie! Here’s your project! Go ahead and tap ${message} to see the tasks inside! I can also undo the action I just made if you tap the Undo button below.`;
         const defaultText = "Sorry, I didn't quite catch that. Try typing 'Add' , 'Next' or 'Create'";
         if (!message) {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: emptyMsg });
@@ -81,9 +81,8 @@ const chatbot = async (req, res, next) => {
         ;
         if (message.toLowerCase().trim() === "undo") {
             await update_history_model_1.UpdateChatHestory.create({ userId, isFile: false, text: "Undo" });
-            await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: undoMsg });
             project_services_1.projectServices.deleteProject(projectId);
-            res.json({ response: nextMsg, message: "Project Deleted  success" });
+            res.json({ response: "Project Deleted  success" });
             return;
         }
         await update_history_model_1.UpdateChatHestory.create({ userId, isFile: true, text: defaultText });
