@@ -102,14 +102,38 @@ const addDetails = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
+// const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const id = req.params.id;
+//     const result = await Project.findById(id);
+//     sendResponse(res, {
+//         statusCode: 200,
+//         success: true,
+//         message: "Project retrived successfully",
+//         data: result
+//     })
+// });
 const getProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const id = req.params.id;
     const result = await project_model_1.Project.findById(id);
+    if (!result) {
+        return (0, sendResponse_1.sendResponse)(res, {
+            statusCode: 404,
+            success: false,
+            message: "Project not found",
+            data: null,
+        });
+    }
+    ;
+    const filteredTasks = result.tasks.filter((task) => task.isStar === false && task.isComplite === false);
+    const projectWithFilteredTasks = {
+        ...result.toObject(),
+        tasks: filteredTasks,
+    };
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
-        message: "Project retrived successfully",
-        data: result
+        message: "Project retrieved successfully (filtered)",
+        data: projectWithFilteredTasks,
     });
 });
 const getAllProject = (0, catchAsync_1.default)(async (req, res, next) => {
@@ -332,6 +356,38 @@ const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => 
         }
     });
 });
+// const getStarredTasks = async (req: Request, res: Response) => {
+//     try {
+//         const { projectId } = req.params;
+//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+//             return res.status(400).json({
+//                 success: false,
+//                 message: "Invalid project ID",
+//             });
+//         }
+//         const project = await Project.findById(projectId, {
+//             tasks: 1,
+//         });
+//         if (!project) {
+//             return res.status(404).json({
+//                 success: false,
+//                 message: "Project not found",
+//             });
+//         };
+//         const starredTasks = project.tasks.filter((task) => task.isStar === true);
+//         return res.status(200).json({
+//             success: true,
+//             count: starredTasks.length,
+//             tasks: starredTasks,
+//         });
+//     } catch (error) {
+//         console.error("Error fetching starred tasks:", error);
+//         return res.status(500).json({
+//             success: false,
+//             message: "Internal server error",
+//         });
+//     }
+// };
 const getStarredTasks = async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -341,25 +397,22 @@ const getStarredTasks = async (req, res) => {
                 message: "Invalid project ID",
             });
         }
-        const project = await project_model_1.Project.findById(projectId, {
-            tasks: 1,
-        });
+        const project = await project_model_1.Project.findById(projectId, { tasks: 1 });
         if (!project) {
             return res.status(404).json({
                 success: false,
                 message: "Project not found",
             });
         }
-        ;
-        const starredTasks = project.tasks.filter((task) => task.isStar === true);
+        const filteredTasks = project.tasks.filter((task) => task.isStar === true || task.isComplite === true);
         return res.status(200).json({
             success: true,
-            count: starredTasks.length,
-            tasks: starredTasks,
+            count: filteredTasks.length,
+            tasks: filteredTasks,
         });
     }
     catch (error) {
-        console.error("Error fetching starred tasks:", error);
+        console.error("Error fetching starred/completed tasks:", error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",
