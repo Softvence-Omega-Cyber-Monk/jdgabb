@@ -82,8 +82,8 @@ const googleCallBackController = catchAsync(async (req: Request, res: Response, 
 const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { username, email, fcmToken } = req.body;
 
-    if (!username || !email || !fcmToken) {
-        throw new AppError(400, "Username, Email & fcmToken are required");
+    if (!username || !email) {
+        throw new AppError(400, "Username & Email are required");
     }
 
     let user = await User.findOne({ email });

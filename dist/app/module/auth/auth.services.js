@@ -9,27 +9,6 @@ const AppError_1 = __importDefault(require("../../utils/AppError"));
 const createJwtToken_1 = require("../../utils/createJwtToken");
 const userModel_1 = require("../user/userModel");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-// const userLogin = async (payload: Partial<IUser>) => {
-//     const existUser = await User.findOne({ email: payload.email });
-//     if (!existUser) {
-//         throw new AppError(404, "Invalid user credentials");
-//     };
-//     if (!existUser.password && existUser.auths.some((providerObj) => providerObj.provider === "Google")) {
-//         throw new AppError(400, "You are registered with Google authentication.")
-//     }
-//     const fcmToken = {
-//     }
-//     const matchPassword = await bcrypt.compare(payload.password as string, existUser.password as string);
-//     if (!matchPassword) {
-//         throw new AppError(400, "Invalid password");
-//     };
-//     const tokens = createJwtToken(existUser);
-//     const { password, ...rest } = existUser.toObject();
-//     return {
-//         user: rest,
-//         tokens: tokens
-//     }
-// };
 const userLogin = async (payload) => {
     const existUser = await userModel_1.User.findOne({ email: payload.email });
     if (!existUser) {
