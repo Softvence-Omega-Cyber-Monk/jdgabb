@@ -35,7 +35,7 @@ const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
     ;
     await update_history_model_1.UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
     const aiResponse = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
-        "user_text ": prompt
+        "user_text ": title
     });
     const concatinateText = `Alright, I’ve added *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
     const updatedProject = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $set: { goal: aiResponse.data.title } }, { new: true, runValidators: true });
@@ -155,7 +155,7 @@ const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
     if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
         throw new AppError_1.default(400, "Invalid mongoDb objectId");
     }
-    update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
+    await update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
     const result = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
     if (!result) {
@@ -169,10 +169,39 @@ const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
             },
         },
     }, { new: true });
+    const questionId = updateQuestion?.answered_questions.at(-1);
     update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
     res.status(200).json({
         success: true,
-        AiQuestion: result.data,
+        questionId,
+        storedData: updateQuestion
+    });
+});
+const askQuestionNotHistory = (0, catchAsync_1.default)(async (req, res, next) => {
+    const projectId = req.params.id;
+    const findUser = await project_model_1.Project.findOne({ _id: projectId });
+    if (!mongoose_1.default.Types.ObjectId.isValid(projectId)) {
+        throw new AppError_1.default(400, "Invalid mongoDb objectId");
+    }
+    ;
+    // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
+    const result = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+    if (!result) {
+        throw new AppError_1.default(400, "Please try again.");
+    }
+    const updateQuestion = await project_model_1.Project.findByIdAndUpdate(projectId, {
+        $push: {
+            answered_questions: {
+                question: result.data.question,
+                answer: null,
+            },
+        },
+    }, { new: true });
+    const questionId = updateQuestion?.answered_questions.at(-1);
+    await update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
+    res.status(200).json({
+        success: true,
+        questionId,
         storedData: updateQuestion
     });
 });
@@ -569,6 +598,7 @@ exports.projectController = {
     createProjectWithAi,
     getStarredTasks,
     getCompletedTasks,
-    updateTaskDueDateController
+    updateTaskDueDateController,
+    askQuestionNotHistory
 };
 //# sourceMappingURL=project.controller.js.map

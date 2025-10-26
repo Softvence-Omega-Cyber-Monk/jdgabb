@@ -53,6 +53,11 @@ const paymentSchema = new mongoose_1.Schema({
         ref: "user",
         required: true
     },
+    sessionId: {
+        type: String,
+        unique: true,
+        required: true
+    },
     paymentStauts: {
         type: String,
         enum: [...Object.values(EPaymentStatus)],

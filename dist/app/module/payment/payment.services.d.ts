@@ -4,16 +4,11 @@ export declare const paymentService: {
         userId: Types.ObjectId;
         email: string;
         amount: number;
+        paymentType: string;
     }) => Promise<{
         success: boolean;
         url: string | null;
-        message?: never;
-        error?: never;
-    } | {
-        success: boolean;
-        message: string;
-        error: any;
-        url?: never;
+        sessionId: string;
     }>;
 };
 //# sourceMappingURL=payment.services.d.ts.map

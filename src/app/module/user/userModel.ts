@@ -16,13 +16,6 @@ const authProviderSchema = new mongoose.Schema<IAuthprovider>({
     _id: false
 });
 
-export enum ESubcription {
-    FREE = "0d",
-    WEEKLY = "7d",
-    TWO_WEEK = "14d",
-    MONTHLY = "30d"
-}
-
 
 const userSchema = new mongoose.Schema<IUser>({
     username: {
@@ -59,6 +52,10 @@ const userSchema = new mongoose.Schema<IUser>({
     chatUsed: {
         type: Number,
         default: 0
+    },
+    dayliChatLimit: {
+        type: Number,
+        default: 20
     },
     role: {
         type: String,

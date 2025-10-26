@@ -40,7 +40,7 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
     await UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
 
     const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
-        "user_text ": prompt
+        "user_text ": title
     });
 
 
@@ -204,7 +204,44 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
         throw new AppError(400, "Invalid mongoDb objectId");
     }
 
-    UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
+    await UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
+
+    // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
+    const result = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+
+    if (!result) {
+        throw new AppError(400, "Please try again.");
+    }
+
+    const updateQuestion = await Project.findByIdAndUpdate(
+        projectId,
+        {
+            $push: {
+                answered_questions: {
+                    question: result.data.question,
+                    answer: null,
+                },
+            },
+        },
+        { new: true }
+    );
+    const questionId = updateQuestion?.answered_questions.at(-1);
+    UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
+
+    res.status(200).json({
+        success: true,
+        questionId,
+        storedData: updateQuestion
+    })
+});
+const askQuestionNotHistory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.params.id;
+
+    const findUser = await Project.findOne({ _id: projectId });
+
+    if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
+        throw new AppError(400, "Invalid mongoDb objectId");
+    };
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
     const result = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
@@ -226,11 +263,13 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
         { new: true }
     );
 
-    UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
+    const questionId = updateQuestion?.answered_questions.at(-1);
+
+    await UpdateChatHestory.create({ userId: findUser?.userId, isFile: true, text: result.data.question });
 
     res.status(200).json({
         success: true,
-        AiQuestion: result.data,
+        questionId,
         storedData: updateQuestion
     })
 });
@@ -348,26 +387,26 @@ const updateTaskStar = catchAsync(async (req: Request, res: Response, next: Next
 // });
 
 const updateTaskDueDateController = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { projectId, taskId, taskDueDate } = req.body;
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { projectId, taskId, taskDueDate } = req.body;
 
-    if (!projectId || !taskId || !taskDueDate) {
-      throw new AppError(400, "Project ID, Task ID, and taskDueDate are required");
+        if (!projectId || !taskId || !taskDueDate) {
+            throw new AppError(400, "Project ID, Task ID, and taskDueDate are required");
+        }
+
+        const result = await projectServices.updateTaskDueDate(projectId, taskId, taskDueDate);
+
+        if (!result) {
+            throw new AppError(404, "Task not found in the given project");
+        }
+
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: "Task due date updated successfully",
+            data: result,
+        });
     }
-
-    const result = await projectServices.updateTaskDueDate(projectId, taskId, taskDueDate);
-
-    if (!result) {
-      throw new AppError(404, "Task not found in the given project");
-    }
-
-    sendResponse(res, {
-      success: true,
-      statusCode: 200,
-      message: "Task due date updated successfully",
-      data: result,
-    });
-  }
 );
 
 const updateSubtaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -745,5 +784,6 @@ export const projectController = {
     createProjectWithAi,
     getStarredTasks,
     getCompletedTasks,
-    updateTaskDueDateController
+    updateTaskDueDateController,
+    askQuestionNotHistory
 };

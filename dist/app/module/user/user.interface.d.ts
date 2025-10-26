@@ -17,6 +17,7 @@ export interface IUser extends Document {
     isDeleted?: string;
     isVerifid?: boolean;
     role: Role;
+    dayliChatLimit: Number;
     chatLimit: number;
     subscriptionTypeDate: Date | undefined;
     subscriptionType: string;

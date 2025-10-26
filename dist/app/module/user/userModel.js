@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.ESubcription = void 0;
+exports.User = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_interface_1 = require("./user.interface");
@@ -20,13 +20,6 @@ const authProviderSchema = new mongoose_1.default.Schema({
     versionKey: false,
     _id: false
 });
-var ESubcription;
-(function (ESubcription) {
-    ESubcription["FREE"] = "0d";
-    ESubcription["WEEKLY"] = "7d";
-    ESubcription["TWO_WEEK"] = "14d";
-    ESubcription["MONTHLY"] = "30d";
-})(ESubcription || (exports.ESubcription = ESubcription = {}));
 const userSchema = new mongoose_1.default.Schema({
     username: {
         type: String
@@ -62,6 +55,10 @@ const userSchema = new mongoose_1.default.Schema({
     chatUsed: {
         type: Number,
         default: 0
+    },
+    dayliChatLimit: {
+        type: Number,
+        default: 20
     },
     role: {
         type: String,

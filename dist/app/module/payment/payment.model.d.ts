@@ -11,11 +11,13 @@ export declare enum EPaymentType {
 export declare const Payment: mongoose.Model<{
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, {}, {
@@ -24,6 +26,7 @@ export declare const Payment: mongoose.Model<{
 }> & {
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps & {
@@ -34,11 +37,13 @@ export declare const Payment: mongoose.Model<{
 }, {
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
@@ -47,6 +52,7 @@ export declare const Payment: mongoose.Model<{
 }>> & mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
     amount: number;
+    sessionId: string;
     paymentStauts: EPaymentStatus;
     paymentType?: EPaymentType | null;
 } & mongoose.DefaultTimestampProps> & {

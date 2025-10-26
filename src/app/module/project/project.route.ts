@@ -23,6 +23,7 @@ projectRouter.patch("/update/title/:id", projectController.updateProjectTitle);
 projectRouter.delete("/delete/suTask", projectController.permanentDeleteSubTask);
 projectRouter.get("/starred-tasks/:userId", projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", projectController.getCompletedTasks);
-projectRouter.patch("/update/taskDate" , projectController.updateTaskDueDateController)
+projectRouter.get("/askQuestionAiNotHistory/:id" , projectController.askQuestionNotHistory);
+projectRouter.patch("/update/taskDate" , projectController.updateTaskDueDateController);
 
 export default projectRouter;

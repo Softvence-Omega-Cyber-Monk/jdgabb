@@ -1,100 +1,119 @@
-import { NextFunction, Request, Response } from "express"
-import { sendResponse } from "../../utils/sendResponse"
+import { NextFunction, Request, Response } from "express";
+import { sendResponse } from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
 import { paymentService } from "./payment.services";
 import Stripe from "stripe";
 import { Payment } from "./payment.model";
 import { Types } from "mongoose";
+import { User } from "../user/userModel";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-09-30.clover",
 });
 
-const createPaymentSession = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
+// ✅ 1️⃣ Create Stripe Checkout Session + UNPAID payment entry
+// ✅ createPaymentSession
+const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
   const payload = {
     ...req.body,
     userId: req.authUser?._id,
-    email: req.authUser?.email
+    email: req.authUser?.email,
+  };
+
+  const result = await paymentService.checkout(payload);
+
+  if (!result || !result.sessionId) {
+    throw new Error("Failed to create Stripe session");
   }
 
-  const result = await paymentService.checkout(payload)
+  await Payment.create({
+    userId: new Types.ObjectId(payload.userId),
+    sessionId: result.sessionId,
+    amount: payload.amount,
+    paymentType: payload.paymentType,
+    paymentStauts: "UNPAID",
+  });
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "wait for redirect..",
-    data: result
-  })
-
+    data: result,
+  });
 });
-
 
 
 const stripeWebhook = async (req: Request, res: Response) => {
   const sig = req.headers["stripe-signature"] as string;
   let event: Stripe.Event;
 
-  // 1️⃣ Verify webhook signature
   try {
     event = stripe.webhooks.constructEvent(
-      req.body as Buffer, // Raw body, ensure the middleware is set to handle raw body (as explained earlier)
+      req.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
-    console.log("✅ Webhook received:", event.type);
+    console.log("✅ Webhook verified:", event.type);
   } catch (err: any) {
     console.error("❌ Webhook verification failed:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // 2️⃣ Handle Stripe events
+  // ✅ Handle event types
   try {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    switch (event.type) {
-      case 'checkout.session.completed':
-        // Payment successful
-        console.log('Payment successful for session:', session.id);
+    if (event.type === "checkout.session.completed") {
+      const sessionId = session.id;
+      const userId = session.metadata?.userId;
+      const paymentType = session.metadata?.paymentType || "PROMPT";
+      const amount = (session.amount_total as number) / 100;
 
-        // Optional: Save payment information to MongoDB
-        const userId = session?.metadata?.userId; // Extract the userId from metadata
-        const payment = await Payment.create({
-          userId: new Types.ObjectId(userId),
-          stripeSessionId: session.id,
-          amount: session?.amount_total as any / 100, // Convert back to dollars
-          status: 'PAID', // Mark as paid
-          paymentType: 'PROMPT', // Payment type if necessary
-        });
+      // Update payment
+      const updatedPayment = await Payment.findOneAndUpdate(
+        { sessionId },
+        { $set: { paymentStauts: "PAID" } },
+        { new: true }
+      );
 
-        console.log('Payment information saved to database:', payment);
-        break;
+      console.log("✅ Payment updated:", updatedPayment);
 
-      case 'checkout.session.async_payment_failed':
-        // Handle failed payments
-        console.log('Async payment failed for session:', session.id);
-        break;
+      // User update
+      const user = await User.findById(userId);
+      if (user) {
+        if (paymentType === "PROMPT") {
+          user.chatLimit = (user.chatLimit || 0) + 200;
+        } else if (paymentType === "SUBSCRIPTION") {
+          const now = new Date();
+          let newExpiryDate: Date;
 
-      case 'checkout.session.expired':
-        // Handle expired sessions
-        console.log('Session expired for session:', session.id);
-        break;
+          if (user.subscriptionTypeDate && user.subscriptionTypeDate > now) {
+            // আগের date এখনও valid → আগের date + 7 দিন
+            newExpiryDate = new Date(user.subscriptionTypeDate);
+            newExpiryDate.setDate(newExpiryDate.getDate() + 7);
+          } else {
+            // আগের date expired বা null → আজ থেকে +7 দিন
+            newExpiryDate = new Date(now);
+            newExpiryDate.setDate(newExpiryDate.getDate() + 7);
+          }
 
-      default:
-        console.log("ℹ️ Unhandled Stripe event:", event.type);
+          user.subscriptionTypeDate = newExpiryDate;
+          await user.save();
+          console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
+        }
+        await user.save();
+      }
     }
 
-    // Respond with a 200 status to acknowledge receipt of the event
-    return res.status(200).send("Event processed");
+    res.status(200).send("Event processed");
   } catch (err: any) {
-    console.error("Error handling webhook event:", err.message);
-    return res.status(400).send(`Error handling event: ${err.message}`);
+    console.error("❌ Error processing event:", err.message);
+    res.status(400).send(`Webhook error: ${err.message}`);
   }
 };
 
 
-
 export const PaymentController = {
   createPaymentSession,
-  stripeWebhook
-}
+  stripeWebhook,
+};

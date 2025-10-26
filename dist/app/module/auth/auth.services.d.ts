@@ -10,6 +10,7 @@ export declare const authServices: {
             isDeleted?: string;
             isVerifid?: boolean;
             role: import("../user/user.interface").Role;
+            dayliChatLimit: Number;
             chatLimit: number;
             subscriptionTypeDate: Date | undefined;
             subscriptionType: string;
