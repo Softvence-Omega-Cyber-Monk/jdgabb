@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const env_1 = require("./app/config/env");
 const app_1 = require("./app");
+require("../src/app/config/corn.config");
 let server;
 const boostServer = async () => {
     try {

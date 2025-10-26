@@ -82,6 +82,7 @@ const stripeWebhook = async (req, res) => {
                         newExpiryDate.setDate(newExpiryDate.getDate() + 7);
                     }
                     user.subscriptionTypeDate = newExpiryDate;
+                    user.dayliChatLimit = 200;
                     await user.save();
                     console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
                 }
@@ -95,6 +96,8 @@ const stripeWebhook = async (req, res) => {
         res.status(400).send(`Webhook error: ${err.message}`);
     }
 };
+const getAllPayment = (0, catchAsync_1.default)(async (req, res, next) => {
+});
 exports.PaymentController = {
     createPaymentSession,
     stripeWebhook,

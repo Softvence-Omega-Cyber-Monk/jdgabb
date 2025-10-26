@@ -58,7 +58,7 @@ const userSchema = new mongoose_1.default.Schema({
     },
     dayliChatLimit: {
         type: Number,
-        default: 20
+        default: 0
     },
     role: {
         type: String,

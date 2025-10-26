@@ -138,7 +138,7 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
     let user = await User.findOne({ email });
 
     if (!user) {
-       
+
         user = await User.create({
             username,
             email,
@@ -147,7 +147,7 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
             auths: [{ provider: "Google", providerId: email }]
         });
 
-       
+
         await Promise.all([
             AiChatModel.create({ userId: user._id }),
             AppearanceModel.create({ userId: user._id }),
@@ -161,7 +161,7 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
         ]);
 
     } else {
-       
+
         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
         if (!hasGoogleAuth) {
             user.auths.push({
@@ -177,13 +177,13 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
         await user.save();
     }
 
-   
+    const isPaid = user?.subscriptionTypeDate && new Date(user.subscriptionTypeDate) > new Date() ? true : false;
     const { password, ...rest } = user.toObject();
     const tokens = createJwtToken(user);
 
     res.status(200).json({
         success: true,
-        user: rest,
+        user: { ...rest, isPaid },
         tokens
     });
 });

@@ -149,11 +149,12 @@ const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => 
         }
         await user.save();
     }
+    const isPaid = user?.subscriptionTypeDate && new Date(user.subscriptionTypeDate) > new Date() ? true : false;
     const { password, ...rest } = user.toObject();
     const tokens = (0, createJwtToken_1.createJwtToken)(user);
     res.status(200).json({
         success: true,
-        user: rest,
+        user: { ...rest, isPaid },
         tokens
     });
 });

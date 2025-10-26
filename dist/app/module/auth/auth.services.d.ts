@@ -2,6 +2,7 @@ import { IUser } from "../user/user.interface";
 export declare const authServices: {
     userLogin: (payload: Partial<IUser>) => Promise<{
         user: {
+            isPaid: boolean;
             _id: import("mongoose").Types.ObjectId;
             oldPassword?: string;
             username: string;

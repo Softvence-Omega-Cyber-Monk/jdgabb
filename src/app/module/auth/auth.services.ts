@@ -65,11 +65,12 @@ const userLogin = async (payload: Partial<IUser>) => {
 
     const tokens = createJwtToken(existUser);
 
+    const isPaid = existUser?.subscriptionTypeDate && new Date(existUser.subscriptionTypeDate) > new Date() ? true : false;
 
-    const { password, ...rest } = existUser.toObject();
+    const { password, ...rest  } = existUser.toObject();
 
     return {
-        user: rest,
+        user: {...rest , isPaid},
         tokens: tokens
     };
 };

@@ -25,13 +25,32 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
             const expireDate = new Date(user.subscriptionTypeDate);
 
             if (now > expireDate) {
-
                 user.subscriptionTypeDate = undefined;
                 await user.save();
-                sendNotification(String(user?._id), "New Notification", "Your subscription has expired. Please renew.")
+
+                sendNotification(
+                    String(user?._id),
+                    "New Notification",
+                    "Your subscription has expired. Please renew."
+                );
                 throw new AppError(403, "Your subscription has expired. Please renew.");
             }
 
+            if (Number(user.dayliChatLimit) <= 0) {
+                sendNotification(
+                    String(user?._id),
+                    "New Notification",
+                    "Your daily chat limit has finished. Please wait until tomorrow."
+                );
+
+                throw new AppError(
+                    403,
+                    "Your daily chat limit has finished. You can’t chat anymore today."
+                );
+            }
+
+            user.dayliChatLimit = Number(user.dayliChatLimit) - 1;
+            await user.save();
 
             req.authUser = user;
             return next();
@@ -45,6 +64,7 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
 
 
         user.chatUsed += 1;
+
         await user.save();
 
         req.authUser = user;
