@@ -14,6 +14,7 @@ export declare const projectController: {
     findSingleSubtask: (req: Request, res: Response, next: NextFunction) => void;
     updateTaskStar: (req: Request, res: Response, next: NextFunction) => void;
     updateSubtaskStar: (req: Request, res: Response, next: NextFunction) => void;
+    getAllProjectByUser: (req: Request, res: Response, next: NextFunction) => void;
     softDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteTask: (req: Request, res: Response, next: NextFunction) => void;
     permanentDeleteSubTask: (req: Request, res: Response, next: NextFunction) => void;

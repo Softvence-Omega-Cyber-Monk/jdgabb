@@ -195,6 +195,13 @@ const getAllProject = catchAsync(async (req: Request, res: Response, next: NextF
     const result = await Project.find({});
     res.status(200).json(result);
 });
+const getAllProjectByUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const userId = req.params.id;
+
+    const result = await Project.find({ userId: userId });
+    res.status(200).json(result);
+});
 
 const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const projectId = req.params.id;
@@ -778,6 +785,7 @@ export const projectController = {
     findSingleSubtask,
     updateTaskStar,
     updateSubtaskStar,
+    getAllProjectByUser,
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubTask,

@@ -150,6 +150,11 @@ const getAllProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await project_model_1.Project.find({});
     res.status(200).json(result);
 });
+const getAllProjectByUser = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.params.id;
+    const result = await project_model_1.Project.find({ userId: userId });
+    res.status(200).json(result);
+});
 const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
     const projectId = req.params.id;
     const findUser = await project_model_1.Project.findOne({ _id: projectId });
@@ -592,6 +597,7 @@ exports.projectController = {
     findSingleSubtask,
     updateTaskStar,
     updateSubtaskStar,
+    getAllProjectByUser,
     softDeleteTask,
     permanentDeleteTask,
     permanentDeleteSubTask,

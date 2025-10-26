@@ -70,46 +70,6 @@ const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next
     });
     res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
-// const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const { username, email } = req.body;
-//     if (!username || !email) {
-//         throw new AppError(400, "Username & Email are required");
-//     }
-//     let user = await User.findOne({ email });
-//     if (!user) {
-//         user = await User.create({ username, email, isVerifid: true, auths: [{ provider: "google", providerId: email }] });
-//         await Promise.all([
-//             AiChatModel.create({ userId: user._id }),
-//             AppearanceModel.create({ userId: user._id }),
-//             CollaborationModel.create({ userId: user._id }),
-//             languageModel.create({ userId: user._id }),
-//             NotificationModel.create({ userId: user._id }),
-//             PrivacyModel.create({ userId: user._id }),
-//             ProductivityEnhancements.create({ userId: user._id }),
-//             ProjectTaskModel.create({ userId: user._id }),
-//             HistoryChatModel.create({ userId: user._id })
-//         ]);
-//     } else {
-//         const hasGoogleAuth = user.auths.some((auth) => auth.provider === "Google");
-//         if (!hasGoogleAuth) {
-//             user.auths.push({
-//                 provider: "Google",
-//                 providerId: email,
-//             });
-//             await user.save();
-//         }
-//     };
-//     const token = createJwtToken(user);
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Google authentication success",
-//         data: {
-//             accessToken: token.accessToken,
-//             user,
-//         },
-//     });
-// });
 const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => {
     const { username, email, fcmToken } = req.body;
     if (!username || !email || !fcmToken) {

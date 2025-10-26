@@ -7,8 +7,8 @@ export declare const paymentService: {
         paymentType: string;
     }) => Promise<{
         success: boolean;
-        url: string | null;
         sessionId: string;
+        paymentUrl: string | null;
     }>;
 };
 //# sourceMappingURL=payment.services.d.ts.map

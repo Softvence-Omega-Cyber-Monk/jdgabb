@@ -13,6 +13,36 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 // ✅ 1️⃣ Create Stripe Checkout Session + UNPAID payment entry
 // ✅ createPaymentSession
+// const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
+//   const payload = {
+//     ...req.body,
+//     userId: req.authUser?._id,
+//     email: req.authUser?.email,
+//   };
+
+//   const result = await paymentService.checkout(payload);
+
+//   if (!result || !result.sessionId) {
+//     throw new Error("Failed to create Stripe session");
+//   }
+
+//   await Payment.create({
+//     userId: new Types.ObjectId(payload.userId),
+//     sessionId: result.sessionId,
+//     amount: payload.amount,
+//     paymentType: payload.paymentType,
+//     paymentStauts: "UNPAID",
+//   });
+
+//   sendResponse(res, {
+//     statusCode: 200,
+//     success: true,
+//     message: "wait for redirect..",
+//     data: result,
+//   });
+// });
+
+
 const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
   const payload = {
     ...req.body,
@@ -26,6 +56,7 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
     throw new Error("Failed to create Stripe session");
   }
 
+  // ✅ Save payment as UNPAID
   await Payment.create({
     userId: new Types.ObjectId(payload.userId),
     sessionId: result.sessionId,
@@ -34,13 +65,15 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
     paymentStauts: "UNPAID",
   });
 
+  // ✅ Return success + payment URL to Flutter app
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: "wait for redirect..",
-    data: result,
+    message: "Stripe session created successfully",
+    data: result, // এতে থাকবে sessionId এবং paymentUrl
   });
 });
+
 
 
 const stripeWebhook = async (req: Request, res: Response) => {
@@ -114,7 +147,7 @@ const stripeWebhook = async (req: Request, res: Response) => {
 };
 
 
-const getAllPayment = catchAsync(async(req  : Request , res : Response , next : NextFunction) => {
+const getAllPayment = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
 })
 
