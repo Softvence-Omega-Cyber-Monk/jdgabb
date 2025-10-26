@@ -11,6 +11,7 @@ const stripe_1 = __importDefault(require("stripe"));
 const payment_model_1 = require("./payment.model");
 const mongoose_1 = require("mongoose");
 const userModel_1 = require("../user/userModel");
+const sendNotification_1 = require("../../config/sendNotification");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover",
 });
@@ -67,6 +68,7 @@ const stripeWebhook = async (req, res) => {
             if (user) {
                 if (paymentType === "PROMPT") {
                     user.chatLimit = (user.chatLimit || 0) + 200;
+                    (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "prompt payment success");
                 }
                 else if (paymentType === "SUBSCRIPTION") {
                     const now = new Date();
@@ -85,6 +87,7 @@ const stripeWebhook = async (req, res) => {
                     user.dayliChatLimit = 200;
                     await user.save();
                     console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
+                    (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "Subscription payment success");
                 }
                 await user.save();
             }

@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { Payment } from "./payment.model";
 import { Types } from "mongoose";
 import { User } from "../user/userModel";
+import { sendNotification } from "../../config/sendNotification";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-09-30.clover",
@@ -83,6 +84,7 @@ const stripeWebhook = async (req: Request, res: Response) => {
       if (user) {
         if (paymentType === "PROMPT") {
           user.chatLimit = (user.chatLimit || 0) + 200;
+          sendNotification(String(user?._id), "New Notification", "prompt payment success");
         } else if (paymentType === "SUBSCRIPTION") {
           const now = new Date();
           let newExpiryDate: Date;
@@ -101,6 +103,7 @@ const stripeWebhook = async (req: Request, res: Response) => {
           user.dayliChatLimit = 200;
           await user.save();
           console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
+          sendNotification(String(user?._id), "New Notification", "Subscription payment success");
         }
         await user.save();
       }
