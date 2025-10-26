@@ -47,6 +47,7 @@ const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
         success: true,
         message: "Project title updated successfully",
         data: updatedProject,
+        concatinateText
     });
 });
 const addTask = (0, catchAsync_1.default)(async (req, res, next) => {

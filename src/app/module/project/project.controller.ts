@@ -62,6 +62,7 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
         success: true,
         message: "Project title updated successfully",
         data: updatedProject,
+        concatinateText
     });
 });
 
