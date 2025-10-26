@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 import Stripe from "stripe";
+import { envVers } from "../../config/env";
 
 
 
@@ -24,8 +25,12 @@ const checkout = async (data: { userId: Types.ObjectId; email: string; amount: n
         quantity: 1,
       },
     ],
-    success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+    // api/v1/payment/success?session_id={CHECKOUT_SESSION_ID}
+    // /api/v1/payment/cancel`
+    success_url: `${envVers.SERVER_URL}/api/v1/payment/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.CLIENT_URL}/api/v1/payment/payment/cancel`,
+    // success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+    // cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
     metadata: {
       userId: userId.toString(),
       paymentType,

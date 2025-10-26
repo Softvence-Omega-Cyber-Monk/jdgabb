@@ -114,12 +114,15 @@ const stripeWebhook = async (req: Request, res: Response) => {
 };
 
 
-const getAllPayment = catchAsync(async(req  : Request , res : Response , next : NextFunction) => {
-
+const getAllPayment = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+  const userId = req.params.id;
+  const result = await Payment.find({ userId: userId });
+  res.status(200).send({ result });
 })
 
 
 export const PaymentController = {
   createPaymentSession,
   stripeWebhook,
+  getAllPayment
 };

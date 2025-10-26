@@ -5,6 +5,7 @@ interface IEnv {
     FRONTEND_URL: string;
     OPEN_AI_API_SECRATE: string;
     AI_ROOT_URL: string;
+    SERVER_URL: string;
     PASSPORT: {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLINT_SECRATE: string;

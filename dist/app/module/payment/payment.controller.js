@@ -97,9 +97,13 @@ const stripeWebhook = async (req, res) => {
     }
 };
 const getAllPayment = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.params.id;
+    const result = await payment_model_1.Payment.find({ userId: userId });
+    res.status(200).send({ result });
 });
 exports.PaymentController = {
     createPaymentSession,
     stripeWebhook,
+    getAllPayment
 };
 //# sourceMappingURL=payment.controller.js.map
