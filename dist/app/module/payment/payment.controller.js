@@ -16,30 +16,6 @@ const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
 });
 // ✅ 1️⃣ Create Stripe Checkout Session + UNPAID payment entry
 // ✅ createPaymentSession
-// const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
-//   const payload = {
-//     ...req.body,
-//     userId: req.authUser?._id,
-//     email: req.authUser?.email,
-//   };
-//   const result = await paymentService.checkout(payload);
-//   if (!result || !result.sessionId) {
-//     throw new Error("Failed to create Stripe session");
-//   }
-//   await Payment.create({
-//     userId: new Types.ObjectId(payload.userId),
-//     sessionId: result.sessionId,
-//     amount: payload.amount,
-//     paymentType: payload.paymentType,
-//     paymentStauts: "UNPAID",
-//   });
-//   sendResponse(res, {
-//     statusCode: 200,
-//     success: true,
-//     message: "wait for redirect..",
-//     data: result,
-//   });
-// });
 const createPaymentSession = (0, catchAsync_1.default)(async (req, res) => {
     const payload = {
         ...req.body,
@@ -50,7 +26,6 @@ const createPaymentSession = (0, catchAsync_1.default)(async (req, res) => {
     if (!result || !result.sessionId) {
         throw new Error("Failed to create Stripe session");
     }
-    // ✅ Save payment as UNPAID
     await payment_model_1.Payment.create({
         userId: new mongoose_1.Types.ObjectId(payload.userId),
         sessionId: result.sessionId,
@@ -58,12 +33,11 @@ const createPaymentSession = (0, catchAsync_1.default)(async (req, res) => {
         paymentType: payload.paymentType,
         paymentStauts: "UNPAID",
     });
-    // ✅ Return success + payment URL to Flutter app
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
-        message: "Stripe session created successfully",
-        data: result, // এতে থাকবে sessionId এবং paymentUrl
+        message: "wait for redirect..",
+        data: result,
     });
 });
 const stripeWebhook = async (req, res) => {

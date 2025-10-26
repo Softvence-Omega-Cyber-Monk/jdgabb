@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Server } from "http"
 import { envVers } from "./app/config/env";
 import { app } from "./app";
-import "../src/app/config/corn.config"
+import "./app/config/corn.config"
 
 let server: Server;
 
