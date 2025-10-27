@@ -123,7 +123,7 @@ const getAllPayment = catchAsync(async (req: Request, res: Response, next: NextF
   const result = await Payment.find({ userId: userId });
   console.log(result);
   res.status(200).send({ result });
-})
+});
 
 
 export const PaymentController = {

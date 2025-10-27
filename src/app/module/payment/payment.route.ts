@@ -9,7 +9,7 @@ const PaymentRoute = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 PaymentRoute.get("/getAll/:id" , firebaseNotifacationController.getAllNtg);
-
+PaymentRoute.patch("/markAsRead/:id" , firebaseNotifacationController.markAsRead);
 PaymentRoute.post('/checkout', protectUser(Role.USER), PaymentController.createPaymentSession)
 
 
