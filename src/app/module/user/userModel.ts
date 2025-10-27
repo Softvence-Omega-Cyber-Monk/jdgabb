@@ -88,5 +88,3 @@ userSchema.pre("findOneAndUpdate", async function (next) {
 export const User = mongoose.model<IUser>("user", userSchema);
 
 
-
-

@@ -9,6 +9,9 @@ const sendResponse_1 = require("../../utils/sendResponse");
 const user_services_1 = require("./user.services");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const userModel_1 = require("./userModel");
+const mongoose_1 = __importDefault(require("mongoose"));
+const project_model_1 = require("../project/project.model");
+const sendNotification_1 = require("../../config/sendNotification");
 const registerUser = (0, catchAsync_1.default)(async (req, res, next) => {
     if (!req.body.email && !req.body.password) {
         throw new AppError_1.default(400, "email & password must be required");
@@ -50,10 +53,89 @@ const userDeleted = (0, catchAsync_1.default)(async (req, res, next) => {
     ;
     res.status(200).json({ success: true, message: "User deleted success" });
 });
+const searchUserByEmail = (0, catchAsync_1.default)(async (req, res) => {
+    const { email } = req.query;
+    if (!email || typeof email !== "string") {
+        throw new AppError_1.default(400, "Email must be required");
+    }
+    const user = await userModel_1.User.find({ email: { $regex: new RegExp(email, "i") } });
+    if (!user) {
+        throw new AppError_1.default(400, "User not found");
+    }
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "User found successfully.",
+        data: user,
+    });
+});
+const addSharedUser = (0, catchAsync_1.default)(async (req, res) => {
+    const { userId, projectId } = req.body;
+    // ✅ Validation
+    if (!mongoose_1.default.Types.ObjectId.isValid(projectId) ||
+        !mongoose_1.default.Types.ObjectId.isValid(userId)) {
+        throw new AppError_1.default(400, "Invalid project ID or user ID.");
+    }
+    // ✅ Check if project exists
+    const project = await project_model_1.Project.findById(projectId);
+    if (!project) {
+        throw new AppError_1.default(404, "Project not found.");
+    }
+    // ✅ Check if user already added
+    const alreadyShared = project.sharedWith.some((u) => u.userId.toString() === userId);
+    if (alreadyShared) {
+        throw new AppError_1.default(400, "This user already has access to this project.");
+    }
+    // ✅ Add new shared user
+    project.sharedWith.push({
+        userId,
+        role: "viewer",
+    });
+    await project.save();
+    // 🔔 Send notification
+    await (0, sendNotification_1.sendNotification)(userId, "New Project Access Granted 🎉", "Congratulations! You’ve been added to a new project. Check it out now!");
+    // ✅ Response
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "User successfully added to the project's shared list.",
+        data: project,
+    });
+});
+const getUserSharedProjectsFull = (0, catchAsync_1.default)(async (req, res) => {
+    const { userId } = req.params;
+    if (!userId || !mongoose_1.default.Types.ObjectId.isValid(userId)) {
+        throw new AppError_1.default(400, "Invalid or missing user ID.");
+    }
+    const allProjects = await project_model_1.Project.find().populate("userId sharedWith.userId");
+    const sharedProjects = allProjects.filter(project => project.sharedWith.some(u => u.userId && u.userId._id.toString() === userId));
+    const result = sharedProjects.map(project => {
+        const isShared = project.sharedWith.some(u => u.userId && u.userId._id.toString() === userId);
+        return {
+            projectId: project._id,
+            goal: project.goal,
+            isShared,
+            totalSharedUsers: project.sharedWith.length,
+            projectData: project,
+        };
+    });
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: `Found ${result.length} project(s) shared with this user.`,
+        data: {
+            totalSharedProjects: result.length,
+            projects: result,
+        },
+    });
+});
 exports.userController = {
     registerUser,
     getSingleUser,
     userSettingInfo,
-    userDeleted
+    userDeleted,
+    searchUserByEmail,
+    addSharedUser,
+    getUserSharedProjectsFull
 };
 //# sourceMappingURL=user.controller.js.map

@@ -68,7 +68,7 @@ const stripeWebhook = async (req, res) => {
             if (user) {
                 if (paymentType === "PROMPT") {
                     user.chatLimit = (user.chatLimit || 0) + 300;
-                    await (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "prompt payment success");
+                    await (0, sendNotification_1.sendNotification)(String(user?._id), "Payment", "prompt payment success");
                 }
                 else if (paymentType === "SUBSCRIPTION") {
                     const now = new Date();
@@ -87,7 +87,7 @@ const stripeWebhook = async (req, res) => {
                     user.dayliChatLimit = 200;
                     await user.save();
                     console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
-                    await (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "Subscription payment success");
+                    await (0, sendNotification_1.sendNotification)(String(user?._id), "Payment", "Subscription payment success");
                 }
                 await user.save();
             }
