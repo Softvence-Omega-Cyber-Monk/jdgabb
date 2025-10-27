@@ -8,11 +8,6 @@ import { globalErrorhandler } from "./app/middleware/global.error.handler";
 import passport from "passport";
 import expressSession from "express-session";
 import { PaymentController } from "./app/module/payment/payment.controller";
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-09-30.clover',
-});
 
 export const app = express();
 

@@ -14,10 +14,6 @@ const global_error_handler_1 = require("./app/middleware/global.error.handler");
 const passport_1 = __importDefault(require("passport"));
 const express_session_1 = __importDefault(require("express-session"));
 const payment_controller_1 = require("./app/module/payment/payment.controller");
-const stripe_1 = __importDefault(require("stripe"));
-const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-09-30.clover',
-});
 exports.app = (0, express_1.default)();
 exports.app.use((0, cors_1.default)({
     origin: ["http://localhost:5173", "*"],

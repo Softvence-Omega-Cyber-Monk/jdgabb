@@ -67,7 +67,7 @@ const stripeWebhook = async (req, res) => {
             const user = await userModel_1.User.findById(userId);
             if (user) {
                 if (paymentType === "PROMPT") {
-                    user.chatLimit = (user.chatLimit || 0) + 200;
+                    user.chatLimit = (user.chatLimit || 0) + 300;
                     await (0, sendNotification_1.sendNotification)(String(user?._id), "New Notification", "prompt payment success");
                 }
                 else if (paymentType === "SUBSCRIPTION") {

@@ -1,20 +1,73 @@
 import cron from "node-cron";
 import { User } from "../module/user/userModel";
+import { Project } from "../module/project/project.model";
+import { sendNotification } from "./sendNotification";
 
 // প্রতিদিন রাত ১২ টায় রান হবে
 cron.schedule("0 0 * * *", async () => {
-  console.log("Running daily chat limit update:", new Date());
+  console.log("🕛 Running daily jobs:", new Date());
 
   try {
     const today = new Date();
 
+    // ✅ 1️⃣ Daily Chat Limit Reset
     const result = await User.updateMany(
-      { subscriptionTypeDate: { $gt: today } }, // সাবস্ক্রিপশন একটিভ
-      { $set: { dayliChatLimit: 200 } }        // আপডেট
+      { subscriptionTypeDate: { $gt: today } },
+      { $set: { dayliChatLimit: 200 } }
     );
+    console.log(`✅ ${result.modifiedCount} user(s) chat limit updated.`);
 
-    console.log(`${result.modifiedCount} user(s) updated.`);
+    // 🔔 Active users notification
+    const activeUsers = await User.find({
+      subscriptionTypeDate: { $gt: today },
+      fcmToken: { $exists: true, $ne: null },
+    });
+
+    for (const user of activeUsers) {
+      await sendNotification(
+        user._id.toString(),
+        "Daily Chat Limit Reset 🎯",
+        "Your daily chat limit has been refreshed! You can now use 200 messages for today."
+      );
+    }
+
+    // ✅ 2️⃣ Task Reminder Notification
+    const nextDay = new Date(today);
+    nextDay.setDate(today.getDate() + 1);
+
+    const startOfNextDay = new Date(nextDay.setHours(0, 0, 0, 0));
+    const endOfNextDay = new Date(nextDay.setHours(23, 59, 59, 999));
+
+    // Task যেগুলা আগামীকাল due
+    const projects = await Project.find({
+      "tasks.taskDueDate": { $gte: startOfNextDay, $lte: endOfNextDay },
+    }).populate("userId");
+
+    console.log(`📌 Found ${projects.length} projects with due tasks tomorrow.`);
+
+    for (const project of projects) {
+      const user = project.userId;
+
+      const tomorrowTasks = project.tasks.filter(
+        (t) =>
+          t.taskDueDate &&
+          t.taskDueDate >= startOfNextDay &&
+          t.taskDueDate <= endOfNextDay &&
+          !t.isComplite &&
+          !t.isDeleted
+      );
+
+      for (const task of tomorrowTasks) {
+        await sendNotification(
+          user._id.toString(),
+          "Task Reminder 🕐",
+          `Your task "${task.task}" is due tomorrow. Please complete it soon!`
+        );
+      }
+    }
+
+    console.log("✅ Daily job completed successfully.");
   } catch (error) {
-    console.error("Error updating daily chat limit:", error);
+    console.error("❌ Error in daily cron job:", error);
   }
 });
