@@ -12,6 +12,7 @@ const firebaseNotifacation_controller_1 = require("../firebaseNotification/fireb
 const PaymentRoute = (0, express_1.Router)();
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 PaymentRoute.get("/getAll/:id", firebaseNotifacation_controller_1.firebaseNotifacationController.getAllNtg);
+PaymentRoute.patch("/markAsRead/:id", firebaseNotifacation_controller_1.firebaseNotifacationController.markAsRead);
 PaymentRoute.post('/checkout', (0, protect_1.protectUser)(user_interface_1.Role.USER), payment_controller_1.PaymentController.createPaymentSession);
 PaymentRoute.get("/payment/success", async (req, res) => {
     const { session_id } = req.query;

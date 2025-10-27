@@ -41,7 +41,7 @@ const getUserNotifications = async (req, res) => {
 };
 const markAsRead = async (req, res) => {
     try {
-        const { id } = req.params;
+        const id = req.params.id;
         const updated = await firebaseNotifacation_mode_1.FirebaseNotificationModel.findByIdAndUpdate(id, { isRead: true }, { new: true });
         res.status(200).json({
             success: true,

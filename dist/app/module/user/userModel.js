@@ -46,7 +46,8 @@ const userSchema = new mongoose_1.default.Schema({
         default: false
     },
     subscriptionTypeDate: {
-        type: Date
+        type: Date,
+        default: null
     },
     chatLimit: {
         type: Number,
