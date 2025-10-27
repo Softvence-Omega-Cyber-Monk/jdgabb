@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.paymentService = void 0;
 const stripe_1 = __importDefault(require("stripe"));
-const env_1 = require("../../config/env");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
 const checkout = async (data) => {
     const { userId, email, amount, paymentType } = data;
@@ -27,10 +26,10 @@ const checkout = async (data) => {
         ],
         // api/v1/payment/success?session_id={CHECKOUT_SESSION_ID}
         // /api/v1/payment/cancel`
-        success_url: `${env_1.envVers.SERVER_URL}/api/v1/payment/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${process.env.CLIENT_URL}/api/v1/payment/payment/cancel`,
-        // success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
-        // cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
+        // success_url: `${envVers.SERVER_URL}/api/v1/payment/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+        // cancel_url: `${envVers.SERVER_URL}/api/v1/payment/payment/cancel`,
+        success_url: `${process.env.CLIENT_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.CLIENT_URL}/payment-cancel`,
         metadata: {
             userId: userId.toString(),
             paymentType,
