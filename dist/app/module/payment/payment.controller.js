@@ -101,7 +101,9 @@ const stripeWebhook = async (req, res) => {
 };
 const getAllPayment = (0, catchAsync_1.default)(async (req, res, next) => {
     const userId = req.params.id;
+    console.log(userId);
     const result = await payment_model_1.Payment.find({ userId: userId });
+    console.log(result);
     res.status(200).send({ result });
 });
 exports.PaymentController = {

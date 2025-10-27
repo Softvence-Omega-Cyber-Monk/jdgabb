@@ -1,5 +1,6 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { FirebaseNotificationModel } from "./firebaseNotifacation.mode;";
+import catchAsync from "../../utils/catchAsync";
 
 
 const createNotification = async (req: Request, res: Response) => {
@@ -27,9 +28,9 @@ const getUserNotifications = async (req: Request, res: Response) => {
     try {
         const { userId } = req.params;
 
-        const notifications = await FirebaseNotificationModel.find({ userId }).sort({
-            createdAt: -1,
-        });
+        const notifications = await FirebaseNotificationModel.find();
+
+        console.log(notifications);
 
         res.status(200).json({
             success: true,
@@ -60,8 +61,16 @@ const markAsRead = async (req: Request, res: Response) => {
 };
 
 
+const getAllNtg = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const userId = req.params.id;
+    const result = await FirebaseNotificationModel.find({ userId: userId });
+
+    res.status(200).json({ message: "Success", result: result });
+})
+
 export const firebaseNotifacationController = {
     createNotification,
     getUserNotifications,
-    markAsRead
+    markAsRead,
+    getAllNtg
 }

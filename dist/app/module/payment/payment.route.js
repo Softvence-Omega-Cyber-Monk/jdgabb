@@ -8,8 +8,10 @@ const payment_controller_1 = require("./payment.controller");
 const protect_1 = require("../../middleware/protect");
 const user_interface_1 = require("../user/user.interface");
 const stripe_1 = __importDefault(require("stripe"));
+const firebaseNotifacation_controller_1 = require("../firebaseNotification/firebaseNotifacation.controller");
 const PaymentRoute = (0, express_1.Router)();
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY);
+PaymentRoute.get("/getAll/:id", firebaseNotifacation_controller_1.firebaseNotifacationController.getAllNtg);
 PaymentRoute.post('/checkout', (0, protect_1.protectUser)(user_interface_1.Role.USER), payment_controller_1.PaymentController.createPaymentSession);
 PaymentRoute.get("/payment/success", async (req, res) => {
     const { session_id } = req.query;

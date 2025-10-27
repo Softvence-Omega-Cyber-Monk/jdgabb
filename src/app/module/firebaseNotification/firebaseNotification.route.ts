@@ -5,7 +5,7 @@ import { firebaseNotifacationController } from "./firebaseNotifacation.controlle
 const firebaseNotificationRouter = Router();
 
 firebaseNotificationRouter.post("/create", firebaseNotifacationController.createNotification);
-firebaseNotificationRouter.get("/getAll/:userId", firebaseNotifacationController.getUserNotifications);
+firebaseNotificationRouter.get("/getAllNtg", firebaseNotifacationController.getUserNotifications);
 firebaseNotificationRouter.patch("/markAsRead/:id/read", firebaseNotifacationController.markAsRead);
 
 export default firebaseNotificationRouter

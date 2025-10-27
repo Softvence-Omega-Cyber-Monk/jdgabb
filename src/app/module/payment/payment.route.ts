@@ -3,9 +3,12 @@ import { PaymentController } from "./payment.controller";
 import { protectUser } from "../../middleware/protect";
 import { Role } from "../user/user.interface";
 import Stripe from "stripe";
+import { firebaseNotifacationController } from "../firebaseNotification/firebaseNotifacation.controller";
 
 const PaymentRoute = Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+PaymentRoute.get("/getAll/:id" , firebaseNotifacationController.getAllNtg);
 
 PaymentRoute.post('/checkout', protectUser(Role.USER), PaymentController.createPaymentSession)
 
