@@ -36,6 +36,7 @@ const checkChatAccess = async (req, res, next) => {
                 throw new AppError_1.default(403, "Your daily chat limit has finished. You can’t chat anymore today.");
             }
             user.dayliChatLimit = Number(user.dayliChatLimit) - 1;
+            user.totalChatUseInWeek = Number(user.totalChatUseInWeek) + 1;
             await user.save();
             req.authUser = user;
             return next();

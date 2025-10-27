@@ -44,7 +44,15 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     subscriptionTypeDate: {
         type: Date,
-        default : null
+        default: null
+    },
+    weellyChatLimite: {
+        type: Number,
+        default: 0
+    },
+    totalChatUseInWeek: {
+        type: Number,
+        default: 0
     },
     chatLimit: {
         type: Number,

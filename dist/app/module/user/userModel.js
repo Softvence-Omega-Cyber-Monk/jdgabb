@@ -49,6 +49,14 @@ const userSchema = new mongoose_1.default.Schema({
         type: Date,
         default: null
     },
+    weellyChatLimite: {
+        type: Number,
+        default: 0
+    },
+    totalChatUseInWeek: {
+        type: Number,
+        default: 0
+    },
     chatLimit: {
         type: Number,
         default: 20

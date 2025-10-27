@@ -51,6 +51,7 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
             }
 
             user.dayliChatLimit = Number(user.dayliChatLimit) - 1;
+            user.totalChatUseInWeek = Number(user.totalChatUseInWeek) + 1;
             await user.save();
 
             req.authUser = user;

@@ -13,6 +13,8 @@ export declare const authServices: {
             role: import("../user/user.interface").Role;
             dayliChatLimit: Number;
             chatLimit: number;
+            weellyChatLimite?: Number;
+            totalChatUseInWeek?: Number;
             subscriptionTypeDate: Date | undefined;
             subscriptionType: string;
             chatUsed: number;
