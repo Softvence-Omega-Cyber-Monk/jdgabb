@@ -770,6 +770,184 @@ const getCompletedTasks = async (req: Request, res: Response) => {
 };
 
 
+
+// const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { taskID, project_id, prompt } = req.body;
+
+//     if (!taskID || !project_id || !prompt) {
+//         throw new AppError(400, "TaskId, ProjectId & prompt are required");
+//     }
+
+//     // API call with body
+//     const result = await axios.patch(
+//         `https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`,
+//         {
+//             prompt,
+//             project_id,
+//         },
+//         {
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//         }
+//     );
+
+//     res.status(200).json({
+//         success: true,
+//         message: "Task updated successfully via AI",
+//         data: result.data,
+//     });
+// });
+
+const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { taskID, project_id, prompt } = req.body
+
+    if (!taskID || !project_id || !prompt) {
+        throw new AppError(400, "TaskId, ProjectId & prompt are required")
+    }
+
+    // Step 1: Call AI API
+    const aiResponse = await axios.patch(
+        `https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`,
+        { prompt, project_id },
+        { headers: { "Content-Type": "application/json" } },
+    );
+
+    const extractTaskData = (data: any): any => {
+        // Check for deeply nested structure: data.data.data (the entire object)
+        if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {
+            return data.data.data
+        }
+        // Check for data.data structure
+        if (data?.data && typeof data.data === "object" && !Array.isArray(data.data)) {
+            // If data.data has a 'data' property, use that
+            if (data.data.data) return data.data.data
+            // Otherwise use data.data directly
+            return data.data
+        }
+        // Check for direct task object
+        if (data?.task && typeof data === "object") {
+            return data
+        }
+        // If nothing matches, return the entire data object as fallback
+        if (typeof data === "object" && !Array.isArray(data)) {
+            return data
+        }
+        return null
+    }
+
+    const updatedTaskData = extractTaskData(aiResponse.data)
+
+    if (!updatedTaskData || typeof updatedTaskData !== "object" || Array.isArray(updatedTaskData)) {
+        console.log("[v0] AI response extraction failed. Received:", JSON.stringify(aiResponse.data, null, 2))
+        throw new AppError(
+            500,
+            `Invalid AI response format. Expected object with task fields, received: ${typeof updatedTaskData}`,
+        )
+    }
+
+    const validTaskFields = ["task", "details", "taskDueDate", "isDeleted", "isComplite", "isStar", "subtasks"]
+    const hasValidField = validTaskFields.some((field) => field in updatedTaskData)
+
+    if (!hasValidField) {
+        console.log("[v0] No valid task fields found in AI response:", updatedTaskData)
+        throw new AppError(500, "AI response does not contain any valid task fields")
+    }
+
+    console.log("[v0] Successfully extracted task data:", updatedTaskData)
+
+    // Step 3: Find project
+    const project = await Project.findById(project_id)
+    if (!project) {
+        throw new AppError(404, "Project not found")
+    }
+
+    // Step 4: Find task
+    const taskIndex = project.tasks.findIndex((t: any) => t._id.toString() === taskID)
+    if (taskIndex === -1) {
+        throw new AppError(404, "Task not found")
+    }
+
+    const taskToUpdate = project.tasks[taskIndex]
+    if (!taskToUpdate) {
+        throw new AppError(404, "Task not found")
+    }
+
+    // Step 5: Define valid task fields to prevent injection
+    const validTaskFieldsToUse = ["task", "details", "taskDueDate", "isDeleted", "isComplite", "isStar"]
+    const validSubtaskFields = ["title", "subTaskDueDate", "isStar", "isDeleted", "isComplite"]
+
+    // Step 6: Update task fields dynamically
+    for (const key in updatedTaskData) {
+        const value = updatedTaskData[key]
+
+        if (value === undefined || value === null) continue
+
+        if (key === "subtasks" && Array.isArray(value)) {
+            value.forEach((subtaskUpdate: any) => {
+                // Check if subtask has a valid _id (not empty string or missing)
+                const hasValidId = subtaskUpdate._id && subtaskUpdate._id.toString().trim() !== ""
+
+                if (hasValidId) {
+                    // Try to find existing subtask by _id
+                    const subtaskIndex = taskToUpdate.subtasks.findIndex(
+                        (st: any) => st._id?.toString() === subtaskUpdate._id?.toString(),
+                    )
+
+                    if (subtaskIndex !== -1) {
+                        // Update existing subtask
+                        const subtaskToUpdate = taskToUpdate.subtasks[subtaskIndex]
+                        for (const stKey in subtaskUpdate) {
+                            if (validSubtaskFields.includes(stKey)) {
+                                const stValue = subtaskUpdate[stKey]
+                                if (stValue !== undefined && stValue !== null) {
+                                    (subtaskToUpdate as any).set(stKey, stValue)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    // New subtask - generate new ObjectId and add it
+                    const newSubtask = {
+                        _id: new mongoose.Types.ObjectId(),
+                        title: subtaskUpdate.title || "",
+                        subTaskDueDate: subtaskUpdate.subTaskDueDate || null,
+                        isStar: subtaskUpdate.isStar || false,
+                        isDeleted: subtaskUpdate.isDeleted || false,
+                        isComplite: subtaskUpdate.isComplite || false,
+                    }
+
+                    // Validate that new subtask has at least a title
+                    if (newSubtask.title.trim() !== "") {
+                        taskToUpdate.subtasks.push(newSubtask)
+                        console.log("[v0] Added new subtask:", newSubtask)
+                    }
+                }
+            })
+        } else if (validTaskFieldsToUse.includes(key)) {
+            // Update valid task fields only
+            taskToUpdate.set(key, value)
+        }
+    }
+
+    // Step 7: Save project
+    await project.save()
+
+    // Step 8: Response
+    res.status(200).json({
+        success: true,
+        message: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested.",
+        data: {
+            success: true,
+            statusCode: 200,
+            message: "",
+            data: {
+                updatedTask: taskToUpdate,
+            },
+        },
+    })
+});
+
 export const projectController = {
     createProject,
     updateProjectTitle,
@@ -794,5 +972,6 @@ export const projectController = {
     getStarredTasks,
     getCompletedTasks,
     updateTaskDueDateController,
-    askQuestionNotHistory
+    askQuestionNotHistory,
+    updateTaskWithAi
 };

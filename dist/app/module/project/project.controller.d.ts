@@ -24,5 +24,6 @@ export declare const projectController: {
     getCompletedTasks: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     updateTaskDueDateController: (req: Request, res: Response, next: NextFunction) => void;
     askQuestionNotHistory: (req: Request, res: Response, next: NextFunction) => void;
+    updateTaskWithAi: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map
