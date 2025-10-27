@@ -61,7 +61,7 @@ export const checkChatAccess = async (req: Request, res: Response, next: NextFun
         if (user.chatUsed >= user.chatLimit) {
             sendNotification(String(user?._id), "New Notification", "Chat limit reached. Please upgrade your plan.")
             // throw new AppError(403, "Chat limit reached. Please upgrade your plan.");
-            res.status(400).json({ chatLimitOver: false, statusSecrate: 800, message: "Chat limit reached. Please upgrade your plan." });
+            res.status(400).json({ isSubscription: false, statusSecrate: 800, message: "Chat limit reached. Please upgrade your plan." });
         };
 
 
