@@ -23,6 +23,7 @@ export interface IUser extends Document {
     isDeleted?: string,
     isVerifid?: boolean,
     role: Role,
+    isPaid: boolean,
     dayliChatLimit: Number,
     chatLimit: number,
     weellyChatLimite?: Number,

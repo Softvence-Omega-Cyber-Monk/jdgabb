@@ -69,6 +69,10 @@ const userSchema = new mongoose_1.default.Schema({
         type: Number,
         default: 0
     },
+    isPaid: {
+        type: Boolean,
+        default: false
+    },
     role: {
         type: String,
         default: user_interface_1.Role.USER

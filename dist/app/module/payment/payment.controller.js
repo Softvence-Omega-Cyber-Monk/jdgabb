@@ -84,6 +84,7 @@ const stripeWebhook = async (req, res) => {
                         newExpiryDate.setDate(newExpiryDate.getDate() + 7);
                     }
                     user.subscriptionTypeDate = newExpiryDate;
+                    user.isPaid = true;
                     user.weellyChatLimite = 1400;
                     user.totalChatUseInWeek = 0;
                     user.dayliChatLimit = 200;

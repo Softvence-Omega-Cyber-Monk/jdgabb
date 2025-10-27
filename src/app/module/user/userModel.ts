@@ -66,6 +66,10 @@ const userSchema = new mongoose.Schema<IUser>({
         type: Number,
         default: 0
     },
+    isPaid: {
+        type: Boolean,
+        default: false
+    },
     role: {
         type: String,
         default: Role.USER
