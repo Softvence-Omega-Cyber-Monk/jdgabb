@@ -16,7 +16,7 @@ projectRouter.post("/generateTitle", checkChatAccess, projectController.createPr
 projectRouter.patch("/answer", projectController.ansQuestion);
 projectRouter.get("/findSingleSubTask", projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", projectController.permanentDeleteTask);
-projectRouter.patch("/update/task_with_ai" , projectController.updateTaskWithAi)
+projectRouter.patch("/update/task_with_ai", checkChatAccess, projectController.updateTaskWithAi)
 projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess, projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", projectController.getProject);
 projectRouter.get("/user/project/:id", projectController.getAllProjectByUser);
