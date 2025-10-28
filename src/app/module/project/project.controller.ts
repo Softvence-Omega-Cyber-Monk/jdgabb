@@ -665,7 +665,7 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
         if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {
             return data.data.data
         };
-        
+
         if (data?.data && typeof data.data === "object" && !Array.isArray(data.data)) {
             // If data.data has a 'data' property, use that
             if (data.data.data) return data.data.data
@@ -780,7 +780,7 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
     // Step 7: Save project
     await project.save();
 
-    await UpdateChatHestory.create({ userId: userId, isFile: false, text: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested." });
+    await UpdateChatHestory.create({ userId: userId, isFile: true, text: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested." });
 
     // Step 8: Response
     res.status(200).json({

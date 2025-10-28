@@ -604,7 +604,7 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     // Step 7: Save project
     await project.save();
-    await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested." });
+    await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: true, text: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested." });
     // Step 8: Response
     res.status(200).json({
         success: true,
