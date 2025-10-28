@@ -121,31 +121,6 @@ const getProject = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result
     });
 });
-// const getProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const id = req.params.id;
-//     const result = await Project.findById(id);
-//     if (!result) {
-//         return sendResponse(res, {
-//             statusCode: 404,
-//             success: false,
-//             message: "Project not found",
-//             data: null,
-//         });
-//     };
-//     const filteredTasks = result.tasks.filter(
-//         (task: any) => task.isStar === false && task.isComplite === false
-//     );
-//     const projectWithFilteredTasks = {
-//         ...result.toObject(),
-//         tasks: filteredTasks,
-//     };
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Project retrieved successfully (filtered)",
-//         data: projectWithFilteredTasks,
-//     });
-// });
 const getAllProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await project_model_1.Project.find({});
     res.status(200).json(result);
@@ -270,29 +245,6 @@ const updateTaskStar = (0, catchAsync_1.default)(async (req, res, next) => {
         data: result,
     });
 });
-// const updateTaskStar = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-//     const { projectId, taskId, isStar, isComplite, taskDueDate } = req.body;
-//     if (!projectId || !taskId) {
-//         throw new AppError(400, "Project ID and Task ID are required");
-//     }
-//     const updates: { isStar?: boolean; isComplite?: boolean; taskDueDate?: Date | string } = {};
-//     if (typeof isStar === "boolean") updates.isStar = isStar;
-//     if (typeof isComplite === "boolean") updates.isComplite = isComplite;
-//     if (taskDueDate) updates.taskDueDate = taskDueDate;
-//     if (Object.keys(updates).length === 0) {
-//         throw new AppError(400, "No valid fields to update (isStar, isComplite, taskDueDate)");
-//     }
-//     const result = await projectServices.updateTaskStar(projectId, taskId, updates);
-//     if (!result) {
-//         throw new AppError(404, "Task not found");
-//     }
-//     sendResponse(res, {
-//         statusCode: 200,
-//         success: true,
-//         message: "Task updated successfully",
-//         data: result,
-//     });
-// });
 const updateTaskDueDateController = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectId, taskId, taskDueDate } = req.body;
     if (!projectId || !taskId || !taskDueDate) {
@@ -447,38 +399,6 @@ const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => 
         }
     });
 });
-// const getStarredTasks = async (req: Request, res: Response) => {
-//     try {
-//         const { projectId } = req.params;
-//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid project ID",
-//             });
-//         }
-//         const project = await Project.findById(projectId, {
-//             tasks: 1,
-//         });
-//         if (!project) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Project not found",
-//             });
-//         };
-//         const starredTasks = project.tasks.filter((task) => task.isStar === true);
-//         return res.status(200).json({
-//             success: true,
-//             count: starredTasks.length,
-//             tasks: starredTasks,
-//         });
-//     } catch (error) {
-//         console.error("Error fetching starred tasks:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Internal server error",
-//         });
-//     }
-// };
 const getStarredTasks = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -519,38 +439,6 @@ const getStarredTasks = async (req, res) => {
         });
     }
 };
-// const getStarredTasks = async (req: Request, res: Response) => {
-//     try {
-//         const { projectId } = req.params;
-//         if (!mongoose.Types.ObjectId.isValid(projectId as string)) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Invalid project ID",
-//             });
-//         }
-//         const project = await Project.findById(projectId, { tasks: 1 });
-//         if (!project) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "Project not found",
-//             });
-//         }
-//         const filteredTasks = project.tasks.filter(
-//             (task: any) => task.isStar === true || task.isComplite === true
-//         );
-//         return res.status(200).json({
-//             success: true,
-//             count: filteredTasks.length,
-//             tasks: filteredTasks,
-//         });
-//     } catch (error) {
-//         console.error("Error fetching starred/completed tasks:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "Internal server error",
-//         });
-//     }
-// };
 const getCompletedTasks = async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -607,10 +495,11 @@ const getCompletedTasks = async (req, res) => {
 //     });
 // });
 const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { taskID, project_id, prompt } = req.body;
-    if (!taskID || !project_id || !prompt) {
-        throw new AppError_1.default(400, "TaskId, ProjectId & prompt are required");
+    const { taskID, project_id, prompt, userId } = req.body;
+    if (!taskID || !project_id || !prompt || !userId) {
+        throw new AppError_1.default(400, "TaskId, ProjectId , userId & prompt are required");
     }
+    await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt });
     // Step 1: Call AI API
     const aiResponse = await axios_1.default.patch(`https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`, { prompt, project_id }, { headers: { "Content-Type": "application/json" } });
     const extractTaskData = (data) => {
@@ -618,7 +507,7 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
         if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {
             return data.data.data;
         }
-        // Check for data.data structure
+        ;
         if (data?.data && typeof data.data === "object" && !Array.isArray(data.data)) {
             // If data.data has a 'data' property, use that
             if (data.data.data)
@@ -715,6 +604,7 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     // Step 7: Save project
     await project.save();
+    await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: "Your task has been successfully updated via our AI assistant! We’ve applied the latest changes you requested." });
     // Step 8: Response
     res.status(200).json({
         success: true,
