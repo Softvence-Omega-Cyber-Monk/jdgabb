@@ -46,10 +46,8 @@ const stripeWebhook = async (req, res) => {
     let event;
     try {
         event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-        console.log("✅ Webhook verified:", event.type);
     }
     catch (err) {
-        console.error("❌ Webhook verification failed:", err.message);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
     // ✅ Handle event types
@@ -62,7 +60,6 @@ const stripeWebhook = async (req, res) => {
             const amount = session.amount_total / 100;
             // Update payment
             const updatedPayment = await payment_model_1.Payment.findOneAndUpdate({ sessionId }, { $set: { paymentStauts: "PAID" } }, { new: true });
-            console.log("✅ Payment updated:", updatedPayment);
             // User update
             const user = await userModel_1.User.findById(userId);
             if (user) {
@@ -89,7 +86,6 @@ const stripeWebhook = async (req, res) => {
                     user.totalChatUseInWeek = 0;
                     user.dayliChatLimit = 200;
                     await user.save();
-                    console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
                     await (0, sendNotification_1.sendNotification)(String(user?._id), "Payment", "Subscription payment success");
                 }
                 await user.save();
@@ -98,7 +94,6 @@ const stripeWebhook = async (req, res) => {
         res.status(200).send("Event processed");
     }
     catch (err) {
-        console.error("❌ Error processing event:", err.message);
         res.status(400).send(`Webhook error: ${err.message}`);
     }
 };

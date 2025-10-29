@@ -54,9 +54,7 @@ const stripeWebhook = async (req: Request, res: Response) => {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET as string
     );
-    console.log("✅ Webhook verified:", event.type);
   } catch (err: any) {
-    console.error("❌ Webhook verification failed:", err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -76,8 +74,6 @@ const stripeWebhook = async (req: Request, res: Response) => {
         { $set: { paymentStauts: "PAID" } },
         { new: true }
       );
-
-      console.log("✅ Payment updated:", updatedPayment);
 
       // User update
       const user = await User.findById(userId);
@@ -105,7 +101,6 @@ const stripeWebhook = async (req: Request, res: Response) => {
           user.totalChatUseInWeek = 0;
           user.dayliChatLimit = 200;
           await user.save();
-          console.log(`📅 Subscription extended till: ${user.subscriptionTypeDate}`);
           await sendNotification(String(user?._id), "Payment", "Subscription payment success");
         }
         await user.save();
@@ -114,7 +109,6 @@ const stripeWebhook = async (req: Request, res: Response) => {
 
     res.status(200).send("Event processed");
   } catch (err: any) {
-    console.error("❌ Error processing event:", err.message);
     res.status(400).send(`Webhook error: ${err.message}`);
   }
 };
