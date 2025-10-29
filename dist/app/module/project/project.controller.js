@@ -502,6 +502,7 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
     await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt });
     // Step 1: Call AI API
     const aiResponse = await axios_1.default.patch(`https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`, { prompt, project_id }, { headers: { "Content-Type": "application/json" } });
+    console.log(aiResponse.data);
     const extractTaskData = (data) => {
         // Check for deeply nested structure: data.data.data (the entire object)
         if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {

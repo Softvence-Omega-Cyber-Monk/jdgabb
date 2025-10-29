@@ -660,6 +660,8 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
         { headers: { "Content-Type": "application/json" } },
     );
 
+    console.log(aiResponse.data);
+
     const extractTaskData = (data: any): any => {
         // Check for deeply nested structure: data.data.data (the entire object)
         if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {
