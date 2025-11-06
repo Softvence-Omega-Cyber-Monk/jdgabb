@@ -9,25 +9,52 @@ const createProject = async (userId: string, goal: string) => {
 };
 
 
-const addTask = async (projectId: string, task: { task: string, subtasks?: string[], details?: string, taskDueData?: Date }) => {
+// const addTask = async (projectId: string, task: { task: string, subtasks?: string[], details?: string, taskDueData?: Date }) => {
 
-    const taskToAdd = {
+//     const taskToAdd = {
+//         task: task.task,
+//         subtasks: [],
+//         details: "",
+//     };
+
+//     const result = await Project.findOneAndUpdate(
+//         { _id: projectId },
+//         {
+//             $push: { tasks: taskToAdd },
+//         },
+//         { new: true }
+//     );
+
+//     return result;
+// };
+
+
+const addTask = async (
+    projectId: string,
+    task: {
+        task: string;
+        details?: string;
+        taskDueDate?: Date;
+        isStar?: boolean;
+    }
+) => {
+
+    const taskToAdd: any = {
         task: task.task,
-        subtasks: [],
-        details: "",
     };
+
+    if (task.details) taskToAdd.details = task.details;
+    if (task.taskDueDate) taskToAdd.taskDueDate = task.taskDueDate;
+    if (typeof task.isStar !== "undefined") taskToAdd.isStar = task.isStar;
 
     const result = await Project.findOneAndUpdate(
         { _id: projectId },
-        {
-            $push: { tasks: taskToAdd },
-        },
+        { $push: { tasks: taskToAdd } },
         { new: true }
     );
 
     return result;
 };
-
 
 const findSingleTask = async (projectid: string, taskId: string) => {
     const result = await Project.findOne({ _id: projectid, "tasks._id": taskId }, { "tasks.$": 1 });

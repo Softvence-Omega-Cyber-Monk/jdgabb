@@ -216,9 +216,9 @@ export declare const projectServices: {
     }>;
     addTask: (projectId: string, task: {
         task: string;
-        subtasks?: string[];
         details?: string;
-        taskDueData?: Date;
+        taskDueDate?: Date;
+        isStar?: boolean;
     }) => Promise<(mongoose.Document<unknown, {}, {
         userId: Types.ObjectId;
         goal: string;

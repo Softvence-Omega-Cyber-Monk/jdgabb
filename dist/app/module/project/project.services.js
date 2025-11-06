@@ -11,15 +11,32 @@ const createProject = async (userId, goal) => {
     const result = await project_model_1.Project.create({ userId: userId, goal: goal });
     return result;
 };
+// const addTask = async (projectId: string, task: { task: string, subtasks?: string[], details?: string, taskDueData?: Date }) => {
+//     const taskToAdd = {
+//         task: task.task,
+//         subtasks: [],
+//         details: "",
+//     };
+//     const result = await Project.findOneAndUpdate(
+//         { _id: projectId },
+//         {
+//             $push: { tasks: taskToAdd },
+//         },
+//         { new: true }
+//     );
+//     return result;
+// };
 const addTask = async (projectId, task) => {
     const taskToAdd = {
         task: task.task,
-        subtasks: [],
-        details: "",
     };
-    const result = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, {
-        $push: { tasks: taskToAdd },
-    }, { new: true });
+    if (task.details)
+        taskToAdd.details = task.details;
+    if (task.taskDueDate)
+        taskToAdd.taskDueDate = task.taskDueDate;
+    if (typeof task.isStar !== "undefined")
+        taskToAdd.isStar = task.isStar;
+    const result = await project_model_1.Project.findOneAndUpdate({ _id: projectId }, { $push: { tasks: taskToAdd } }, { new: true });
     return result;
 };
 const findSingleTask = async (projectid, taskId) => {

@@ -67,7 +67,7 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
 
 
 const addTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { projectId, task } = req.body;
+    const { projectId, task, details, taskDueDate, isStar } = req.body;
     const result = await projectServices.addTask(projectId, task);
     sendResponse(res, {
         statusCode: 200,
@@ -659,8 +659,6 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
         { prompt, project_id },
         { headers: { "Content-Type": "application/json" } },
     );
-
-    console.log(aiResponse.data);
 
     const extractTaskData = (data: any): any => {
         // Check for deeply nested structure: data.data.data (the entire object)
