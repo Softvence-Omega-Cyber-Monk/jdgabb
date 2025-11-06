@@ -68,7 +68,7 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
 
 const addTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { projectId, task, details, taskDueDate, isStar } = req.body;
-    const result = await projectServices.addTask(projectId, task);
+    const result = await projectServices.addTask(projectId, { task, details, taskDueDate, isStar });
     sendResponse(res, {
         statusCode: 200,
         success: true,

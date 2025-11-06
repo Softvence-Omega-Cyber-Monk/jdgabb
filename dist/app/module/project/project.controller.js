@@ -52,7 +52,7 @@ const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
 });
 const addTask = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectId, task, details, taskDueDate, isStar } = req.body;
-    const result = await project_services_1.projectServices.addTask(projectId, task);
+    const result = await project_services_1.projectServices.addTask(projectId, { task, details, taskDueDate, isStar });
     (0, sendResponse_1.sendResponse)(res, {
         statusCode: 200,
         success: true,
