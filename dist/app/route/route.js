@@ -9,6 +9,7 @@ const chatbot_route_1 = __importDefault(require("../module/chatbot/chatbot.route
 const home_route_1 = __importDefault(require("../module/home/home.route"));
 const history_route_1 = __importDefault(require("../module/hostory/history.route"));
 const notifecation_route_controller_1 = __importDefault(require("../module/notificationMsg/notifecation.route.controller"));
+const paddle_payment_router_1 = __importDefault(require("../module/paddlePayment/paddle.payment.router"));
 const payment_route_1 = __importDefault(require("../module/payment/payment.route"));
 const project_route_1 = __importDefault(require("../module/project/project.route"));
 const aiChat_route_1 = __importDefault(require("../module/setting/aiChat/aiChat.route"));
@@ -90,6 +91,10 @@ exports.moduleRoute = [
     {
         path: "/ntgMsg",
         routes: notifecation_route_controller_1.default
+    },
+    {
+        path: "/paddle",
+        routes: paddle_payment_router_1.default
     }
 ];
 //# sourceMappingURL=route.js.map

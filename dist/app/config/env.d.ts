@@ -6,6 +6,9 @@ interface IEnv {
     OPEN_AI_API_SECRATE: string;
     AI_ROOT_URL: string;
     SERVER_URL: string;
+    PADDLE_API_KEY: string;
+    PADDLE_VENDOR_ID: string;
+    PADDLE_ENVIRONMENT: string;
     PASSPORT: {
         GOOGLE_CLIENT_ID: string;
         GOOGLE_CLINT_SECRATE: string;

@@ -135,7 +135,6 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
 //             newExpiryDate = new Date(now);
 //             newExpiryDate.setDate(newExpiryDate.getDate() + 7);
 //           }
-
 //           user.subscriptionTypeDate = newExpiryDate;
 //           user.isPaid = true;
 //           user.weellyChatLimite = 1400;
