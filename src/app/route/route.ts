@@ -47,7 +47,6 @@ export const moduleRoute = [
         path: "/updateHistory",
         routes: updateHistoryRoute
     },
-    // Setting Releted Api Endpoients
     {
         path: "/appearance",
         routes: appearanceRouter

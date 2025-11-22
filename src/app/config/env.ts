@@ -13,12 +13,6 @@ interface IEnv {
     PADDLE_API_KEY: string;
     PADDLE_VENDOR_ID: string;
     PADDLE_ENVIRONMENT: string;
-    PASSPORT: {
-        GOOGLE_CLIENT_ID: string,
-        GOOGLE_CLINT_SECRATE: string,
-        GOOGLE_CALLBACK_URL: string,
-        EXPRESS_SESSION_SECRATE: string
-    },
     JWT: {
         JWT_ACCESS_SECRATE: string,
         JWT_REFRESH_SECRATE: string
@@ -34,7 +28,7 @@ interface IEnv {
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "GOOGLE_CLIENT_ID", "GOOGLE_CLINT_SECRATE", "GOOGLE_CALLBACK_URL", "EXPRESS_SESSION_SECRATE", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL", "PADDLE_API_KEY", "PADDLE_VENDOR_ID", "PADDLE_ENVIRONMENT"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL", "PADDLE_API_KEY", "PADDLE_VENDOR_ID", "PADDLE_ENVIRONMENT"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -56,12 +50,6 @@ const envChecker = (): IEnv => {
         PADDLE_API_KEY: process.env.PADDLE_API_KEY as string,
         PADDLE_VENDOR_ID: process.env.PADDLE_VENDOR_ID as string,
         PADDLE_ENVIRONMENT: process.env.PADDLE_ENVIRONMENT as string,
-        PASSPORT: {
-            GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID as string,
-            GOOGLE_CLINT_SECRATE: process.env.GOOGLE_CLINT_SECRATE as string,
-            GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL as string,
-            EXPRESS_SESSION_SECRATE: process.env.EXPRESS_SESSION_SECRATE as string,
-        },
         JWT: {
             JWT_ACCESS_SECRATE: process.env.JWT_ACCESS_SECRATE as string,
             JWT_REFRESH_SECRATE: process.env.JWT_REFRESH_SECRATE as string

@@ -9,12 +9,6 @@ interface IEnv {
     PADDLE_API_KEY: string;
     PADDLE_VENDOR_ID: string;
     PADDLE_ENVIRONMENT: string;
-    PASSPORT: {
-        GOOGLE_CLIENT_ID: string;
-        GOOGLE_CLINT_SECRATE: string;
-        GOOGLE_CALLBACK_URL: string;
-        EXPRESS_SESSION_SECRATE: string;
-    };
     JWT: {
         JWT_ACCESS_SECRATE: string;
         JWT_REFRESH_SECRATE: string;

@@ -50,7 +50,6 @@ exports.moduleRoute = [
         path: "/updateHistory",
         routes: update_history_route_1.default
     },
-    // Setting Releted Api Endpoients
     {
         path: "/appearance",
         routes: appearance_route_1.default

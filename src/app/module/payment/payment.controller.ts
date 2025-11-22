@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { sendResponse } from "../../utils/sendResponse";
 import catchAsync from "../../utils/catchAsync";
-import { paymentService } from "./payment.services";
 import Stripe from "stripe";
 import { Payment } from "./payment.model";
 import { Types } from "mongoose";
