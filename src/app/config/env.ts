@@ -10,9 +10,6 @@ interface IEnv {
     OPEN_AI_API_SECRATE: string,
     AI_ROOT_URL: string;
     SERVER_URL: string;
-    PADDLE_API_KEY: string;
-    PADDLE_VENDOR_ID: string;
-    PADDLE_ENVIRONMENT: string;
     JWT: {
         JWT_ACCESS_SECRATE: string,
         JWT_REFRESH_SECRATE: string
@@ -28,7 +25,7 @@ interface IEnv {
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL", "PADDLE_API_KEY", "PADDLE_VENDOR_ID", "PADDLE_ENVIRONMENT"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -47,9 +44,6 @@ const envChecker = (): IEnv => {
         STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY as string,
         STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET as string,
         STRIPT_PUBLISHABLE_KEY: process.env.STRIPT_PUBLISHABLE_KEY as string,
-        PADDLE_API_KEY: process.env.PADDLE_API_KEY as string,
-        PADDLE_VENDOR_ID: process.env.PADDLE_VENDOR_ID as string,
-        PADDLE_ENVIRONMENT: process.env.PADDLE_ENVIRONMENT as string,
         JWT: {
             JWT_ACCESS_SECRATE: process.env.JWT_ACCESS_SECRATE as string,
             JWT_REFRESH_SECRATE: process.env.JWT_REFRESH_SECRATE as string
