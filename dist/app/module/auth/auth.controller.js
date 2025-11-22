@@ -50,26 +50,6 @@ const deleteUser = (0, catchAsync_1.default)(async (req, res, next) => {
         data: null
     });
 });
-// Google Login / Register
-const googleCallBackController = (0, catchAsync_1.default)(async (req, res, next) => {
-    const user = req.user;
-    if (!user) {
-        throw new AppError_1.default(404, "User not found , Google login faild");
-    }
-    ;
-    console.log(user);
-    const token = (0, createJwtToken_1.createJwtToken)(user);
-    // setAuthCookie(res, token);
-    res.status(200).send({
-        success: true,
-        message: "Authentication success",
-        data: {
-            user: user,
-            accessToken: token.accessToken
-        }
-    });
-    res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
-});
 const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => {
     const { username, email, fcmToken } = req.body;
     if (!username || !email) {
@@ -119,7 +99,6 @@ const googleFirebaseLogin = (0, catchAsync_1.default)(async (req, res, next) => 
     });
 });
 exports.authController = {
-    googleCallBackController,
     loginUser,
     changePassword,
     deleteUser,

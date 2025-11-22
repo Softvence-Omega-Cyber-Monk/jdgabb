@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 export declare const NotificationModel: mongoose.Model<{
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];
@@ -15,8 +15,8 @@ export declare const NotificationModel: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }> & {
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];
@@ -26,14 +26,14 @@ export declare const NotificationModel: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }, {
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];
@@ -41,8 +41,8 @@ export declare const NotificationModel: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }>> & mongoose.FlatRecord<{
-    push: boolean;
     userId: mongoose.Types.ObjectId;
+    push: boolean;
     inAppReminder: boolean;
     smart: boolean;
     snoozeOptions: number[];

@@ -13,11 +13,5 @@ authRouter.patch("/change-password", protectUser() , authController.changePasswo
 authRouter.patch("/delete/:id", protectUser() , authController.deleteUser)
 
 
-// Google Login / Register
-authRouter.get("/google", async (req: Request, res: Response, next: NextFunction) => {
-    passport.authenticate("google", { scope: ["profile", "email"] })(req, res , next);
-});
-
-authRouter.get("/google/callback", passport.authenticate("google" , {failureRedirect : "/login"}) ,authController.googleCallBackController);
 
 export default authRouter;

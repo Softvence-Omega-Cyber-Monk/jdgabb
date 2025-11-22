@@ -51,32 +51,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunc
         data: null
     })
 
-})
-// Google Login / Register
-
-const googleCallBackController = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-
-    const user = req.user;
-
-    if (!user) {
-        throw new AppError(404, "User not found , Google login faild");
-    };
-
-    console.log(user);
-
-    const token = createJwtToken(user);
-    // setAuthCookie(res, token);
-    res.status(200).send({
-        success: true,
-        message: "Authentication success",
-        data: {
-            user: user,
-            accessToken: token.accessToken
-        }
-    })
-    res.redirect(`jdgabb://auth/google/callback?token=${token}&user=${user}`);
 });
-
 
 
 const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
@@ -141,7 +116,6 @@ const googleFirebaseLogin = catchAsync(async (req: Request, res: Response, next:
 
 
 export const authController = {
-    googleCallBackController,
     loginUser,
     changePassword,
     deleteUser,
