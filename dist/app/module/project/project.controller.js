@@ -34,7 +34,7 @@ const updateProjectTitle = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     ;
     await update_history_model_1.UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
-    const aiResponse = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+    const aiResponse = await axios_1.default.post(`https://ai.gogetagenie.com/projects/generate_title`, {
         "user_text ": title
     });
     const concatinateText = `Alright, I’ve added *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
@@ -138,7 +138,7 @@ const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     await update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+    const result = await axios_1.default.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
     if (!result) {
         throw new AppError_1.default(400, "Please try again.");
     }
@@ -166,7 +166,7 @@ const askQuestionNotHistory = (0, catchAsync_1.default)(async (req, res, next) =
     }
     ;
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+    const result = await axios_1.default.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
     if (!result) {
         throw new AppError_1.default(400, "Please try again.");
     }
@@ -331,7 +331,7 @@ const permanentDeleteSubTask = (0, catchAsync_1.default)(async (req, res, next) 
 const createProjectTaskSubtaskWithAi = async (req, res, next) => {
     try {
         const projectId = req.params.id;
-        const aiApiResponse = await axios_1.default.get(`https://project-helper-ai-agent.onrender.com/projects/project_tasks/${projectId}`);
+        const aiApiResponse = await axios_1.default.get(`https://ai.gogetagenie.com/projects/project_tasks/${projectId}`);
         const aiData = aiApiResponse.data;
         if (!aiData || !aiData.tasks) {
             return res
@@ -384,7 +384,7 @@ const createProjectWithAi = (0, catchAsync_1.default)(async (req, res, next) => 
         throw new AppError_1.default(200, "User id & User prompt must be required");
     }
     await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt });
-    const aiResponse = await axios_1.default.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+    const aiResponse = await axios_1.default.post(`https://ai.gogetagenie.com/projects/generate_title`, {
         "user_text ": prompt
     });
     const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
@@ -477,7 +477,7 @@ const getCompletedTasks = async (req, res) => {
 //     }
 //     // API call with body
 //     const result = await axios.patch(
-//         `https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`,
+//         `https://ai.gogetagenie.com/projects/task/${taskID}/edit`,
 //         {
 //             prompt,
 //             project_id,
@@ -501,7 +501,7 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     await update_history_model_1.UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt });
     // Step 1: Call AI API
-    const aiResponse = await axios_1.default.patch(`https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`, { prompt, project_id }, { headers: { "Content-Type": "application/json" } });
+    const aiResponse = await axios_1.default.patch(`https://ai.gogetagenie.com/projects/task/${taskID}/edit`, { prompt, project_id }, { headers: { "Content-Type": "application/json" } });
     const extractTaskData = (data) => {
         // Check for deeply nested structure: data.data.data (the entire object)
         if (data?.data?.data && typeof data.data.data === "object" && !Array.isArray(data.data.data)) {

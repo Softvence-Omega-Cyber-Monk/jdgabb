@@ -38,7 +38,7 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
 
     await UpdateChatHestory.create({ userId: finduser?.userId, isFile: false, text: title });
 
-    const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+    const aiResponse = await axios.post(`https://ai.gogetagenie.com/projects/generate_title`, {
         "user_text ": title
     });
 
@@ -181,7 +181,7 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
     await UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
 
     if (!result) {
         throw new AppError(400, "Please try again.");
@@ -218,7 +218,7 @@ const askQuestionNotHistory = catchAsync(async (req: Request, res: Response, nex
     };
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/ask/${projectId}`);
+    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
 
     if (!result) {
         throw new AppError(400, "Please try again.");
@@ -439,7 +439,7 @@ const createProjectTaskSubtaskWithAi = async (req: Request, res: Response, next:
         const projectId = req.params.id;
 
         const aiApiResponse = await axios.get(
-            `https://project-helper-ai-agent.onrender.com/projects/project_tasks/${projectId}`
+            `https://ai.gogetagenie.com/projects/project_tasks/${projectId}`
         );
         const aiData = aiApiResponse.data;
 
@@ -503,7 +503,7 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
         throw new AppError(200, "User id & User prompt must be required");
     }
     await UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt })
-    const aiResponse = await axios.post(`https://project-helper-ai-agent.onrender.com/projects/generate_title`, {
+    const aiResponse = await axios.post(`https://ai.gogetagenie.com/projects/generate_title`, {
         "user_text ": prompt
     });
 
@@ -625,7 +625,7 @@ const getCompletedTasks = async (req: Request, res: Response) => {
 
 //     // API call with body
 //     const result = await axios.patch(
-//         `https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`,
+//         `https://ai.gogetagenie.com/projects/task/${taskID}/edit`,
 //         {
 //             prompt,
 //             project_id,
@@ -655,7 +655,7 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
 
     // Step 1: Call AI API
     const aiResponse = await axios.patch(
-        `https://project-helper-ai-agent.onrender.com/projects/task/${taskID}/edit`,
+        `https://ai.gogetagenie.com/projects/task/${taskID}/edit`,
         { prompt, project_id },
         { headers: { "Content-Type": "application/json" } },
     );
