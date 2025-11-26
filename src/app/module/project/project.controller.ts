@@ -186,7 +186,7 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
     await UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`, {
+    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`, {}, {
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json"
