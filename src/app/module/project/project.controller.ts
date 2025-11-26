@@ -40,6 +40,11 @@ const updateProjectTitle = catchAsync(async (req: Request, res: Response, next: 
 
     const aiResponse = await axios.post(`https://ai.gogetagenie.com/projects/generate_title`, {
         "user_text ": title
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        }
     });
 
 
@@ -181,7 +186,12 @@ const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFun
     await UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
+    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`, {
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        }
+    });
 
     if (!result) {
         throw new AppError(400, "Please try again.");
@@ -218,7 +228,12 @@ const askQuestionNotHistory = catchAsync(async (req: Request, res: Response, nex
     };
 
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`);
+    const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`, {
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        }
+    });
 
     if (!result) {
         throw new AppError(400, "Please try again.");
@@ -503,8 +518,13 @@ const createProjectWithAi = catchAsync(async (req: Request, res: Response, next:
         throw new AppError(200, "User id & User prompt must be required");
     }
     await UpdateChatHestory.create({ userId: userId, isFile: false, text: prompt })
-    const aiResponse = await axios.post(`https://ai.gogetagenie.com/projects/generate_title`, {
+    const aiResponse = await axios.post(`https://ai.gogetagenie.com/projects/generate_title/`, {
         "user_text ": prompt
+    }, {
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json"
+        }
     });
 
     const concatinateText = `Awesome! You want to *${aiResponse.data.title}*! Would you like to *add something*, have me *ask questions* about your project or *create the project and task list* right away?`;
@@ -657,7 +677,12 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
     const aiResponse = await axios.patch(
         `https://ai.gogetagenie.com/projects/task/${taskID}/edit`,
         { prompt, project_id },
-        { headers: { "Content-Type": "application/json" } },
+        {
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            }
+        }
     );
 
     const extractTaskData = (data: any): any => {
