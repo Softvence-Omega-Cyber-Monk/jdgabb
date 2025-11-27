@@ -132,7 +132,7 @@ const updateTaskDueDate = async (
 
     const result = await Project.findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },
-        { $set: { "tasks.$.taskDueDate": new Date(taskDueDate) } },
+        { $set: { "tasks.$.taskDueDate": taskDueDate ? taskDueDate : null } },
         { new: true, runValidators: true }
     );
 

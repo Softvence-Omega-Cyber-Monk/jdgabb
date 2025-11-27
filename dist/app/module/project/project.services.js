@@ -84,7 +84,7 @@ const updateTaskStar = async (projectId, taskId, updates) => {
 //   return result;
 // };
 const updateTaskDueDate = async (projectId, taskId, taskDueDate) => {
-    const result = await project_model_1.Project.findOneAndUpdate({ _id: new mongoose_1.default.Types.ObjectId(projectId), "tasks._id": new mongoose_1.default.Types.ObjectId(taskId) }, { $set: { "tasks.$.taskDueDate": new Date(taskDueDate) } }, { new: true, runValidators: true });
+    const result = await project_model_1.Project.findOneAndUpdate({ _id: new mongoose_1.default.Types.ObjectId(projectId), "tasks._id": new mongoose_1.default.Types.ObjectId(taskId) }, { $set: { "tasks.$.taskDueDate": taskDueDate ? taskDueDate : null } }, { new: true, runValidators: true });
     return result;
 };
 const softDeleteTask = async (projectId, taskId) => {
