@@ -143,11 +143,22 @@ const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
     }
     await update_history_model_1.UpdateChatHestory.create({ userId: findUser?.userId, isFile: false, text: "Ask" });
     // const result = await axios.post(`${envVers.AI_ROOT_URL}/projects/ask/${projectId}`);
-    const result = await axios_1.default.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`, {}, {
+    // const result = await axios.post(`https://ai.gogetagenie.com/projects/ask/${projectId}`,
+    //     {
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             Accept: "application/json"
+    //         },
+    //     }
+    // );
+    const result = await (0, axios_1.default)({
+        method: 'post',
+        url: `https://ai.gogetagenie.com/projects/ask/${projectId}/`,
         headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json"
-        }
+            'accept': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded', // optional
+        },
+        data: ''
     });
     if (!result) {
         throw new AppError_1.default(400, "Please try again.");

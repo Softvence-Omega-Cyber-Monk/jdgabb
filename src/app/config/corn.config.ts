@@ -15,7 +15,6 @@ cron.schedule("0 0 * * *", async () => {
       { subscriptionTypeDate: { $gt: today } },
       { $set: { dayliChatLimit: 200 } }
     );
-    console.log(`✅ ${result.modifiedCount} user(s) chat limit updated.`);
 
     // 🔔 Active users notification
     const activeUsers = await User.find({
@@ -65,8 +64,6 @@ cron.schedule("0 0 * * *", async () => {
         );
       }
     }
-
-    console.log("✅ Daily job completed successfully.");
   } catch (error) {
     console.error("❌ Error in daily cron job:", error);
   }

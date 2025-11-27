@@ -14,7 +14,6 @@ node_cron_1.default.schedule("0 0 * * *", async () => {
         const today = new Date();
         // ✅ 1️⃣ Daily Chat Limit Reset
         const result = await userModel_1.User.updateMany({ subscriptionTypeDate: { $gt: today } }, { $set: { dayliChatLimit: 200 } });
-        console.log(`✅ ${result.modifiedCount} user(s) chat limit updated.`);
         // 🔔 Active users notification
         const activeUsers = await userModel_1.User.find({
             subscriptionTypeDate: { $gt: today },
@@ -44,7 +43,6 @@ node_cron_1.default.schedule("0 0 * * *", async () => {
                 await (0, sendNotification_1.sendNotification)(user._id.toString(), "Task Reminder 🕐", `Your task "${task.task}" is due tomorrow. Please complete it soon!`);
             }
         }
-        console.log("✅ Daily job completed successfully.");
     }
     catch (error) {
         console.error("❌ Error in daily cron job:", error);
