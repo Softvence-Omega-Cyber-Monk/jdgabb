@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { historyController } from "./hostory.controller";
-import { userController } from "../user/user.controller";
 
 const historyRoute = Router();
 

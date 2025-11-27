@@ -359,8 +359,8 @@ const updateTaskDueDateController = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
         const { projectId, taskId, taskDueDate } = req.body;
 
-        if (!projectId || !taskId || !taskDueDate) {
-            throw new AppError(400, "Project ID, Task ID, and taskDueDate are required");
+        if (!projectId || !taskId) {
+            throw new AppError(400, "Project ID, Task ID are required");
         }
 
         const result = await projectServices.updateTaskDueDate(projectId, taskId, taskDueDate);

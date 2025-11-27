@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AichatBotController = exports.chatbot = void 0;
 const update_history_model_1 = require("../UpdateHistory/update.history.model");
 const project_services_1 = require("../project/project.services");
+const trashModel_1 = require("../taskTrash/trashModel");
 // const chatbot = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 //     const { message , userId } = req.body;
 //     const emptyMsg = "Hey there! My name’s Ollie, and I’m here to help you with your to-dos! I can create projects, tasks, add details, due dates all based on our conversation! *Tap the screen* or type *“next”* in the chat bar below when you’re ready. ";
@@ -95,7 +96,34 @@ const chatbot = async (req, res, next) => {
     }
 };
 exports.chatbot = chatbot;
+const addTaskToTrash = async (req, res) => {
+    try {
+        const { taskId } = req.body;
+        if (Array.isArray(taskId)) {
+            const data = taskId.map(id => ({ taskId: id }));
+            const result = await trashModel_1.TaskTrushModel.insertMany(data);
+            return res.status(201).json({
+                success: true,
+                message: "Multiple tasks moved to trash",
+                data: result
+            });
+        }
+        if (!taskId) {
+            return res.status(400).json({ message: "taskId is required" });
+        }
+        const result = await trashModel_1.TaskTrushModel.create({ taskId });
+        res.status(201).json({
+            success: true,
+            message: "Task moved to trash",
+            data: result
+        });
+    }
+    catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 exports.AichatBotController = {
-    chatbot: exports.chatbot
+    chatbot: exports.chatbot,
+    addTaskToTrash
 };
 //# sourceMappingURL=chatbot.controller.js.map

@@ -17,7 +17,6 @@ import updateHistoryRoute from "../module/UpdateHistory/update.history.route";
 import userRouter from "../module/user/user.router";
 
 
-
 export const moduleRoute = [
     {
         path: "/auth",
@@ -87,5 +86,6 @@ export const moduleRoute = [
         path: "/ntgMsg",
         routes: notificationMsgRoutes
     }
+
 ];
 

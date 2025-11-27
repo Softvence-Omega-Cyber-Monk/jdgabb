@@ -129,9 +129,6 @@ const updateTaskDueDate = async (
     taskId: string,
     taskDueDate: Date | string
 ) => {
-    if (!taskDueDate) {
-        throw new Error("taskDueDate is required");
-    }
 
     const result = await Project.findOneAndUpdate(
         { _id: new mongoose.Types.ObjectId(projectId), "tasks._id": new mongoose.Types.ObjectId(taskId) },

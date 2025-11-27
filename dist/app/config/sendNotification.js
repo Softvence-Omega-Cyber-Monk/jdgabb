@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendNotification = void 0;
 const firebaseNotifacation_mode_1 = require("../module/firebaseNotification/firebaseNotifacation.mode;");
+const notifications_model_1 = require("../module/setting/notifications/notifications.model");
 const userModel_1 = require("../module/user/userModel");
 const fireBase_config_1 = require("./fireBase.config");
 const sendNotification = async (userId, title, body) => {
@@ -17,8 +18,11 @@ const sendNotification = async (userId, title, body) => {
             notification: { title, body },
             token: user.fcmToken,
         };
-        const response = await fireBase_config_1.messaging.send(message);
-        console.log("✅ Notification sent:", response);
+        const isPush = await notifications_model_1.NotificationModel.findOne({ userId: userId });
+        if (isPush?.push) {
+            const response = await fireBase_config_1.messaging.send(message);
+            console.log("✅ Notification sent:", response);
+        }
         await firebaseNotifacation_mode_1.FirebaseNotificationModel.create({
             userId,
             title,

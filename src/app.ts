@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import { notFound } from "./app/utils/notFoundRoute";
 import { moduleRoute } from "./app/route/route";
 import { globalErrorhandler } from "./app/middleware/global.error.handler";
-import { PaymentController } from "./app/module/payment/payment.controller";
 
 export const app = express();
 
@@ -19,21 +18,24 @@ app.use(cors({
 
 
 
-app.post(
-  '/webhook',
-  express.raw({ type: 'application/json' }),
-  PaymentController.stripeWebhook
-);
+// app.post(
+//   '/webhook',
+//   express.raw({ type: 'application/json' }),
+//   PaymentController.stripeWebhook
+// );
 
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.get("/addToTrash" , (req : Request , res : Response) => {
+  res.status(200).send("Hiting");
+})
 
 moduleRoute.forEach(item => app.use(`/api/v1${item.path}`, item.routes));
 
-
+// console.log("Loaded routes: ", moduleRoute.map(r => r.path));
 
 
 

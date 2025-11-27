@@ -1,5 +1,6 @@
 
 import { FirebaseNotificationModel } from "../module/firebaseNotification/firebaseNotifacation.mode;";
+import { NotificationModel } from "../module/setting/notifications/notifications.model";
 import { User } from "../module/user/userModel";
 import { messaging } from "./fireBase.config";
 
@@ -24,11 +25,14 @@ export const sendNotification = async (
             token: user.fcmToken,
         };
 
+        const isPush = await NotificationModel.findOne({ userId: userId });
+
+        if (isPush?.push) {
+            const response = await messaging.send(message);
+            console.log("✅ Notification sent:", response);
+        }
 
 
-        const response = await messaging.send(message);
-
-        console.log("✅ Notification sent:", response);
 
         await FirebaseNotificationModel.create({
             userId,
