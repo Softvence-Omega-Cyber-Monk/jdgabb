@@ -11,6 +11,7 @@ const history_route_1 = __importDefault(require("../module/hostory/history.route
 const notifecation_route_controller_1 = __importDefault(require("../module/notificationMsg/notifecation.route.controller"));
 const payment_route_1 = __importDefault(require("../module/payment/payment.route"));
 const project_route_1 = __importDefault(require("../module/project/project.route"));
+const addToArchive_route_1 = __importDefault(require("../module/setting/addToArchive/addToArchive.route"));
 const aiChat_route_1 = __importDefault(require("../module/setting/aiChat/aiChat.route"));
 const appearance_route_1 = __importDefault(require("../module/setting/appearance/appearance.route"));
 const collaboration_route_1 = __importDefault(require("../module/setting/collaboration/collaboration.route"));
@@ -89,6 +90,10 @@ exports.moduleRoute = [
     {
         path: "/ntgMsg",
         routes: notifecation_route_controller_1.default
-    }
+    },
+    {
+        path: "/archive",
+        routes: addToArchive_route_1.default
+    },
 ];
 //# sourceMappingURL=route.js.map

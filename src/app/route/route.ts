@@ -5,6 +5,7 @@ import historyRoute from "../module/hostory/history.route";
 import notificationMsgRoutes from "../module/notificationMsg/notifecation.route.controller";
 import PaymentRoute from "../module/payment/payment.route";
 import projectRouter from "../module/project/project.route";
+import archiveRouter from "../module/setting/addToArchive/addToArchive.route";
 import aiChatRouter from "../module/setting/aiChat/aiChat.route";
 import appearanceRouter from "../module/setting/appearance/appearance.route";
 import collabrationRoute from "../module/setting/collaboration/collaboration.route";
@@ -85,7 +86,11 @@ export const moduleRoute = [
     {
         path: "/ntgMsg",
         routes: notificationMsgRoutes
-    }
+    },
+    {
+        path: "/archive",
+        routes: archiveRouter
+    },
 
 ];
 
