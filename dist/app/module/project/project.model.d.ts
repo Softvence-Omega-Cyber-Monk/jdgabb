@@ -8,6 +8,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -34,6 +35,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -60,6 +62,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -112,6 +115,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -138,6 +142,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -164,6 +169,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -219,6 +225,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -245,6 +252,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -271,6 +279,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -328,6 +337,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -354,6 +364,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -380,6 +391,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -432,6 +444,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -458,6 +471,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -484,6 +498,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -539,6 +554,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -565,6 +581,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;
@@ -591,6 +608,7 @@ export declare const Project: mongoose.Model<{
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: mongoose.Types.DocumentArray<{
             isDeleted: boolean;

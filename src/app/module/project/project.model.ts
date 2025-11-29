@@ -19,6 +19,7 @@ const projectSchema = new mongoose.Schema(
                 taskDueDate: { type: Date, default: null },
                 isDeleted: { type: Boolean, default: false },
                 isComplite: { type: Boolean, default: false },
+                isArchived: { type: Boolean, default: false },
                 isStar: { type: Boolean, default: false },
                 subtasks: [
                     {

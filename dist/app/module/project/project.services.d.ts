@@ -9,6 +9,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -35,6 +36,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -61,6 +63,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -116,6 +119,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -142,6 +146,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -168,6 +173,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -228,6 +234,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -254,6 +261,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -280,6 +288,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -335,6 +344,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -361,6 +371,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -387,6 +398,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -442,6 +454,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -468,6 +481,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -494,6 +508,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -549,6 +564,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -575,6 +591,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -601,6 +618,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -656,6 +674,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -682,6 +701,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -708,6 +728,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -763,6 +784,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -789,6 +811,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -815,6 +838,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -867,6 +891,7 @@ export declare const projectServices: {
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: Types.DocumentArray<{
             isDeleted: boolean;
@@ -893,6 +918,7 @@ export declare const projectServices: {
         details: string;
         taskDueDate: NativeDate;
         isComplite: boolean;
+        isArchived: boolean;
         isStar: boolean;
         subtasks: Types.DocumentArray<{
             isDeleted: boolean;
@@ -927,6 +953,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -953,6 +980,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -979,6 +1007,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1034,6 +1063,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1060,6 +1090,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1086,6 +1117,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1144,6 +1176,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1170,6 +1203,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1196,6 +1230,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1251,6 +1286,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1277,6 +1313,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1303,6 +1340,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1358,6 +1396,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1384,6 +1423,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1410,6 +1450,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1465,6 +1506,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1491,6 +1533,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1517,6 +1560,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1572,6 +1616,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1598,6 +1643,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1624,6 +1670,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1679,6 +1726,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1705,6 +1753,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1731,6 +1780,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1786,6 +1836,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1812,6 +1863,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1838,6 +1890,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1893,6 +1946,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1919,6 +1973,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -1945,6 +2000,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2000,6 +2056,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2026,6 +2083,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2052,6 +2110,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2107,6 +2166,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2133,6 +2193,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2159,6 +2220,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2214,6 +2276,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2240,6 +2303,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2266,6 +2330,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2321,6 +2386,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2347,6 +2413,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
@@ -2373,6 +2440,7 @@ export declare const projectServices: {
             details: string;
             taskDueDate: NativeDate;
             isComplite: boolean;
+            isArchived: boolean;
             isStar: boolean;
             subtasks: Types.DocumentArray<{
                 isDeleted: boolean;
