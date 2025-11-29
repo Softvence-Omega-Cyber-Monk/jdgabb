@@ -6,6 +6,7 @@ const languageRouter = Router();
 
 languageRouter.post("/taskTrash", trashController.addTaskToTrash);
 languageRouter.delete("/removeTrash" , trashController.trashRemove);
+languageRouter.get("/find/:id" , trashController.getAllTrash);
 languageRouter.get("/get/:id", languageController.getLanguage);
 languageRouter.patch("/update/:id", languageController.updateLanguage);
 

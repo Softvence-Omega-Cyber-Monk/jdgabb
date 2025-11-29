@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import { TaskTrushModel } from "./trashModel";
+import AppError from "../../utils/AppError";
+import { sendResponse } from "../../utils/sendResponse";
 
 
 const addTaskToTrash = async (req: Request, res: Response) => {
     try {
-        const { taskId , userId } = req.body;
+        const { taskId, userId } = req.body;
 
         if (Array.isArray(taskId)) {
-            const data = taskId.map(id => ({ taskId: id , userId : userId }));
+            const data = taskId.map(id => ({ taskId: id, userId: userId }));
             const result = await TaskTrushModel.insertMany(data);
 
             return res.status(201).json({
@@ -21,7 +23,7 @@ const addTaskToTrash = async (req: Request, res: Response) => {
             return res.status(400).json({ message: "taskId is required" });
         }
 
-        const result = await TaskTrushModel.create({ taskId , userId : userId});
+        const result = await TaskTrushModel.create({ taskId, userId: userId });
 
         res.status(201).json({
             success: true,
@@ -72,9 +74,23 @@ const trashRemove = async (req: Request, res: Response) => {
     }
 };
 
+const getAllTrash = async (req: Request, res: Response) => {
+    const userId = req.params.id;
 
+    const result = await TaskTrushModel.find({ userId: userId });
+
+    if (!result) throw new AppError(404, "No Trash Found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Trash Retrived successfully",
+        data: result
+    })
+}
 
 export const trashController = {
     addTaskToTrash,
-    trashRemove
+    trashRemove,
+    getAllTrash
 }

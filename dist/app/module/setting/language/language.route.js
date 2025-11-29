@@ -6,6 +6,7 @@ const trash_controller_1 = require("../../taskTrash/trash.controller");
 const languageRouter = (0, express_1.Router)();
 languageRouter.post("/taskTrash", trash_controller_1.trashController.addTaskToTrash);
 languageRouter.delete("/removeTrash", trash_controller_1.trashController.trashRemove);
+languageRouter.get("/find/:id", trash_controller_1.trashController.getAllTrash);
 languageRouter.get("/get/:id", language_controller_1.languageController.getLanguage);
 languageRouter.patch("/update/:id", language_controller_1.languageController.updateLanguage);
 exports.default = languageRouter;

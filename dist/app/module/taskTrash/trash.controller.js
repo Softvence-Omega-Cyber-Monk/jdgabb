@@ -1,7 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.trashController = void 0;
 const trashModel_1 = require("./trashModel");
+const AppError_1 = __importDefault(require("../../utils/AppError"));
+const sendResponse_1 = require("../../utils/sendResponse");
 const addTaskToTrash = async (req, res) => {
     try {
         const { taskId, userId } = req.body;
@@ -58,8 +63,21 @@ const trashRemove = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+const getAllTrash = async (req, res) => {
+    const userId = req.params.id;
+    const result = await trashModel_1.TaskTrushModel.find({ userId: userId });
+    if (!result)
+        throw new AppError_1.default(404, "No Trash Found");
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Trash Retrived successfully",
+        data: result
+    });
+};
 exports.trashController = {
     addTaskToTrash,
-    trashRemove
+    trashRemove,
+    getAllTrash
 };
 //# sourceMappingURL=trash.controller.js.map
