@@ -2,15 +2,23 @@ import { Request, Response } from "express";
 import { TaskTrushModel } from "./trashModel";
 import AppError from "../../utils/AppError";
 import { sendResponse } from "../../utils/sendResponse";
+import { Project } from "../project/project.model";
 
 
 const addTaskToTrash = async (req: Request, res: Response) => {
     try {
         const { taskId, userId } = req.body;
 
+
         if (Array.isArray(taskId)) {
-            const data = taskId.map(id => ({ taskId: id, userId: userId }));
+            const data = taskId.map(id => ({ taskId: id, userId }));
             const result = await TaskTrushModel.insertMany(data);
+
+
+            await Project.updateMany(
+                { "tasks._id": { $in: taskId } },
+                { $set: { "tasks.$[].isDeleted": true } }
+            );
 
             return res.status(201).json({
                 success: true,
@@ -19,11 +27,19 @@ const addTaskToTrash = async (req: Request, res: Response) => {
             });
         }
 
+
         if (!taskId) {
             return res.status(400).json({ message: "taskId is required" });
         }
 
-        const result = await TaskTrushModel.create({ taskId, userId: userId });
+
+        const result = await TaskTrushModel.create({ taskId, userId });
+
+
+        await Project.updateOne(
+            { "tasks._id": taskId },
+            { $set: { "tasks.$.isDeleted": true } }
+        );
 
         res.status(201).json({
             success: true,
@@ -50,44 +66,83 @@ const trashRemove = async (req: Request, res: Response) => {
         }
 
         if (Array.isArray(taskId)) {
+
             const result = await TaskTrushModel.deleteMany({
                 taskId: { $in: taskId },
-                userId: userId
+                userId
             });
+
+
+            await Project.updateMany(
+                { "tasks._id": { $in: taskId } },
+                { $set: { "tasks.$[].isDeleted": false } }
+            );
 
             return res.status(200).json({
                 success: true,
-                message: `${result.deletedCount} tasks remove from trash`,
+                message: `${result.deletedCount} tasks removed from trash & restored`,
             });
         }
 
-        const result = await TaskTrushModel.deleteOne({ taskId: taskId, userId: userId });
+        const result = await TaskTrushModel.deleteOne({ taskId, userId });
 
-        res.status(200).json({
+        await Project.updateOne(
+            { "tasks._id": taskId },
+            { $set: { "tasks.$.isDeleted": false } }
+        );
+
+        return res.status(200).json({
             success: true,
-            message: "Task remove from trash",
+            message: "Task removed from trash & restored",
             deletedCount: result.deletedCount,
         });
 
     } catch (error: any) {
-        res.status(500).json({ message: error.message });
+        return res.status(500).json({ message: error.message });
     }
 };
+
+
+
 
 const getAllTrash = async (req: Request, res: Response) => {
     const userId = req.params.id;
 
-    const result = await TaskTrushModel.find({ userId: userId });
+    const trashList = await TaskTrushModel.find({ userId: userId });
 
-    if (!result) throw new AppError(404, "No Trash Found");
+    if (!trashList || trashList.length === 0) {
+        throw new AppError(404, "No Trash Found");
+    }
+
+    const trashTaskIds = trashList.map(item => item.taskId);
+
+
+    const matchedTasks = await Project.find(
+        { "tasks._id": { $in: trashTaskIds } },
+        { goal: 1, "tasks.$": 1 }
+    );
+
+
+    const combined = trashList.map(trashItem => {
+        const relatedProject = matchedTasks.find(project =>
+            project.tasks[0]?._id.toString() === trashItem.taskId.toString()
+        );
+
+        return {
+            ...trashItem.toObject(),
+            projectGoal: relatedProject?.goal || null,
+            task: relatedProject?.tasks?.[0] || null,
+        };
+    });
 
     sendResponse(res, {
         success: true,
         statusCode: 200,
-        message: "Trash Retrived successfully",
-        data: result
-    })
-}
+        message: "Trash retrieved successfully",
+        data: combined
+    });
+};
+
 
 export const trashController = {
     addTaskToTrash,
