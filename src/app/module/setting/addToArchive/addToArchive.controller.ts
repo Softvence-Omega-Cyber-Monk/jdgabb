@@ -54,8 +54,6 @@ const addToArchive = async (req: Request, res: Response) => {
     }
 };
 
-
-
 const removeArchive = async (req: Request, res: Response) => {
     try {
         const { taskId, userId } = req.body;
