@@ -108,33 +108,56 @@ const trashRemove = async (req: Request, res: Response) => {
 const getAllTrash = async (req: Request, res: Response) => {
     const userId = req.params.id;
 
-    const trashList = await TaskTrushModel.find({ userId: userId });
+    // 1. Get all trash items for user
+    const trashList = await TaskTrushModel.find({ userId });
 
     if (!trashList || trashList.length === 0) {
         throw new AppError(404, "No Trash Found");
     }
 
-    const trashTaskIds = trashList.map(item => item.taskId);
+    // 2. Convert all taskId to string for safe matching
+    const trashTaskIds = trashList.map(item => item.taskId.toString());
 
-
-    const matchedTasks = await Project.find(
-        { "tasks._id": { $in: trashTaskIds } },
-        { goal: 1, "tasks.$": 1 }
+    // 3. Find all projects containing these tasks
+    const projects = await Project.find(
+        {
+            "tasks._id": { $in: trashTaskIds }
+        },
+        {
+            goal: 1,
+            tasks: 1
+        }
     );
 
+    // 4. Create a map for quick lookup: taskId → { goal, task }
+    const taskMap = new Map<string, { goal: string; task: any }>();
 
+    projects.forEach(project => {
+        project.tasks.forEach(task => {
+            const taskIdStr = task._id.toString();
+
+            if (trashTaskIds.includes(taskIdStr)) {
+                taskMap.set(taskIdStr, {
+                    goal: project.goal,
+                    task
+                });
+            }
+        });
+    });
+
+    // 5. Combine trash item + projectGoal + task
     const combined = trashList.map(trashItem => {
-        const relatedProject = matchedTasks.find(project =>
-            project.tasks[0]?._id.toString() === trashItem.taskId.toString()
-        );
+        const tid = trashItem.taskId.toString();
+        const found = taskMap.get(tid);
 
         return {
             ...trashItem.toObject(),
-            projectGoal: relatedProject?.goal || null,
-            task: relatedProject?.tasks?.[0] || null,
+            projectGoal: found?.goal || null,
+            task: found?.task || null
         };
     });
 
+    // 6. Send Response
     sendResponse(res, {
         success: true,
         statusCode: 200,
@@ -142,7 +165,6 @@ const getAllTrash = async (req: Request, res: Response) => {
         data: combined
     });
 };
-
 
 export const trashController = {
     addTaskToTrash,

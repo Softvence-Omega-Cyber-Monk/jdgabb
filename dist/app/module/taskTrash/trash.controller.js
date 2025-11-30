@@ -70,20 +70,44 @@ const trashRemove = async (req, res) => {
 };
 const getAllTrash = async (req, res) => {
     const userId = req.params.id;
-    const trashList = await trashModel_1.TaskTrushModel.find({ userId: userId });
+    // 1. Get all trash items for user
+    const trashList = await trashModel_1.TaskTrushModel.find({ userId });
     if (!trashList || trashList.length === 0) {
         throw new AppError_1.default(404, "No Trash Found");
     }
-    const trashTaskIds = trashList.map(item => item.taskId);
-    const matchedTasks = await project_model_1.Project.find({ "tasks._id": { $in: trashTaskIds } }, { goal: 1, "tasks.$": 1 });
+    // 2. Convert all taskId to string for safe matching
+    const trashTaskIds = trashList.map(item => item.taskId.toString());
+    // 3. Find all projects containing these tasks
+    const projects = await project_model_1.Project.find({
+        "tasks._id": { $in: trashTaskIds }
+    }, {
+        goal: 1,
+        tasks: 1
+    });
+    // 4. Create a map for quick lookup: taskId → { goal, task }
+    const taskMap = new Map();
+    projects.forEach(project => {
+        project.tasks.forEach(task => {
+            const taskIdStr = task._id.toString();
+            if (trashTaskIds.includes(taskIdStr)) {
+                taskMap.set(taskIdStr, {
+                    goal: project.goal,
+                    task
+                });
+            }
+        });
+    });
+    // 5. Combine trash item + projectGoal + task
     const combined = trashList.map(trashItem => {
-        const relatedProject = matchedTasks.find(project => project.tasks[0]?._id.toString() === trashItem.taskId.toString());
+        const tid = trashItem.taskId.toString();
+        const found = taskMap.get(tid);
         return {
             ...trashItem.toObject(),
-            projectGoal: relatedProject?.goal || null,
-            task: relatedProject?.tasks?.[0] || null,
+            projectGoal: found?.goal || null,
+            task: found?.task || null
         };
     });
+    // 6. Send Response
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,

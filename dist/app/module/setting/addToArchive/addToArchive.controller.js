@@ -76,18 +76,36 @@ const removeArchive = async (req, res) => {
 };
 const getAllArchive = async (req, res) => {
     const userId = req.params.id;
-    const archiveList = await addToArchive_model_1.Archive.find({ userId: userId });
+    const archiveList = await addToArchive_model_1.Archive.find({ userId });
     if (!archiveList || archiveList.length === 0) {
         throw new AppError_1.default(404, "No Archived Tasks Found");
     }
-    const archiveTaskIds = archiveList.map(item => item.taskId);
-    const matchedTasks = await project_model_1.Project.find({ "tasks._id": { $in: archiveTaskIds } }, { goal: 1, "tasks.$": 1 });
+    const archiveTaskIds = archiveList.map(item => item.taskId.toString());
+    const projects = await project_model_1.Project.find({
+        "tasks._id": { $in: archiveTaskIds }
+    }, {
+        goal: 1,
+        tasks: 1
+    });
+    const taskMap = new Map();
+    projects.forEach(project => {
+        project.tasks.forEach(task => {
+            const taskIdStr = task._id.toString();
+            if (archiveTaskIds.includes(taskIdStr)) {
+                taskMap.set(taskIdStr, {
+                    goal: project.goal,
+                    task: task
+                });
+            }
+        });
+    });
     const combined = archiveList.map(archiveItem => {
-        const relatedProject = matchedTasks.find(project => project.tasks[0]?._id.toString() === archiveItem.taskId.toString());
+        const tid = archiveItem.taskId.toString();
+        const found = taskMap.get(tid);
         return {
             ...archiveItem.toObject(),
-            projectGoal: relatedProject?.goal || null,
-            task: relatedProject?.tasks?.[0] || null,
+            projectGoal: found?.goal || null,
+            task: found?.task || null
         };
     });
     (0, sendResponse_1.sendResponse)(res, {
