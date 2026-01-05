@@ -834,6 +834,88 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
     })
 });
 
+
+// ------------------------------------------- Updated Word ---------------------------------------------------------------
+
+
+const createFullProjectManualy = async (req: Request, res: Response) => {
+    try {
+        const {
+            userId,
+            goal,
+            tasks
+        } = req.body;
+
+        // Validation
+        if (!userId || !goal) {
+            return res.status(400).json({
+                success: false,
+                message: "userId and goal are required"
+            });
+        }
+
+        // Validate userId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid userId format"
+            });
+        }
+
+        // Prepare project data with defaults
+        const projectData: any = {
+            userId,
+            goal,
+            tasks: tasks || []
+        };
+
+        // Validate tasks if provided
+        if (tasks && Array.isArray(tasks)) {
+            for (const task of tasks) {
+                if (!task.task) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Each task must have a 'task' field"
+                    });
+                }
+
+                // Validate subtasks if provided
+                if (task.subtasks && Array.isArray(task.subtasks)) {
+                    for (const subtask of task.subtasks) {
+                        if (!subtask.title) {
+                            return res.status(400).json({
+                                success: false,
+                                message: "Each subtask must have a 'title' field"
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        // Create the project (answered_questions, visibility, sharedWith will use schema defaults)
+        const newProject = await Project.create(projectData);
+
+        // Populate if needed
+        await newProject.populate("userId", "name email");
+
+        return res.status(201).json({
+            success: true,
+            message: "Project created successfully",
+            data: newProject
+        });
+
+    } catch (error: any) {
+        console.error("Error creating project:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create project",
+            error: error.message
+        });
+    }
+};
+
+
 export const projectController = {
     createProject,
     updateProjectTitle,
@@ -859,5 +941,10 @@ export const projectController = {
     getCompletedTasks,
     updateTaskDueDateController,
     askQuestionNotHistory,
-    updateTaskWithAi
+    updateTaskWithAi,
+
+
+    // Update Work
+
+    createFullProjectManualy
 };

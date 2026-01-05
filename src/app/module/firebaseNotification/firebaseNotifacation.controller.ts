@@ -30,11 +30,10 @@ const getUserNotifications = async (req: Request, res: Response) => {
 
         const notifications = await FirebaseNotificationModel.find();
 
-        console.log(notifications);
 
         res.status(200).json({
             success: true,
-            data: notifications,
+            data: notifications
         });
     } catch (error) {
         res.status(500).json({ success: false, message: "Server error", error });

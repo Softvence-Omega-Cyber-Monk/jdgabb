@@ -16,17 +16,26 @@ projectRouter.post("/generateTitle", checkChatAccess, projectController.createPr
 projectRouter.patch("/answer", projectController.ansQuestion);
 projectRouter.get("/findSingleSubTask", projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", projectController.permanentDeleteTask);
-projectRouter.patch("/update/task_with_ai", checkChatAccess, projectController.updateTaskWithAi)
+projectRouter.patch("/update/task_with_ai", checkChatAccess, projectController.updateTaskWithAi);
+projectRouter.delete("/delete/suTask", projectController.permanentDeleteSubTask);
+projectRouter.patch("/update/taskDate", projectController.updateTaskDueDateController);
+
+// Update Work
+
+projectRouter.post("/createFullProject" , projectController.createFullProjectManualy);
+
+
+// End Update Work
+
 projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess, projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", projectController.getProject);
 projectRouter.get("/user/project/:id", projectController.getAllProjectByUser);
 projectRouter.post("/create/:id", projectController.createProject);
 projectRouter.get("/askQuestion/:id", checkChatAccess, projectController.askQuestion);
 projectRouter.patch("/update/title/:id", checkChatAccess, projectController.updateProjectTitle);
-projectRouter.delete("/delete/suTask", projectController.permanentDeleteSubTask);
 projectRouter.get("/starred-tasks/:userId", projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", projectController.getCompletedTasks);
 projectRouter.get("/askQuestionAiNotHistory/:id", checkChatAccess, projectController.askQuestionNotHistory);
-projectRouter.patch("/update/taskDate", projectController.updateTaskDueDateController);
+
 
 export default projectRouter;

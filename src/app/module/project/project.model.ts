@@ -55,13 +55,7 @@ const projectSchema = new mongoose.Schema(
                     default: "viewer",
                 }
             }
-        ],
-
-        linkAccess: {
-            type: Boolean,
-            default: false,
-        }
-
+        ]
     },
     { timestamps: true, versionKey: false }
 );
