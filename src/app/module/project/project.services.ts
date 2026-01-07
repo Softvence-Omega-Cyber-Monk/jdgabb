@@ -62,8 +62,7 @@ const findSingleTask = async (projectid: string, taskId: string) => {
 };
 
 
-const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }
-) => {
+const updateTaskStar = async (projectId: string, taskId: string, updates: { isStar?: boolean; isComplite?: boolean }) => {
     const updateFields: Record<string, any> = {};
 
 

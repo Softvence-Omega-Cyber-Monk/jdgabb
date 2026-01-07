@@ -5,20 +5,21 @@ import { UpdateChatHestory } from "./update.history.model";
 
 
 const createChatHistory = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId, text, isFile } = req.body;
-    await UpdateChatHestory.create({ userId: userId, text: text, isFile });
+    const { userId, text, isAi, chatType } = req.body;
+    const result = await UpdateChatHestory.create({ userId: userId, text: text, isAi, chatType });
     sendResponse(res, {
         success: true,
         statusCode: 200,
         message: "Chat addess success",
-        data: null
+        data: result
     });
 });
 
 const findUserChat = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
+    const chatType = req.params.chatType;
 
-    const result = await UpdateChatHestory.find({ userId: userId });
+    const result = await UpdateChatHestory.find({ userId: userId, chatType });
 
     sendResponse(res, {
         success: true,

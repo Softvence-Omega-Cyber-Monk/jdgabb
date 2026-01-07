@@ -2,21 +2,21 @@ import mongoose from "mongoose";
 export declare const UpdateChatHestory: mongoose.Model<{
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps, {}, {
     timestamps: true;
     versionKey: false;
 }> & {
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps & {
     _id: mongoose.Types.ObjectId;
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
@@ -25,21 +25,21 @@ export declare const UpdateChatHestory: mongoose.Model<{
 }, {
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
     timestamps: true;
     versionKey: false;
 }>> & mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
     text: string;
-    isFile: boolean;
-    createDate: NativeDate;
+    isAi: boolean;
+    chatType: "ask" | "create";
 } & mongoose.DefaultTimestampProps> & {
     _id: mongoose.Types.ObjectId;
 }>>;

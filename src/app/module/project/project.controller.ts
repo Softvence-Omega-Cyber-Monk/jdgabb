@@ -166,13 +166,7 @@ const getAllProject = catchAsync(async (req: Request, res: Response, next: NextF
     const result = await Project.find({});
     res.status(200).json(result);
 });
-const getAllProjectByUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const userId = req.params.id;
-
-    const result = await Project.find({ userId: userId });
-    res.status(200).json(result);
-});
 
 const askQuestion = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const projectId = req.params.id;
@@ -840,12 +834,8 @@ const updateTaskWithAi = catchAsync(async (req: Request, res: Response, next: Ne
 
 const createFullProjectManualy = async (req: Request, res: Response) => {
     try {
-        const {
-            userId,
-            goal,
-            tasks
-        } = req.body;
-
+        const { goal, tasks } = req.body;
+        const userId = req.params.userId;
         // Validation
         if (!userId || !goal) {
             return res.status(400).json({
@@ -916,6 +906,57 @@ const createFullProjectManualy = async (req: Request, res: Response) => {
 };
 
 
+const getAllProjectByUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const userId = req.params.id;
+
+    const result = await Project.find({
+        $or: [
+            { userId: userId },
+            { "sharedWith.userId": userId }
+        ]
+    });
+    res.status(200).json(result);
+});
+
+
+const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
+
+    if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
+        throw new AppError(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+    }
+
+    const findProject = await Project.findById(projectId);
+
+    // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
+    const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
+
+
+    if (!checkProjectAdminOwner) throw new AppError(403, "Access denied. Insufficient Permission.");
+
+
+    const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
+
+    if (alreadyExist) throw new AppError(400, "He Already has collabration access");
+
+    findProject?.sharedWith.push({
+        userId: projectCollabrationOwnerUserId
+    });
+
+    await findProject?.save();
+
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Project Collabration Successfully",
+        data: null
+    })
+
+})
+
 export const projectController = {
     createProject,
     updateProjectTitle,
@@ -946,5 +987,6 @@ export const projectController = {
 
     // Update Work
 
-    createFullProjectManualy
+    createFullProjectManualy,
+    collabrationProjectGiveAccess
 };

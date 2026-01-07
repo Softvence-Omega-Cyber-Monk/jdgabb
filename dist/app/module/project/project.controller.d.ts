@@ -25,5 +25,7 @@ export declare const projectController: {
     updateTaskDueDateController: (req: Request, res: Response, next: NextFunction) => void;
     askQuestionNotHistory: (req: Request, res: Response, next: NextFunction) => void;
     updateTaskWithAi: (req: Request, res: Response, next: NextFunction) => void;
+    createFullProjectManualy: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
+    collabrationProjectGiveAccess: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

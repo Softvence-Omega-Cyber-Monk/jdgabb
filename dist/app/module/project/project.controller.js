@@ -130,11 +130,6 @@ const getAllProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const result = await project_model_1.Project.find({});
     res.status(200).json(result);
 });
-const getAllProjectByUser = (0, catchAsync_1.default)(async (req, res, next) => {
-    const userId = req.params.id;
-    const result = await project_model_1.Project.find({ userId: userId });
-    res.status(200).json(result);
-});
 const askQuestion = (0, catchAsync_1.default)(async (req, res, next) => {
     const projectId = req.params.id;
     const findUser = await project_model_1.Project.findOne({ _id: projectId });
@@ -655,6 +650,106 @@ const updateTaskWithAi = (0, catchAsync_1.default)(async (req, res, next) => {
         },
     });
 });
+// ------------------------------------------- Updated Word ---------------------------------------------------------------
+const createFullProjectManualy = async (req, res) => {
+    try {
+        const { goal, tasks } = req.body;
+        const userId = req.params.userId;
+        // Validation
+        if (!userId || !goal) {
+            return res.status(400).json({
+                success: false,
+                message: "userId and goal are required"
+            });
+        }
+        // Validate userId format
+        if (!mongoose_1.default.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid userId format"
+            });
+        }
+        // Prepare project data with defaults
+        const projectData = {
+            userId,
+            goal,
+            tasks: tasks || []
+        };
+        // Validate tasks if provided
+        if (tasks && Array.isArray(tasks)) {
+            for (const task of tasks) {
+                if (!task.task) {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Each task must have a 'task' field"
+                    });
+                }
+                // Validate subtasks if provided
+                if (task.subtasks && Array.isArray(task.subtasks)) {
+                    for (const subtask of task.subtasks) {
+                        if (!subtask.title) {
+                            return res.status(400).json({
+                                success: false,
+                                message: "Each subtask must have a 'title' field"
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        // Create the project (answered_questions, visibility, sharedWith will use schema defaults)
+        const newProject = await project_model_1.Project.create(projectData);
+        // Populate if needed
+        await newProject.populate("userId", "name email");
+        return res.status(201).json({
+            success: true,
+            message: "Project created successfully",
+            data: newProject
+        });
+    }
+    catch (error) {
+        console.error("Error creating project:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to create project",
+            error: error.message
+        });
+    }
+};
+const getAllProjectByUser = (0, catchAsync_1.default)(async (req, res, next) => {
+    const userId = req.params.id;
+    const result = await project_model_1.Project.find({
+        $or: [
+            { userId: userId },
+            { "sharedWith.userId": userId }
+        ]
+    });
+    res.status(200).json(result);
+});
+const collabrationProjectGiveAccess = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
+    if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
+        throw new AppError_1.default(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+    }
+    const findProject = await project_model_1.Project.findById(projectId);
+    // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
+    const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
+    if (!checkProjectAdminOwner)
+        throw new AppError_1.default(403, "Access denied. Insufficient Permission.");
+    const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
+    if (alreadyExist)
+        throw new AppError_1.default(400, "He Already has collabration access");
+    findProject?.sharedWith.push({
+        userId: projectCollabrationOwnerUserId
+    });
+    await findProject?.save();
+    (0, sendResponse_1.sendResponse)(res, {
+        success: true,
+        statusCode: 200,
+        message: "Project Collabration Successfully",
+        data: null
+    });
+});
 exports.projectController = {
     createProject,
     updateProjectTitle,
@@ -680,6 +775,9 @@ exports.projectController = {
     getCompletedTasks,
     updateTaskDueDateController,
     askQuestionNotHistory,
-    updateTaskWithAi
+    updateTaskWithAi,
+    // Update Work
+    createFullProjectManualy,
+    collabrationProjectGiveAccess
 };
 //# sourceMappingURL=project.controller.js.map

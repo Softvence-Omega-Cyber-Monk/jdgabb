@@ -8,18 +8,19 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const sendResponse_1 = require("../../utils/sendResponse");
 const update_history_model_1 = require("./update.history.model");
 const createChatHistory = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { userId, text, isFile } = req.body;
-    await update_history_model_1.UpdateChatHestory.create({ userId: userId, text: text, isFile });
+    const { userId, text, isAi, chatType } = req.body;
+    const result = await update_history_model_1.UpdateChatHestory.create({ userId: userId, text: text, isAi, chatType });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,
         message: "Chat addess success",
-        data: null
+        data: result
     });
 });
 const findUserChat = (0, catchAsync_1.default)(async (req, res, next) => {
     const userId = req.params.id;
-    const result = await update_history_model_1.UpdateChatHestory.find({ userId: userId });
+    const chatType = req.params.chatType;
+    const result = await update_history_model_1.UpdateChatHestory.find({ userId: userId, chatType });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,

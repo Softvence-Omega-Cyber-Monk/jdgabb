@@ -16,16 +16,20 @@ projectRouter.patch("/answer", project_controller_1.projectController.ansQuestio
 projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);
 projectRouter.patch("/update/task_with_ai", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.updateTaskWithAi);
+projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
+projectRouter.patch("/update/taskDate", project_controller_1.projectController.updateTaskDueDateController);
+// Update Work
+projectRouter.post("/createFullProject/:userId", project_controller_1.projectController.createFullProjectManualy);
+projectRouter.post("/collabration-access-Project", project_controller_1.projectController.collabrationProjectGiveAccess);
+// End Update Work
 projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
 projectRouter.get("/user/project/:id", project_controller_1.projectController.getAllProjectByUser);
 projectRouter.post("/create/:id", project_controller_1.projectController.createProject);
 projectRouter.get("/askQuestion/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.askQuestion);
 projectRouter.patch("/update/title/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.updateProjectTitle);
-projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
 projectRouter.get("/starred-tasks/:userId", project_controller_1.projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", project_controller_1.projectController.getCompletedTasks);
 projectRouter.get("/askQuestionAiNotHistory/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.askQuestionNotHistory);
-projectRouter.patch("/update/taskDate", project_controller_1.projectController.updateTaskDueDateController);
 exports.default = projectRouter;
 //# sourceMappingURL=project.route.js.map

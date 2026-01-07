@@ -106,7 +106,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -216,7 +215,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }>;
@@ -331,7 +329,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -441,7 +438,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -551,7 +547,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -661,7 +656,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -771,7 +765,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -881,7 +874,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -1050,7 +1042,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -1160,7 +1151,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -1273,7 +1263,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -1383,7 +1372,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -1493,7 +1481,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -1603,7 +1590,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -1713,7 +1699,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -1823,7 +1808,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -1933,7 +1917,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -2043,7 +2026,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -2153,7 +2135,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -2263,7 +2244,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;
@@ -2373,7 +2353,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps, {}, {
         timestamps: true;
         versionKey: false;
@@ -2483,7 +2462,6 @@ export declare const projectServices: {
             role: "viewer";
             userId?: Types.ObjectId | null;
         }>;
-        linkAccess: boolean;
     } & mongoose.DefaultTimestampProps & {
         _id: Types.ObjectId;
     }) | null>;

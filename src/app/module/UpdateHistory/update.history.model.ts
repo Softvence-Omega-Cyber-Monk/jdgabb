@@ -6,7 +6,7 @@ const updateHistorySchema = new mongoose.Schema({
         ref: "user",
         required: true
     },
-    isFile: {
+    isAi: {
         type: Boolean,
         required: true // ai => true , user => false
     },
@@ -14,13 +14,14 @@ const updateHistorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    createDate: {
-        type: Date,
-        default: Date.now()
+    chatType: {
+        type: String,
+        enum: ['ask', 'create'],
+        default: "ask"
     }
 }, {
     timestamps: true,
     versionKey: false
 });
 
-export const UpdateChatHestory = mongoose.model("UpdateHistory" , updateHistorySchema);
+export const UpdateChatHestory = mongoose.model("UpdateHistory", updateHistorySchema);

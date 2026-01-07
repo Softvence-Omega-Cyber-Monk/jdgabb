@@ -29,10 +29,9 @@ const getUserNotifications = async (req, res) => {
     try {
         const { userId } = req.params;
         const notifications = await firebaseNotifacation_mode_1.FirebaseNotificationModel.find();
-        console.log(notifications);
         res.status(200).json({
             success: true,
-            data: notifications,
+            data: notifications
         });
     }
     catch (error) {

@@ -11,7 +11,7 @@ const updateHistorySchema = new mongoose_1.default.Schema({
         ref: "user",
         required: true
     },
-    isFile: {
+    isAi: {
         type: Boolean,
         required: true // ai => true , user => false
     },
@@ -19,9 +19,10 @@ const updateHistorySchema = new mongoose_1.default.Schema({
         type: String,
         required: true
     },
-    createDate: {
-        type: Date,
-        default: Date.now()
+    chatType: {
+        type: String,
+        enum: ['ask', 'create'],
+        default: "ask"
     }
 }, {
     timestamps: true,

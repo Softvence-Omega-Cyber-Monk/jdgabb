@@ -56,11 +56,7 @@ const projectSchema = new mongoose_1.default.Schema({
                 default: "viewer",
             }
         }
-    ],
-    linkAccess: {
-        type: Boolean,
-        default: false,
-    }
+    ]
 }, { timestamps: true, versionKey: false });
 exports.Project = mongoose_1.default.model("project", projectSchema);
 //# sourceMappingURL=project.model.js.map
