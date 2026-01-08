@@ -22,8 +22,9 @@ projectRouter.patch("/update/taskDate", projectController.updateTaskDueDateContr
 
 // Update Work
 
-projectRouter.post("/createFullProject/:userId" , projectController.createFullProjectManualy);
-projectRouter.post("/collabration-access-Project" , projectController.collabrationProjectGiveAccess)
+projectRouter.post("/createFullProject/:userId", projectController.createFullProjectManualy);
+projectRouter.post("/collabration-access-Project", projectController.collabrationProjectGiveAccess);
+projectRouter.patch("/updateFullProjectAnyWhere/:projectId", projectController.updateFullProjectAnyWhereProject);
 
 // End Update Work
 

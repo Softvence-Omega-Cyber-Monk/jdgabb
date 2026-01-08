@@ -27,5 +27,6 @@ export declare const projectController: {
     updateTaskWithAi: (req: Request, res: Response, next: NextFunction) => void;
     createFullProjectManualy: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     collabrationProjectGiveAccess: (req: Request, res: Response, next: NextFunction) => void;
+    updateFullProjectAnyWhereProject: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>>>;
 };
 //# sourceMappingURL=project.controller.d.ts.map

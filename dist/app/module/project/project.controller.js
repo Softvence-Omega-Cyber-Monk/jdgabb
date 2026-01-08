@@ -750,6 +750,164 @@ const collabrationProjectGiveAccess = (0, catchAsync_1.default)(async (req, res,
         data: null
     });
 });
+// const updateFullProjectAnyWhereProject = async (req: Request, res: Response, next: NextFunction) => {
+//     try {
+//         const { projectId } = req.params;
+//         const { goal, tasks } = req.body;
+//         // Find the project by ID
+//         const project = await Project.findById(projectId);
+//         if (!project) {
+//             return res.status(404).json({ message: 'Project not found' });
+//         }
+//         // Update the project's goal
+//         if (goal !== undefined) {
+//             project.goal = goal;
+//         }
+//         // Update tasks
+//         if (tasks && Array.isArray(tasks)) {
+//             tasks.forEach((taskUpdate) => {
+//                 // Check if this task already exists
+//                 const existingTask = project.tasks.id(taskUpdate._id);
+//                 if (existingTask) {
+//                     // Update existing task - শুধু যেই fields আছে সেগুলোই update হবে
+//                     if (taskUpdate.task !== undefined) existingTask.task = taskUpdate.task;
+//                     if (taskUpdate.details !== undefined) existingTask.details = taskUpdate.details;
+//                     if (taskUpdate.taskDueDate !== undefined) existingTask.taskDueDate = taskUpdate.taskDueDate;
+//                     if (taskUpdate.isDeleted !== undefined) existingTask.isDeleted = taskUpdate.isDeleted;
+//                     if (taskUpdate.isComplite !== undefined) existingTask.isComplite = taskUpdate.isComplite;
+//                     if (taskUpdate.isArchived !== undefined) existingTask.isArchived = taskUpdate.isArchived;
+//                     if (taskUpdate.isStar !== undefined) existingTask.isStar = taskUpdate.isStar;
+//                     // Update subtasks
+//                     if (taskUpdate.subtasks && Array.isArray(taskUpdate.subtasks)) {
+//                         taskUpdate.subtasks.forEach((subtaskUpdate: any) => {
+//                             const existingSubtask = existingTask.subtasks.id(subtaskUpdate._id);
+//                             if (existingSubtask) {
+//                                 // Update existing subtask
+//                                 if (subtaskUpdate.title !== undefined) existingSubtask.title = subtaskUpdate.title;
+//                                 if (subtaskUpdate.subTaskDueDate !== undefined) existingSubtask.subTaskDueDate = subtaskUpdate.subTaskDueDate;
+//                                 if (subtaskUpdate.isStar !== undefined) existingSubtask.isStar = subtaskUpdate.isStar;
+//                                 if (subtaskUpdate.isDeleted !== undefined) existingSubtask.isDeleted = subtaskUpdate.isDeleted;
+//                                 if (subtaskUpdate.isComplite !== undefined) existingSubtask.isComplite = subtaskUpdate.isComplite;
+//                             } else {
+//                                 // Add new subtask
+//                                 existingTask.subtasks.push(subtaskUpdate);
+//                             }
+//                         });
+//                     }
+//                 } else {
+//                     // Add new task
+//                     project.tasks.push(taskUpdate);
+//                 }
+//             });
+//         }
+//         // Save the updated project
+//         await project.save();
+//         return res.status(200).json({ message: 'Project updated successfully', project });
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({ message: 'An error occurred while updating the project' });
+//     }
+// };
+const updateFullProjectAnyWhereProject = async (req, res, next) => {
+    try {
+        const { projectId } = req.params;
+        const { goal, tasks } = req.body;
+        // Find the project by ID
+        const project = await project_model_1.Project.findById(projectId);
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        // Update the project's goal
+        if (goal !== undefined) {
+            project.goal = goal;
+        }
+        // Update tasks
+        if (tasks && Array.isArray(tasks)) {
+            tasks.forEach((taskUpdate) => {
+                let existingTask = null;
+                // Check if _id is a valid MongoDB ObjectID (24 hex characters)
+                if (taskUpdate._id && /^[0-9a-fA-F]{24}$/.test(taskUpdate._id)) {
+                    try {
+                        existingTask = project.tasks.id(taskUpdate._id);
+                    }
+                    catch (error) {
+                        // Invalid ID, treat as new task
+                        existingTask = null;
+                    }
+                }
+                if (existingTask) {
+                    // Update existing task - শুধু যেই fields আছে সেগুলোই update হবে
+                    if (taskUpdate.task !== undefined)
+                        existingTask.task = taskUpdate.task;
+                    if (taskUpdate.details !== undefined)
+                        existingTask.details = taskUpdate.details;
+                    if (taskUpdate.taskDueDate !== undefined)
+                        existingTask.taskDueDate = taskUpdate.taskDueDate;
+                    if (taskUpdate.isDeleted !== undefined)
+                        existingTask.isDeleted = taskUpdate.isDeleted;
+                    if (taskUpdate.isComplite !== undefined)
+                        existingTask.isComplite = taskUpdate.isComplite;
+                    if (taskUpdate.isArchived !== undefined)
+                        existingTask.isArchived = taskUpdate.isArchived;
+                    if (taskUpdate.isStar !== undefined)
+                        existingTask.isStar = taskUpdate.isStar;
+                    // Update subtasks
+                    if (taskUpdate.subtasks && Array.isArray(taskUpdate.subtasks)) {
+                        taskUpdate.subtasks.forEach((subtaskUpdate) => {
+                            let existingSubtask = null;
+                            // Check if subtask _id is valid
+                            if (subtaskUpdate._id && /^[0-9a-fA-F]{24}$/.test(subtaskUpdate._id)) {
+                                try {
+                                    existingSubtask = existingTask.subtasks.id(subtaskUpdate._id);
+                                }
+                                catch (error) {
+                                    existingSubtask = null;
+                                }
+                            }
+                            if (existingSubtask) {
+                                // Update existing subtask
+                                if (subtaskUpdate.title !== undefined)
+                                    existingSubtask.title = subtaskUpdate.title;
+                                if (subtaskUpdate.subTaskDueDate !== undefined)
+                                    existingSubtask.subTaskDueDate = subtaskUpdate.subTaskDueDate;
+                                if (subtaskUpdate.isStar !== undefined)
+                                    existingSubtask.isStar = subtaskUpdate.isStar;
+                                if (subtaskUpdate.isDeleted !== undefined)
+                                    existingSubtask.isDeleted = subtaskUpdate.isDeleted;
+                                if (subtaskUpdate.isComplite !== undefined)
+                                    existingSubtask.isComplite = subtaskUpdate.isComplite;
+                            }
+                            else {
+                                // Add new subtask (MongoDB will auto-generate _id)
+                                const { _id, ...subtaskWithoutId } = subtaskUpdate;
+                                existingTask.subtasks.push(subtaskWithoutId);
+                            }
+                        });
+                    }
+                }
+                else {
+                    // Add new task (remove invalid _id, MongoDB will auto-generate)
+                    const { _id, ...taskWithoutId } = taskUpdate;
+                    // Also remove invalid _ids from subtasks
+                    if (taskWithoutId.subtasks && Array.isArray(taskWithoutId.subtasks)) {
+                        taskWithoutId.subtasks = taskWithoutId.subtasks.map((st) => {
+                            const { _id, ...subtaskWithoutId } = st;
+                            return subtaskWithoutId;
+                        });
+                    }
+                    project.tasks.push(taskWithoutId);
+                }
+            });
+        }
+        // Save the updated project
+        await project.save();
+        return res.status(200).json({ message: 'Project updated successfully', project });
+    }
+    catch (error) {
+        console.error('Update error:', error);
+        return res.status(500).json({ message: 'An error occurred while updating the project' });
+    }
+};
 exports.projectController = {
     createProject,
     updateProjectTitle,
@@ -778,6 +936,7 @@ exports.projectController = {
     updateTaskWithAi,
     // Update Work
     createFullProjectManualy,
-    collabrationProjectGiveAccess
+    collabrationProjectGiveAccess,
+    updateFullProjectAnyWhereProject
 };
 //# sourceMappingURL=project.controller.js.map

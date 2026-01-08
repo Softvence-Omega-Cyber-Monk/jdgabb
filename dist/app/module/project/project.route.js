@@ -21,6 +21,7 @@ projectRouter.patch("/update/taskDate", project_controller_1.projectController.u
 // Update Work
 projectRouter.post("/createFullProject/:userId", project_controller_1.projectController.createFullProjectManualy);
 projectRouter.post("/collabration-access-Project", project_controller_1.projectController.collabrationProjectGiveAccess);
+projectRouter.patch("/updateFullProjectAnyWhere/:projectId", project_controller_1.projectController.updateFullProjectAnyWhereProject);
 // End Update Work
 projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
