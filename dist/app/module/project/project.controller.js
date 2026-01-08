@@ -655,6 +655,7 @@ const createFullProjectManualy = async (req, res) => {
     try {
         const { goal, tasks } = req.body;
         const userId = req.params.userId;
+        console.log(userId);
         // Validation
         if (!userId || !goal) {
             return res.status(400).json({

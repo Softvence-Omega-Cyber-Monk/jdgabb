@@ -58,5 +58,5 @@ const projectSchema = new mongoose_1.default.Schema({
         }
     ]
 }, { timestamps: true, versionKey: false });
-exports.Project = mongoose_1.default.model("project", projectSchema);
+exports.Project = mongoose_1.default.model("projectST", projectSchema);
 //# sourceMappingURL=project.model.js.map
