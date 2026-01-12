@@ -28,5 +28,7 @@ export declare const projectController: {
     createFullProjectManualy: (req: Request, res: Response) => Promise<Response<any, Record<string, any>>>;
     collabrationProjectGiveAccess: (req: Request, res: Response, next: NextFunction) => void;
     updateFullProjectAnyWhereProject: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>>>;
+    deleteProject: (req: Request, res: Response, next: NextFunction) => void;
+    updateProjectGoal: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

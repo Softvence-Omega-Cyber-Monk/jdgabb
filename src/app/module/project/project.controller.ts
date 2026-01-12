@@ -959,75 +959,6 @@ const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Respo
 });
 
 
-// const updateFullProjectAnyWhereProject = async (req: Request, res: Response, next: NextFunction) => {
-//     try {
-//         const { projectId } = req.params;
-//         const { goal, tasks } = req.body;
-
-//         // Find the project by ID
-//         const project = await Project.findById(projectId);
-
-//         if (!project) {
-//             return res.status(404).json({ message: 'Project not found' });
-//         }
-
-//         // Update the project's goal
-//         if (goal !== undefined) {
-//             project.goal = goal;
-//         }
-
-//         // Update tasks
-//         if (tasks && Array.isArray(tasks)) {
-//             tasks.forEach((taskUpdate) => {
-//                 // Check if this task already exists
-//                 const existingTask = project.tasks.id(taskUpdate._id);
-
-//                 if (existingTask) {
-//                     // Update existing task - শুধু যেই fields আছে সেগুলোই update হবে
-//                     if (taskUpdate.task !== undefined) existingTask.task = taskUpdate.task;
-//                     if (taskUpdate.details !== undefined) existingTask.details = taskUpdate.details;
-//                     if (taskUpdate.taskDueDate !== undefined) existingTask.taskDueDate = taskUpdate.taskDueDate;
-//                     if (taskUpdate.isDeleted !== undefined) existingTask.isDeleted = taskUpdate.isDeleted;
-//                     if (taskUpdate.isComplite !== undefined) existingTask.isComplite = taskUpdate.isComplite;
-//                     if (taskUpdate.isArchived !== undefined) existingTask.isArchived = taskUpdate.isArchived;
-//                     if (taskUpdate.isStar !== undefined) existingTask.isStar = taskUpdate.isStar;
-
-//                     // Update subtasks
-//                     if (taskUpdate.subtasks && Array.isArray(taskUpdate.subtasks)) {
-//                         taskUpdate.subtasks.forEach((subtaskUpdate: any) => {
-//                             const existingSubtask = existingTask.subtasks.id(subtaskUpdate._id);
-
-//                             if (existingSubtask) {
-//                                 // Update existing subtask
-//                                 if (subtaskUpdate.title !== undefined) existingSubtask.title = subtaskUpdate.title;
-//                                 if (subtaskUpdate.subTaskDueDate !== undefined) existingSubtask.subTaskDueDate = subtaskUpdate.subTaskDueDate;
-//                                 if (subtaskUpdate.isStar !== undefined) existingSubtask.isStar = subtaskUpdate.isStar;
-//                                 if (subtaskUpdate.isDeleted !== undefined) existingSubtask.isDeleted = subtaskUpdate.isDeleted;
-//                                 if (subtaskUpdate.isComplite !== undefined) existingSubtask.isComplite = subtaskUpdate.isComplite;
-//                             } else {
-//                                 // Add new subtask
-//                                 existingTask.subtasks.push(subtaskUpdate);
-//                             }
-//                         });
-//                     }
-//                 } else {
-//                     // Add new task
-//                     project.tasks.push(taskUpdate);
-//                 }
-//             });
-//         }
-
-//         // Save the updated project
-//         await project.save();
-
-//         return res.status(200).json({ message: 'Project updated successfully', project });
-//     } catch (error) {
-//         console.error(error);
-//         return res.status(500).json({ message: 'An error occurred while updating the project' });
-//     }
-// };
-
-
 const updateFullProjectAnyWhereProject = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { projectId } = req.params;
@@ -1125,7 +1056,52 @@ const updateFullProjectAnyWhereProject = async (req: Request, res: Response, nex
     }
 };
 
+const deleteProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
+    const projectId = req.params.projectId;
+
+    if (!projectId) {
+        throw new AppError(404, "Project Id Must be required");
+    };
+
+    const deleteProject = await Project.findByIdAndDelete(projectId);
+
+    if (!deleteProject) throw new AppError(400, "Project Not Found");
+
+    sendResponse(res, {
+        success: true,
+        message: "Project Deleted Success",
+        statusCode: 200,
+        data: null
+    })
+});
+
+
+const updateProjectGoal = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.body.projectId;
+    const goal = req.body?.goal;
+
+    if (!projectId) throw new AppError(400, "Project ID Must be required");
+
+    if (!goal) throw new AppError(400, "Project Goal Must be required");
+
+
+    const updatePeroject = await Project.findByIdAndUpdate(projectId, {
+        goal: goal
+    });
+
+    if (!updatePeroject) throw new AppError(404, "Project Not Found");
+
+
+    sendResponse(res, {
+        success: true,
+        message: "Project Goal Updated Success",
+        statusCode: 200,
+        data: null
+    })
+
+
+})
 
 export const projectController = {
     createProject,
@@ -1159,5 +1135,7 @@ export const projectController = {
 
     createFullProjectManualy,
     collabrationProjectGiveAccess,
-    updateFullProjectAnyWhereProject
+    updateFullProjectAnyWhereProject,
+    deleteProject,
+    updateProjectGoal
 };
