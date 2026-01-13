@@ -34,11 +34,12 @@ const findUserChat = catchAsync(async (req: Request, res: Response, next: NextFu
 
 const deleteUserChat = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { userId } = req.params;
+    const { userId, chatType } = req.params;
 
 
     const result = await UpdateChatHestory.deleteMany({
-        userId: userId
+        userId: userId,
+        chatType: chatType
     });
 
 

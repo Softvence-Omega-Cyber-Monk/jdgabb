@@ -1101,7 +1101,147 @@ const updateProjectGoal = catchAsync(async (req: Request, res: Response, next: N
     })
 
 
-})
+});
+
+const updateTaskTitle = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, task } = req.body;
+
+    if (!projectId || !taskId) {
+        throw new AppError(400, "Project ID and Task ID are required");
+    }
+
+    if (!task || typeof task !== "string") {
+        throw new AppError(400, "Task field is required and must be a string");
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new AppError(404, "Project not found");
+    }
+
+    const taskObj = project.tasks.id(taskId);
+    if (!taskObj) {
+        throw new AppError(404, "Task not found");
+    }
+
+    taskObj.task = task;
+
+    await project.save();
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task field updated successfully",
+        data: taskObj,
+    });
+});
+
+
+const updateSubtaskTitleAbdDueDate = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { projectId, taskId, subtaskId, title, subTaskDueDate } = req.body;
+
+    if (!projectId || !taskId || !subtaskId) {
+        throw new AppError(400, "Project ID, Task ID, and Subtask ID are required");
+    }
+
+    // Only update if value is not undefined, null, or empty string
+    const updates: { title?: string; subTaskDueDate?: Date } = {};
+    if (title !== undefined && title !== null && title.trim() !== "") updates.title = title;
+    if (subTaskDueDate !== undefined && subTaskDueDate !== null && subTaskDueDate !== "") updates.subTaskDueDate = new Date(subTaskDueDate);
+
+    if (Object.keys(updates).length === 0) {
+        throw new AppError(400, "No valid fields to update (title or subTaskDueDate)");
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+        throw new AppError(404, "Project not found");
+    }
+
+    const task = project.tasks.id(taskId);
+    if (!task) {
+        throw new AppError(404, "Task not found");
+    }
+
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) {
+        throw new AppError(404, "Subtask not found");
+    }
+
+    // Apply updates safely
+    if (updates.title) subtask.title = updates.title;
+    if (updates.subTaskDueDate) subtask.subTaskDueDate = updates.subTaskDueDate;
+
+    await project.save();
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Subtask updated successfully",
+        data: subtask,
+    });
+});
+
+
+const seeProjectAccessUser = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { projectId } = req.params;
+
+
+        const project = await Project.findById(projectId).populate({
+            path: "sharedWith.userId",
+            select: "username email",
+        });
+
+        if (!project) return next(new AppError(404, "Project not found"));
+
+        const sharedUsers = project.sharedWith.map((item) => item.userId);
+
+        res.status(200).json({
+            status: "success",
+            results: sharedUsers.length,
+            data: {
+                users: sharedUsers,
+            },
+        });
+    }
+);
+
+
+
+const removeUserFromProject = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        const { userId, projectId, projectAdminId } = req.body;
+
+        if (!userId || !projectId || !projectAdminId) return next(new AppError(400, "UserId, ProjectId & projectAdminId is required"));
+
+        const findProject = await Project.findById(projectId);
+
+        if (findProject && findProject.userId.toString() !== projectAdminId) {
+            throw new AppError(403, "You Are not permited access this route");
+        };
+
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId,
+            { $pull: { sharedWith: { userId } } },
+            { new: true }
+        ).populate({
+            path: "sharedWith.userId",
+            select: "username email",
+        });
+
+        if (!updatedProject) return next(new AppError(404, "Project not found"));
+
+        res.status(200).json({
+            status: "success",
+            message: "User removed from project successfully",
+            data: {
+                sharedUsers: updatedProject.sharedWith.map((item) => item.userId),
+            },
+        });
+    }
+);
 
 export const projectController = {
     createProject,
@@ -1137,5 +1277,9 @@ export const projectController = {
     collabrationProjectGiveAccess,
     updateFullProjectAnyWhereProject,
     deleteProject,
-    updateProjectGoal
+    updateProjectGoal,
+    updateTaskTitle,
+    updateSubtaskTitleAbdDueDate,
+    seeProjectAccessUser,
+    removeUserFromProject
 };

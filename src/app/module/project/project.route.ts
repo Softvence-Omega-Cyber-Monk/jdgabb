@@ -21,12 +21,16 @@ projectRouter.delete("/delete/suTask", projectController.permanentDeleteSubTask)
 projectRouter.patch("/update/taskDate", projectController.updateTaskDueDateController);
 
 // Update Work
-
-projectRouter.post("/createFullProject/:userId", projectController.createFullProjectManualy);
 projectRouter.post("/collabration-access-Project", projectController.collabrationProjectGiveAccess);
+projectRouter.patch("/projectGoalUpdate", projectController.updateProjectGoal)
+projectRouter.patch("/updateTaskTitle", projectController.updateTaskTitle);
+projectRouter.patch("/updateSubtaskTitleDueDate", projectController.updateSubtaskTitleAbdDueDate);
+projectRouter.patch("/removeAccessFormOwnProject" , projectController.removeUserFromProject);
+projectRouter.get("/seeProjectAccessUser/:projectId" , projectController.seeProjectAccessUser)
+projectRouter.post("/createFullProject/:userId", projectController.createFullProjectManualy);
 projectRouter.patch("/updateFullProjectAnyWhere/:projectId", projectController.updateFullProjectAnyWhereProject);
 projectRouter.delete("/deleteProject/:projectId", projectController.deleteProject);
-projectRouter.patch("/projectGoalUpdate", projectController.updateProjectGoal)
+
 
 // End Update Work
 
