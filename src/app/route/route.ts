@@ -5,6 +5,7 @@ import historyRoute from "../module/hostory/history.route";
 import notificationMsgRoutes from "../module/notificationMsg/notifecation.route.controller";
 import PaymentRoute from "../module/payment/payment.route";
 import projectRouter from "../module/project/project.route";
+import ProjectChatHisotryRouter from "../module/ProjectChatHistory/ProjectChatRouter";
 import archiveRouter from "../module/setting/addToArchive/addToArchive.route";
 import aiChatRouter from "../module/setting/aiChat/aiChat.route";
 import appearanceRouter from "../module/setting/appearance/appearance.route";
@@ -15,6 +16,7 @@ import praivicyRouter from "../module/setting/privacy/privacy.route";
 import producitivyRoute from "../module/setting/Productivity/producitivy.route";
 import projectTaskRouter from "../module/setting/projectTask/projectTask.route";
 import updateHistoryRoute from "../module/UpdateHistory/update.history.route";
+import UpdateProjectRouter from "../module/UpdateProject/UpdateProjectRouter";
 import userRouter from "../module/user/user.router";
 
 
@@ -91,6 +93,13 @@ export const moduleRoute = [
         path: "/archive",
         routes: archiveRouter
     },
-
+    {
+        path: "/updateProject",
+        routes: UpdateProjectRouter
+    },
+    {
+        path: "/projectChatHistory",
+        routes: ProjectChatHisotryRouter
+    }
 ];
 

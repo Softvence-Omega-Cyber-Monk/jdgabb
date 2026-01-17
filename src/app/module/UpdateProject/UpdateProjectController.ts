@@ -1,420 +1,266 @@
-// import { UpdateProject } from "./UpdateProject.model";
+import { Request, Response } from 'express';
+import { UpdateProject } from './UpdateProject.model';
+import Task from './TaskModel';
 
-// export const insertData = async () => {
+// Helper function to save tasks and their subtasks recursively
+const saveTaskWithSubtasks = async (taskData: any): Promise<any> => {
+    const { title, description, status, subtasks } = taskData;
 
-//     const result = await UpdateProject.create({
-//         userId: "507f1f77bcf86cd799439011",
-//         goal: "Build a Complete E-commerce Platform with Mobile App",
-//         tasks: [
-//             {
-//                 task: "Frontend Development",
-//                 details: "Build responsive UI/UX for the e-commerce platform using React and Next.js",
-//                 taskDueDate: "2025-02-15T00:00:00.000Z",
-//                 isDeleted: false,
-//                 isComplite: false,
-//                 isArchived: false,
-//                 isStar: true,
-//                 subtasks: [
-//                     {
-//                         title: "Setup Project Structure",
-//                         subTaskDueDate: "2025-01-05T00:00:00.000Z",
-//                         isStar: true,
-//                         isDeleted: false,
-//                         isComplite: true,
-//                         subtasks: [
-//                             {
-//                                 title: "Initialize Next.js project",
-//                                 subTaskDueDate: "2025-01-02T00:00:00.000Z",
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: [
-//                                     {
-//                                         title: "Install dependencies",
-//                                         subTaskDueDate: "2025-01-01T00:00:00.000Z",
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: true,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "Configure TypeScript",
-//                                         subTaskDueDate: "2025-01-02T00:00:00.000Z",
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: true,
-//                                         subtasks: []
-//                                     }
-//                                 ]
-//                             },
-//                             {
-//                                 title: "Setup folder structure",
-//                                 subTaskDueDate: "2025-01-03T00:00:00.000Z",
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: []
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "Design Homepage",
-//                         subTaskDueDate: "2025-01-20T00:00:00.000Z",
-//                         isStar: true,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Create Hero Section",
-//                                 subTaskDueDate: "2025-01-10T00:00:00.000Z",
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Build Product Grid",
-//                                 subTaskDueDate: "2025-01-15T00:00:00.000Z",
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: [
-//                                     {
-//                                         title: "Create product card",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: true,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "Implement grid layout",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     }
-//                                 ]
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             },
-//             {
-//                 task: "Backend Development",
-//                 details: "Build RESTful API using Node.js, Express, and MongoDB",
-//                 taskDueDate: "2025-03-01T00:00:00.000Z",
-//                 isDeleted: false,
-//                 isComplite: false,
-//                 isArchived: false,
-//                 isStar: true,
-//                 subtasks: [
-//                     {
-//                         title: "Setup Node.js Backend",
-//                         subTaskDueDate: "2025-01-10T00:00:00.000Z",
-//                         isStar: true,
-//                         isDeleted: false,
-//                         isComplite: true,
-//                         subtasks: [
-//                             {
-//                                 title: "Initialize Express server",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Connect to MongoDB",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: [
-//                                     {
-//                                         title: "Setup Mongoose",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: true,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "Create models",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: true,
-//                                         subtasks: [
-//                                             {
-//                                                 title: "User model",
-//                                                 subTaskDueDate: null,
-//                                                 isStar: false,
-//                                                 isDeleted: false,
-//                                                 isComplite: true,
-//                                                 subtasks: []
-//                                             },
-//                                             {
-//                                                 title: "Product model",
-//                                                 subTaskDueDate: null,
-//                                                 isStar: false,
-//                                                 isDeleted: false,
-//                                                 isComplite: true,
-//                                                 subtasks: []
-//                                             }
-//                                         ]
-//                                     }
-//                                 ]
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "Implement Authentication",
-//                         subTaskDueDate: "2025-01-25T00:00:00.000Z",
-//                         isStar: true,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Setup JWT authentication",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: true,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Create auth endpoints",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: [
-//                                     {
-//                                         title: "Registration endpoint",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "Login endpoint",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     }
-//                                 ]
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "Build Product API",
-//                         subTaskDueDate: "2025-02-10T00:00:00.000Z",
-//                         isStar: false,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Create CRUD endpoints",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: [
-//                                     {
-//                                         title: "GET all products",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "POST create product",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     }
-//                                 ]
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             },
-//             {
-//                 task: "Testing",
-//                 details: "Write tests and ensure code quality",
-//                 taskDueDate: "2025-03-15T00:00:00.000Z",
-//                 isDeleted: false,
-//                 isComplite: false,
-//                 isArchived: false,
-//                 isStar: false,
-//                 subtasks: [
-//                     {
-//                         title: "Unit Testing",
-//                         subTaskDueDate: "2025-02-20T00:00:00.000Z",
-//                         isStar: false,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Test API endpoints",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Test React components",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "E2E Testing",
-//                         subTaskDueDate: "2025-03-10T00:00:00.000Z",
-//                         isStar: false,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Setup Cypress",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             },
-//             {
-//                 task: "Deployment",
-//                 details: "Deploy application and setup CI/CD",
-//                 taskDueDate: "2025-03-30T00:00:00.000Z",
-//                 isDeleted: false,
-//                 isComplite: false,
-//                 isArchived: false,
-//                 isStar: true,
-//                 subtasks: [
-//                     {
-//                         title: "Setup hosting",
-//                         subTaskDueDate: "2025-03-15T00:00:00.000Z",
-//                         isStar: false,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Deploy backend to AWS",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Deploy frontend to Vercel",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "Configure CI/CD",
-//                         subTaskDueDate: "2025-03-25T00:00:00.000Z",
-//                         isStar: true,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Setup GitHub Actions",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: [
-//                                     {
-//                                         title: "Create build workflow",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     },
-//                                     {
-//                                         title: "Create deployment workflow",
-//                                         subTaskDueDate: null,
-//                                         isStar: false,
-//                                         isDeleted: false,
-//                                         isComplite: false,
-//                                         subtasks: []
-//                                     }
-//                                 ]
-//                             }
-//                         ]
-//                     },
-//                     {
-//                         title: "Setup monitoring",
-//                         subTaskDueDate: "2025-03-28T00:00:00.000Z",
-//                         isStar: false,
-//                         isDeleted: false,
-//                         isComplite: false,
-//                         subtasks: [
-//                             {
-//                                 title: "Integrate Sentry",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             },
-//                             {
-//                                 title: "Setup CloudWatch",
-//                                 subTaskDueDate: null,
-//                                 isStar: false,
-//                                 isDeleted: false,
-//                                 isComplite: false,
-//                                 subtasks: []
-//                             }
-//                         ]
-//                     }
-//                 ]
-//             }
-//         ],
-//         answered_questions: [
-//             {
-//                 question: "What is the primary goal of this project?",
-//                 answer: "To create a fully functional e-commerce platform with web and mobile interfaces"
-//             },
-//             {
-//                 question: "What is the estimated timeline?",
-//                 answer: "Approximately 3-4 months for MVP"
-//             },
-//             {
-//                 question: "What technologies will be used?",
-//                 answer: "React, Next.js, Node.js, Express, MongoDB, AWS, Stripe"
-//             }
-//         ],
-//         visibility: "private",
-//         sharedWith: [],
-//         linkAccess: false
-//     });
+    // Create a new task document
+    const task = new Task({
+        title,
+        description,
+        status,
+    });
 
-//     console.log("Insert Data");
+    // Save the task
+    const savedTask = await task.save();
 
-// }
+    // If there are subtasks, recursively save them
+    if (subtasks && subtasks.length > 0) {
+        for (let subtask of subtasks) {
+            const savedSubtask = await saveTaskWithSubtasks(subtask);  // Recursively save subtasks
+            savedTask.subtasks.push(savedSubtask._id);  // Add the subtask reference to the main task
+        }
+        // Save the task with its subtasks references
+        await savedTask.save();
+    }
+
+    return savedTask;
+};
+
+export const createProjectController = async (req: Request, res: Response) => {
+    try {
+        const { userId, goal, tasks } = req.body;
+
+        if (!userId || !goal) {
+            return res.status(400).json({ message: 'User ID and Goal are required!' });
+        }
+
+        // Save all tasks first and get their ObjectIds
+        const savedTasks = [];
+        for (let taskData of tasks) {
+            const savedTask = await saveTaskWithSubtasks(taskData);  // Save task and its subtasks
+            savedTasks.push(savedTask._id);  // Push the ObjectId of the saved task
+        }
+
+        // Create the project document, referencing the saved task ObjectIds
+        const newProject = new UpdateProject({
+            userId,
+            goal,
+            tasks: savedTasks,  // Use the ObjectIds of the saved tasks
+        });
+
+        // Save the project
+        const savedProject = await newProject.save();
+
+        // Return success response
+        res.status(201).json({
+            message: 'Project created successfully!',
+            project: savedProject,
+        });
+    } catch (error) {
+        console.error('Error creating project:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
+
+const getTaskWithSubtasks = async (taskId: string): Promise<any> => {
+
+    const task = await Task.findById(taskId).populate('subtasks');
+
+    if ((task as any).subtasks.length > 0) {
+        (task as any).subtasks = await Promise.all(
+            (task as any).subtasks.map(async (subtask: any) => {
+                return await getTaskWithSubtasks(subtask._id);
+            })
+        );
+    }
+
+    return task;
+};
+
+export const getProjectController = async (req: Request, res: Response) => {
+    try {
+        const { projectId } = req.params;
+
+
+        const project = await UpdateProject.findById(projectId).populate('tasks');
+
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found!' });
+        }
+
+
+        const tasksWithSubtasks = await Promise.all(
+            project.tasks.map(async (task: any) => {
+                return await getTaskWithSubtasks(task._id);
+            })
+        );
+
+        // Attach tasks with nested subtasks to the project
+        project.tasks = tasksWithSubtasks;
+
+        // Return the project with all tasks and subtasks
+        res.status(200).json({
+            message: 'Project fetched successfully!',
+            project,
+        });
+    } catch (error) {
+        console.error('Error fetching project:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
+
+
+
+export const createTaskController = async (req: Request, res: Response) => {
+    try {
+        const { projectId } = req.params;
+        const { title, description, parentTaskId } = req.body;
+
+        if (!title) {
+            return res.status(400).json({ message: 'Title and Status are required!' });
+        }
+
+
+        const newTask = new Task({
+            title,
+            description,
+            parentTaskId: parentTaskId || null,
+        });
+
+        const savedTask = await newTask.save();
+
+        const project = await UpdateProject.findById(projectId);
+
+        if (!project) {
+            return res.status(404).json({ message: 'Project not found!' });
+        }
+
+        project.tasks.push(savedTask._id);
+
+        await project.save();
+
+        res.status(201).json({
+            message: 'Task created successfully under the project!',
+            task: savedTask,
+            project,
+        });
+    } catch (error) {
+        console.error('Error creating task:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
+
+
+
+export const createTaskOrSubtaskController = async (req: Request, res: Response) => {
+    try {
+        const { parentTaskId, title, description, compliteTarget } = req.body;
+
+        if (!title) {
+            return res.status(400).json({ message: 'Title and Status are required!' });
+        }
+
+        const newTask = new Task({
+            title,
+            description,
+            compliteTarget,
+            parentTaskId: parentTaskId || null,
+        });
+
+
+        const savedTask = await newTask.save();
+
+
+        if (parentTaskId) {
+            const parentTask = await Task.findById(parentTaskId);
+
+            if (!parentTask) {
+                return res.status(404).json({ message: 'Parent task not found!' });
+            }
+
+            parentTask.subtasks.push(savedTask._id);
+
+            await parentTask.save();
+        }
+
+
+        res.status(201).json({
+            message: parentTaskId ? 'Subtask created successfully!' : 'Task created successfully!',
+            task: savedTask,
+            parentTaskId: parentTaskId ? parentTaskId : null,
+        });
+    } catch (error) {
+        console.error('Error creating task/subtask:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
+
+
+export const updateTaskController = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params;
+        const updateFields = req.body;
+
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found!' });
+        }
+
+        Object.keys(updateFields).forEach((key) => {
+            if (updateFields[key] === "" || updateFields[key] === null || updateFields[key] === undefined) {
+                delete updateFields[key];
+            }
+        });
+
+        if (Object.keys(updateFields).length > 0) {
+            const updatedTask = await Task.findByIdAndUpdate(taskId, updateFields, { new: true });
+
+            res.status(200).json({
+                message: 'Task updated successfully!',
+                task: updatedTask,
+            });
+        } else {
+            res.status(400).json({ message: 'No valid fields to update!' });
+        }
+    } catch (error) {
+        console.error('Error updating task:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
+
+
+
+export const deleteTaskController = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params; 
+
+        const task = await Task.findById(taskId);
+
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found!' });
+        }
+
+        if (task.parentTaskId) {
+            const parentTask = await Task.findById(task.parentTaskId);
+
+            if (parentTask) {
+                parentTask.subtasks = parentTask.subtasks.filter((subtaskId) => subtaskId.toString() !== taskId);
+
+                await parentTask.save();
+            }
+        }
+
+        await Task.deleteOne({ _id: taskId });
+
+        res.status(200).json({
+            message: 'Task deleted successfully!',
+        });
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        res.status(500).json({ message: 'Server error. Please try again.' });
+    }
+};
