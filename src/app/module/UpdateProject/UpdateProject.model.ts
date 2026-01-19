@@ -23,7 +23,6 @@ const projectSchema = new mongoose.Schema(
       enum: ["private", "restricted"],
       default: "private",
     },
-
     sharedWith: [
       {
         userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" },

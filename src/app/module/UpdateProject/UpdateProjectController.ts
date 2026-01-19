@@ -1,67 +1,92 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { UpdateProject } from './UpdateProject.model';
 import Task from './TaskModel';
+import { Types } from 'mongoose';
+import catchAsync from '../../utils/catchAsync';
+import { sendResponse } from '../../utils/sendResponse';
 
 // Helper function to save tasks and their subtasks recursively
-const saveTaskWithSubtasks = async (taskData: any): Promise<any> => {
+const saveTaskWithSubtasks = async (
+    taskData: any,
+    parentTaskId: Types.ObjectId | null = null
+): Promise<any> => {
     const { title, description, status, subtasks } = taskData;
 
-    // Create a new task document
+    // 1️⃣ Create task
     const task = new Task({
         title,
         description,
-        status,
+        status: status || "pending",
+        parentTaskId, // ✅ ObjectId | null
+        subtasks: [],
     });
 
-    // Save the task
     const savedTask = await task.save();
 
-    // If there are subtasks, recursively save them
-    if (subtasks && subtasks.length > 0) {
-        for (let subtask of subtasks) {
-            const savedSubtask = await saveTaskWithSubtasks(subtask);  // Recursively save subtasks
-            savedTask.subtasks.push(savedSubtask._id);  // Add the subtask reference to the main task
+    // 2️⃣ Save subtasks recursively
+    if (Array.isArray(subtasks) && subtasks.length > 0) {
+        for (const subtaskData of subtasks) {
+            const savedSubtask = await saveTaskWithSubtasks(
+                subtaskData,
+                savedTask._id // ✅ ObjectId passed correctly
+            );
+
+            savedTask.subtasks.push(savedSubtask._id);
         }
-        // Save the task with its subtasks references
+
         await savedTask.save();
     }
 
     return savedTask;
 };
 
-export const createProjectController = async (req: Request, res: Response) => {
+
+export const createProjectController = async (
+    req: Request,
+    res: Response
+) => {
     try {
-        const { userId, goal, tasks } = req.body;
+        const { userId, goal, tasks, visibility } = req.body;
 
         if (!userId || !goal) {
-            return res.status(400).json({ message: 'User ID and Goal are required!' });
+            return res.status(400).json({
+                success: false,
+                message: "User ID and Goal are required!",
+            });
         }
 
-        // Save all tasks first and get their ObjectIds
-        const savedTasks = [];
-        for (let taskData of tasks) {
-            const savedTask = await saveTaskWithSubtasks(taskData);  // Save task and its subtasks
-            savedTasks.push(savedTask._id);  // Push the ObjectId of the saved task
+        // 🔹 Save all ROOT tasks only
+        const savedTasks: string[] = [];
+
+        if (Array.isArray(tasks)) {
+            for (const taskData of tasks) {
+                const savedTask = await saveTaskWithSubtasks(taskData);
+                savedTasks.push(savedTask._id);
+            }
         }
 
-        // Create the project document, referencing the saved task ObjectIds
-        const newProject = new UpdateProject({
+        // 🔹 Create project
+        const project = new UpdateProject({
             userId,
             goal,
-            tasks: savedTasks,  // Use the ObjectIds of the saved tasks
+            visibility: visibility || "private",
+            tasks: savedTasks, // ✅ ONLY TOP LEVEL TASK IDS
+            sharedWith: [],
         });
 
-        // Save the project
-        const savedProject = await newProject.save();
+        const savedProject = await project.save();
 
-        // Return success response
-        res.status(201).json({
-            message: 'Project created successfully!',
+        return res.status(201).json({
+            success: true,
+            message: "Project created successfully!",
             project: savedProject,
         });
     } catch (error) {
-        console.error('Error creating project:', error);
-        res.status(500).json({ message: 'Server error. Please try again.' });
+        console.error("Error creating project:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Server error. Please try again.",
+        });
     }
 };
 
@@ -236,7 +261,7 @@ export const updateTaskController = async (req: Request, res: Response) => {
 
 export const deleteTaskController = async (req: Request, res: Response) => {
     try {
-        const { taskId } = req.params; 
+        const { taskId } = req.params;
 
         const task = await Task.findById(taskId);
 
@@ -264,3 +289,166 @@ export const deleteTaskController = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Server error. Please try again.' });
     }
 };
+
+
+export const getAllParentTasks = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params;
+
+        // Find the requested task
+        let requestedTask: any = await Task.findById(taskId).lean();
+
+        if (!requestedTask) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found",
+            });
+        }
+
+        const parentTasks: any[] = [];
+        let currentTask = requestedTask;
+
+        // Traverse up the parent chain
+        while (currentTask?.parentTaskId) {
+            const parentTask: any = await Task.findById(
+                currentTask.parentTaskId
+            ).lean();
+
+            if (!parentTask) break;
+
+            // Add parent to the beginning of array
+            parentTasks.unshift({
+                _id: parentTask._id,
+                title: parentTask.title,
+                description: parentTask.description,
+                status: parentTask.status,
+                compliteTarget: parentTask.compliteTarget,
+                isDeleted: parentTask.isDeleted,
+                isComplite: parentTask.isComplite,
+                isArchived: parentTask.isArchived,
+                isStar: parentTask.isStar,
+                parentTaskId: parentTask.parentTaskId,
+                createdAt: parentTask.createdAt,
+                updatedAt: parentTask.updatedAt,
+            });
+
+            currentTask = parentTask;
+        }
+
+        return res.status(200).json({
+            success: true,
+            count: parentTasks.length,
+            data: parentTasks,
+            requestedTask: {
+                _id: requestedTask._id,
+                title: requestedTask.title,
+                description: requestedTask.description,
+                status: requestedTask.status,
+                parentTaskId: requestedTask.parentTaskId,
+            },
+        });
+    } catch (error) {
+        console.error("Error retrieving parent tasks:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve parent tasks",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
+
+
+const buildTaskTree = async (taskId: string) => {
+    const task: any = await Task.findById(taskId).lean();
+    if (!task) return null;
+
+    // প্রতিটি subtask এর জন্য recursive call
+    const children: any[] = [];
+    const seen = new Set(); // ডুপ্লিকেট আটকানোর জন্য
+
+    for (const subId of task.subtasks || []) {
+        if (seen.has(subId.toString())) continue; // skip duplicate
+        seen.add(subId.toString());
+
+        const childTree = await buildTaskTree(subId.toString());
+        if (childTree) children.push(childTree);
+    }
+
+    return {
+        _id: task._id,
+        title: task.title,
+        subtasks: children
+    };
+};
+
+export const getTaskTree = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params;
+        const tree = await buildTaskTree(taskId as string);
+
+        if (!tree) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: tree,
+        });
+    } catch (error) {
+        console.error("Error retrieving task tree:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to retrieve task tree",
+            error: error instanceof Error ? error.message : "Unknown error",
+        });
+    }
+};
+
+
+export const getTaskWithChildren = async (req: Request, res: Response) => {
+    try {
+        const { taskId } = req.params;
+
+        const task = await Task.findById(taskId)
+            .populate({
+                path: "subtasks"
+            });
+
+        if (!task) {
+            return res.status(404).json({
+                success: false,
+                message: "Task not found",
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: task, // ✅ task + its direct children only
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        });
+    }
+};
+
+
+
+export const getSingleUserAllProject = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+
+    const { userId } = req.params;
+
+    const findProject = await UpdateProject.find({ userId: userId });
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "All Project Retrived Successfully",
+        data: findProject
+    })
+}) 

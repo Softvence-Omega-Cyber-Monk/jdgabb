@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProjectController, createTaskController, createTaskOrSubtaskController, deleteTaskController, getProjectController, updateTaskController } from "./UpdateProjectController";
+import { createProjectController, createTaskController, createTaskOrSubtaskController, deleteTaskController, getAllParentTasks, getProjectController, getSingleUserAllProject, getTaskWithChildren, updateTaskController } from "./UpdateProjectController";
 
 const UpdateProjectRouter = Router();
 
@@ -9,5 +9,7 @@ UpdateProjectRouter.get("/getProject/:projectId", getProjectController);
 UpdateProjectRouter.post("/:projectId/tasks", createTaskController);
 UpdateProjectRouter.delete("/:taskId/deletetask", deleteTaskController);
 UpdateProjectRouter.patch("/update/tasks/:taskId", updateTaskController);
-
+UpdateProjectRouter.get("/tasks/:taskId/parents", getAllParentTasks);
+UpdateProjectRouter.get("/tasks/child/:taskId", getTaskWithChildren);
+UpdateProjectRouter.get("/all/project/:userId", getSingleUserAllProject);
 export default UpdateProjectRouter;
