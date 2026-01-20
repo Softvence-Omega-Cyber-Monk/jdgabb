@@ -1,13 +1,15 @@
 import { NextFunction, Request, Response } from 'express';
 import { UpdateProject } from './UpdateProject.model';
 import Task from './TaskModel';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import catchAsync from '../../utils/catchAsync';
 import { sendResponse } from '../../utils/sendResponse';
 
 // Helper function to save tasks and their subtasks recursively
+
 const saveTaskWithSubtasks = async (
     taskData: any,
+    userId: Types.ObjectId,
     parentTaskId: Types.ObjectId | null = null
 ): Promise<any> => {
     const { title, description, status, subtasks } = taskData;
@@ -15,9 +17,10 @@ const saveTaskWithSubtasks = async (
     // 1️⃣ Create task
     const task = new Task({
         title,
-        description,
+        description: description || null,
         status: status || "pending",
-        parentTaskId, // ✅ ObjectId | null
+        userId,              // ✅ userId injected here
+        parentTaskId,
         subtasks: [],
     });
 
@@ -28,7 +31,8 @@ const saveTaskWithSubtasks = async (
         for (const subtaskData of subtasks) {
             const savedSubtask = await saveTaskWithSubtasks(
                 subtaskData,
-                savedTask._id // ✅ ObjectId passed correctly
+                userId,
+                savedTask._id
             );
 
             savedTask.subtasks.push(savedSubtask._id);
@@ -55,31 +59,32 @@ export const createProjectController = async (
             });
         }
 
-        // 🔹 Save all ROOT tasks only
-        const savedTasks: string[] = [];
+        const savedTasks: mongoose.Types.ObjectId[] = [];
 
+        // 🔹 Save only root tasks
         if (Array.isArray(tasks)) {
             for (const taskData of tasks) {
-                const savedTask = await saveTaskWithSubtasks(taskData);
+                const savedTask = await saveTaskWithSubtasks(
+                    taskData,
+                    userId
+                );
                 savedTasks.push(savedTask._id);
             }
         }
 
         // 🔹 Create project
-        const project = new UpdateProject({
+        const project = await UpdateProject.create({
             userId,
             goal,
             visibility: visibility || "private",
-            tasks: savedTasks, // ✅ ONLY TOP LEVEL TASK IDS
+            tasks: savedTasks,
             sharedWith: [],
         });
-
-        const savedProject = await project.save();
 
         return res.status(201).json({
             success: true,
             message: "Project created successfully!",
-            project: savedProject,
+            project,
         });
     } catch (error) {
         console.error("Error creating project:", error);
@@ -89,7 +94,6 @@ export const createProjectController = async (
         });
     }
 };
-
 const getTaskWithSubtasks = async (taskId: string): Promise<any> => {
 
     const task = await Task.findById(taskId).populate('subtasks');
@@ -142,10 +146,10 @@ export const getProjectController = async (req: Request, res: Response) => {
 export const createTaskController = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
-        const { title, description, parentTaskId } = req.body;
+        const { title, description, parentTaskId, userId } = req.body;
 
-        if (!title) {
-            return res.status(400).json({ message: 'Title and Status are required!' });
+        if (!title || !userId) {
+            return res.status(400).json({ message: 'Title and userId are required!' });
         }
 
 
@@ -153,6 +157,7 @@ export const createTaskController = async (req: Request, res: Response) => {
             title,
             description,
             parentTaskId: parentTaskId || null,
+            userId: userId
         });
 
         const savedTask = await newTask.save();
@@ -182,10 +187,10 @@ export const createTaskController = async (req: Request, res: Response) => {
 
 export const createTaskOrSubtaskController = async (req: Request, res: Response) => {
     try {
-        const { parentTaskId, title, description, compliteTarget } = req.body;
+        const { parentTaskId, title, description, compliteTarget, userId } = req.body;
 
-        if (!title) {
-            return res.status(400).json({ message: 'Title and Status are required!' });
+        if (!title || !userId) {
+            return res.status(400).json({ message: 'Title and userId are required!' });
         }
 
         const newTask = new Task({
@@ -193,6 +198,7 @@ export const createTaskOrSubtaskController = async (req: Request, res: Response)
             description,
             compliteTarget,
             parentTaskId: parentTaskId || null,
+            userId: userId
         });
 
 
