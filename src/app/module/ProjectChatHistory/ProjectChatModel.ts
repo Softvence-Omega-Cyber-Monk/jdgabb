@@ -14,6 +14,10 @@ const updateHistorySchema = new mongoose.Schema({
         type: Boolean,
         required: true // ai => true , user => false
     },
+    chatType: {
+        type: String,
+        enum: ["ask", "create"]
+    },
     text: {
         type: String,
         required: true

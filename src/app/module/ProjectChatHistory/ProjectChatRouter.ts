@@ -6,8 +6,8 @@ const ProjectChatHisotryRouter = Router();
 
 ProjectChatHisotryRouter.post("/create", createUpdateHistoryController);
 
-ProjectChatHisotryRouter.get("/getProjectChat/:userId/:projectOrTaskId", getUpdateHistoryController);
-ProjectChatHisotryRouter.delete("/deleteProjectChat/:userId/:projectOrTaskId", deleteMultipleUpdateHistoryController);
+ProjectChatHisotryRouter.get("/getProjectChat/:userId/:projectOrTaskId/:chatType", getUpdateHistoryController);
+ProjectChatHisotryRouter.delete("/deleteProjectChat/:userId/:projectOrTaskId/:chatType", deleteMultipleUpdateHistoryController);
 
 
 export default ProjectChatHisotryRouter;

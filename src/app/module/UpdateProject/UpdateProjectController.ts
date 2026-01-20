@@ -478,28 +478,40 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
             return res.status(400).json({ message: "Invalid taskId" });
         }
 
-        const findTask = await Task.findById(taskId);
+        const task = await Task.findById(taskId).select("parentTaskId projectId");
 
-        if (findTask) throw new AppError(404, "Task Not Found");
+        if (!task) {
+            throw new AppError(404, "Task Not Found");
+        }
 
+        // ✅ If no parent → breadcrumbs = null
+        if (!task.parentTaskId) {
+            return res.status(200).json({
+                success: true,
+                projectId: task.projectId || null,
+                breadcrumbs: null,
+            });
+        }
+
+        // ✅ If parent exists → build chain
         const parentIds: mongoose.Types.ObjectId[] = [];
 
-        let currentTask = await Task.findById(taskId).select("parentTaskId");
-        if (!currentTask) {
-            return res.status(404).json({ message: "Task not found" });
-        }
+        let currentTask = await Task.findById(task.parentTaskId).select("parentTaskId");
 
         while (currentTask) {
             parentIds.unshift(currentTask._id);
+
             if (!currentTask.parentTaskId) break;
+
             currentTask = await Task.findById(currentTask.parentTaskId).select("parentTaskId");
         }
 
         return res.status(200).json({
             success: true,
-            projectId: findTask,
+            projectId: task.projectId || null,
             breadcrumbs: parentIds,
         });
+
     } catch (error) {
         console.error("Error fetching parent chain:", error);
         return res.status(500).json({ message: "Server error. Please try again." });

@@ -4,18 +4,19 @@ import { UpdateChatHestory } from "./ProjectChatModel";
 export const createUpdateHistoryController = async (req: Request, res: Response) => {
     try {
 
-        const { userId, projectOrTaskId, isAi, text } = req.body;
+        const { userId, projectOrTaskId, isAi, text, chatType } = req.body;
 
 
-        if (!userId || !projectOrTaskId || isAi === undefined || !text) {
-            return res.status(400).json({ message: 'All fields (userId, projectOrTaskId, isAi, text) are required!' });
+        if (!userId || !projectOrTaskId || isAi === undefined || !text || !chatType) {
+            return res.status(400).json({ message: 'All fields (userId, projectOrTaskId, isAi, text, chatType) are required!' });
         }
 
         const newUpdateHistory = new UpdateChatHestory({
             userId,
             projectOrTaskId,
             isAi,
-            text
+            text,
+            chatType: chatType
         });
 
         const savedUpdateHistory = await newUpdateHistory.save();
@@ -34,15 +35,16 @@ export const createUpdateHistoryController = async (req: Request, res: Response)
 
 export const getUpdateHistoryController = async (req: Request, res: Response) => {
     try {
-        const { userId, projectOrTaskId } = req.params;
+        const { userId, projectOrTaskId, chatType } = req.params;
 
-        if (!userId || !projectOrTaskId) {
-            return res.status(400).json({ message: 'userId and projectOrTaskId are required!' });
+        if (!userId || !projectOrTaskId || !chatType) {
+            return res.status(400).json({ message: 'userId, projectOrTaskId and chatType are required!' });
         }
 
         const updateHistory = await UpdateChatHestory.find({
             userId: userId,
-            projectOrTaskId: projectOrTaskId
+            projectOrTaskId: projectOrTaskId,
+            chatType: chatType
         });
 
         if (updateHistory.length === 0) {
@@ -63,26 +65,22 @@ export const getUpdateHistoryController = async (req: Request, res: Response) =>
 
 export const deleteMultipleUpdateHistoryController = async (req: Request, res: Response) => {
     try {
-        // Extract userId and projectOrTaskId from query parameters
-        const { userId, projectOrTaskId } = req.params;
+        const { userId, projectOrTaskId, chatType } = req.params;
 
-        // Validate if both userId and projectOrTaskId are provided
-        if (!userId || !projectOrTaskId) {
-            return res.status(400).json({ message: 'Both userId and projectOrTaskId are required!' });
+        if (!userId || !projectOrTaskId || !chatType) {
+            return res.status(400).json({ message: 'Both userId, projectOrTaskId and chatType are required!' });
         }
 
-        // Delete the update history records based on the userId and projectOrTaskId
         const result = await UpdateChatHestory.deleteMany({
             userId: userId,
-            projectOrTaskId: projectOrTaskId
+            projectOrTaskId: projectOrTaskId,
+            chatType: chatType
         });
 
-        // If no records were deleted, return a message saying no records were found
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: 'No update history records found for the given user and project/task!' });
-        }
-
-        // Return success response
+        };
+        
         res.status(200).json({
             message: `${result.deletedCount} update history records deleted successfully!`
         });
