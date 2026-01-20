@@ -36,6 +36,11 @@ const taskSchema = new mongoose.Schema(
             ref: "user",
             required: true
         },
+        projectId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "UpdateProject",
+            required: true
+        },
         subtasks: [
             {
                 type: mongoose.Schema.Types.ObjectId,
