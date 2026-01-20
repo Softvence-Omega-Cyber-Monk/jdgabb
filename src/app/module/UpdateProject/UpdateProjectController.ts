@@ -141,8 +141,6 @@ export const getProjectController = async (req: Request, res: Response) => {
     }
 };
 
-
-
 export const createTaskController = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
@@ -299,7 +297,7 @@ export const deleteTaskController = async (req: Request, res: Response) => {
 
 export const getAllParentTasks = async (req: Request, res: Response) => {
     try {
-        const { taskId } = req.params;
+        const { taskId, projectId } = req.params;
 
         // Find the requested task
         let requestedTask: any = await Task.findById(taskId).lean();
@@ -309,6 +307,13 @@ export const getAllParentTasks = async (req: Request, res: Response) => {
                 success: false,
                 message: "Task not found",
             });
+        };
+
+        let projectgoal;
+
+        if (projectId) {
+            const findProject = await UpdateProject.findById(projectId);
+            projectgoal = findProject?.goal;
         }
 
         const parentTasks: any[] = [];
@@ -345,6 +350,7 @@ export const getAllParentTasks = async (req: Request, res: Response) => {
             success: true,
             count: parentTasks.length,
             data: parentTasks,
+            projectgoal,
             requestedTask: {
                 _id: requestedTask._id,
                 title: requestedTask.title,
