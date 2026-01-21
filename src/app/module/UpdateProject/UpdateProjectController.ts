@@ -458,7 +458,12 @@ export const getSingleUserAllProject = catchAsync(async (req: Request, res: Resp
 
     const { userId } = req.params;
 
-    const findProject = await UpdateProject.find({ userId: userId });
+    const findProject = await UpdateProject.find({
+        $or: [
+            { userId: userId },
+            { "sharedWith.userId": userId }
+        ]
+    });
 
     sendResponse(res, {
         success: true,
@@ -494,22 +499,26 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
         }
 
         // ✅ If parent exists → build chain
-        const parentIds: mongoose.Types.ObjectId[] = [];
+        const breadcrumbs: { taskId: string, title: string, description: string | null }[] = [];
 
-        let currentTask = await Task.findById(task.parentTaskId).select("parentTaskId");
+        let currentTask = await Task.findById(task.parentTaskId).select("_id title description parentTaskId");
 
         while (currentTask) {
-            parentIds.unshift(currentTask._id);
+            breadcrumbs.unshift({
+                taskId: currentTask._id.toString(),
+                title: currentTask.title,
+                description: currentTask.description,
+            });
 
             if (!currentTask.parentTaskId) break;
 
-            currentTask = await Task.findById(currentTask.parentTaskId).select("parentTaskId");
+            currentTask = await Task.findById(currentTask.parentTaskId).select("_id title description parentTaskId");
         }
 
         return res.status(200).json({
             success: true,
             projectId: task.projectId || null,
-            breadcrumbs: parentIds,
+            breadcrumbs,
         });
 
     } catch (error) {
@@ -517,3 +526,107 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
         return res.status(500).json({ message: "Server error. Please try again." });
     }
 };
+
+
+// New
+
+export const projectGoalUpdate = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.params.projectId;
+
+    if (!projectId) throw new Error("Project Id Must Be Required");
+
+    const result = await UpdateProject.findByIdAndUpdate(projectId, {
+        goal: req.body.goal
+    }, {
+        new: true
+    })
+
+    if (!result) throw new Error("Project Not Found");
+
+    sendResponse(res, {
+        success: true,
+        message: "Project Updated Successfully",
+        statusCode: 200,
+        data: result
+    })
+
+});
+
+
+async function deleteTaskAndSubtasks(taskId: string) {
+    const task = await Task.findById(taskId);
+    if (!task) return;
+
+    if (task.subtasks && task.subtasks.length > 0) {
+        for (const subtaskId of task.subtasks) {
+            await deleteTaskAndSubtasks(subtaskId.toString());
+        }
+    }
+
+    await Task.findByIdAndDelete(taskId);
+}
+
+export const projectDelete = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const projectId = req.params.projectId;
+
+    if (!projectId) throw new Error("Project Id Must Be Required");
+
+    const project = await UpdateProject.findById(projectId);
+    if (!project) throw new Error("Project Not Found");
+
+
+    const tasks = await Task.find({ projectId });
+    for (const task of tasks) {
+        await deleteTaskAndSubtasks(task._id.toString());
+    }
+
+    await UpdateProject.findByIdAndDelete(projectId);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Project and all associated tasks deleted successfully",
+        data: null
+    });
+});
+
+export const getTaskFlagList = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { userId } = req.params;
+    const { flag } = req.query;
+
+    if (!userId) {
+        throw new Error("User Id is required");
+    }
+
+    if (!flag || !["isDeleted", "isArchived", "isComplite", "isStar"].includes(flag.toString())) {
+        throw new Error("Invalid flag. Must be one of isDeleted, isArchived, isComplite, isStar");
+    }
+
+    const filter: any = { userId, [flag.toString()]: true };
+
+    const tasks = await Task.find(filter);
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: `Tasks filtered by ${flag} successfully`,
+        data: tasks
+    });
+});
+
+export const getSingleTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { taskId } = req.params;
+
+    const findTask = await Task.findById(taskId);
+
+    if (!findTask) throw new Error("Task Not Found");
+
+    sendResponse(res, {
+        success: true,
+        statusCode: 200,
+        message: "Task Retrived Successfully",
+        data: findTask
+    })
+
+})
+

@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import AppError from "../../utils/AppError";
 import { OpenAi } from "../../config/openAi";
 import { UpdateChatHestory } from "../UpdateHistory/update.history.model";
+import { UpdateProject } from "../UpdateProject/UpdateProject.model";
 
 
 
@@ -929,7 +930,7 @@ const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Respo
         throw new AppError(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
     }
 
-    const findProject = await Project.findById(projectId);
+    const findProject = await UpdateProject.findById(projectId);
 
     // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
     const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
@@ -1188,7 +1189,7 @@ const seeProjectAccessUser = catchAsync(
         const { projectId } = req.params;
 
 
-        const project = await Project.findById(projectId).populate({
+        const project = await UpdateProject.findById(projectId).populate({
             path: "sharedWith.userId",
             select: "username email",
         });
@@ -1216,7 +1217,7 @@ const removeUserFromProject = catchAsync(
 
         if (!userId || !projectId || !projectAdminId) return next(new AppError(400, "UserId, ProjectId & projectAdminId is required"));
 
-        const findProject = await Project.findById(projectId);
+        const findProject = await UpdateProject.findById(projectId);
 
         if (findProject && findProject.userId.toString() !== projectAdminId) {
             throw new AppError(403, "You Are not permited access this route");
