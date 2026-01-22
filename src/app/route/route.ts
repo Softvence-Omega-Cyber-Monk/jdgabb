@@ -15,6 +15,7 @@ import notificationRouter from "../module/setting/notifications/notifications.ro
 import praivicyRouter from "../module/setting/privacy/privacy.route";
 import producitivyRoute from "../module/setting/Productivity/producitivy.route";
 import projectTaskRouter from "../module/setting/projectTask/projectTask.route";
+import undoRouter from "../module/undu/undo.router";
 import updateHistoryRoute from "../module/UpdateHistory/update.history.route";
 import UpdateProjectRouter from "../module/UpdateProject/UpdateProjectRouter";
 import userRouter from "../module/user/user.router";
@@ -100,6 +101,10 @@ export const moduleRoute = [
     {
         path: "/projectChatHistory",
         routes: ProjectChatHisotryRouter
-    }
+    },
+    {
+        path: "/undo",
+        routes: undoRouter
+    },
 ];
 

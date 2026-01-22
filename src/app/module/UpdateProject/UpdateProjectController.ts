@@ -156,7 +156,7 @@ export const getProjectController = async (req: Request, res: Response) => {
 export const createTaskController = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
-        const { title, description, parentTaskId, userId } = req.body;
+        const { title, description, parentTaskId, userId, isStar } = req.body;
 
         if (!title || !userId) {
             return res.status(400).json({ message: 'Title and userId are required!' });
@@ -168,7 +168,8 @@ export const createTaskController = async (req: Request, res: Response) => {
             description,
             parentTaskId: parentTaskId || null,
             userId: userId,
-            projectId: projectId
+            projectId: projectId,
+            isStar: isStar
         });
 
         const savedTask = await newTask.save();
@@ -485,15 +486,22 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
 
         const task = await Task.findById(taskId).select("parentTaskId projectId");
 
+
+
         if (!task) {
             throw new AppError(404, "Task Not Found");
-        }
+        };
+
+        const findProject = await UpdateProject.findById(task?.projectId);
+
+        // if (!findProject) throw new AppError(404, "Project Not Found");
 
         // ✅ If no parent → breadcrumbs = null
         if (!task.parentTaskId) {
             return res.status(200).json({
                 success: true,
                 projectId: task.projectId || null,
+                projectName: findProject?.goal,
                 breadcrumbs: null,
             });
         }
@@ -518,6 +526,7 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
         return res.status(200).json({
             success: true,
             projectId: task.projectId || null,
+            projectName: findProject?.goal,
             breadcrumbs,
         });
 
@@ -526,9 +535,6 @@ export const getTaskParentChainController = async (req: Request, res: Response) 
         return res.status(500).json({ message: "Server error. Please try again." });
     }
 };
-
-
-// New
 
 export const projectGoalUpdate = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const projectId = req.params.projectId;
