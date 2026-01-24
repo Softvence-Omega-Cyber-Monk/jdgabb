@@ -19,4 +19,21 @@ const undoSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
+
+const globalUndo = new mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "user",
+            required: true,
+        },
+        undoList: {
+            type: [],
+            default: [],
+        },
+    },
+    { timestamps: true }
+);
+
 export const UndoModel = mongoose.model("undo", undoSchema);
+export const GlobalUndoModel = mongoose.model("globalUndo", globalUndo);
