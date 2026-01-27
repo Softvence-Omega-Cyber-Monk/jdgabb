@@ -47,6 +47,11 @@ const taskSchema = new mongoose.Schema(
                 ref: "Task",
             },
         ],
+        sharedWith: [
+            {
+                userId: { type: mongoose.Schema.Types.ObjectId, ref: "user" }
+            }
+        ]
     },
     { timestamps: true, versionKey: false }
 );

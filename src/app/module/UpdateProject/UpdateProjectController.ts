@@ -596,29 +596,39 @@ export const projectDelete = catchAsync(async (req: Request, res: Response, next
     });
 });
 
-export const getTaskFlagList = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.params;
-    const { flag } = req.query;
+export const getTaskFlagList = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+        const { userId } = req.params;
+        const { flag } = req.query;
 
-    if (!userId) {
-        throw new Error("User Id is required");
+        if (!userId) {
+            throw new Error("User Id is required");
+        }
+
+        const validFlags = ["isDeleted", "isArchived", "isComplite", "isStar"];
+
+        if (!flag || !validFlags.includes(flag.toString())) {
+            throw new Error(
+                "Invalid flag. Must be one of isDeleted, isArchived, isComplite, isStar"
+            );
+        }
+
+        const tasks = await Task.find({
+            [flag.toString()]: true,
+            $or: [
+                { userId: userId },
+                { "sharedWith.userId": userId }
+            ]
+        });
+
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: `Tasks filtered by ${flag} successfully`,
+            data: tasks
+        });
     }
-
-    if (!flag || !["isDeleted", "isArchived", "isComplite", "isStar"].includes(flag.toString())) {
-        throw new Error("Invalid flag. Must be one of isDeleted, isArchived, isComplite, isStar");
-    }
-
-    const filter: any = { userId, [flag.toString()]: true };
-
-    const tasks = await Task.find(filter);
-
-    sendResponse(res, {
-        success: true,
-        statusCode: 200,
-        message: `Tasks filtered by ${flag} successfully`,
-        data: tasks
-    });
-});
+);
 
 export const getSingleTask = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { taskId } = req.params;

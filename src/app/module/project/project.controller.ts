@@ -9,6 +9,7 @@ import AppError from "../../utils/AppError";
 import { OpenAi } from "../../config/openAi";
 import { UpdateChatHestory } from "../UpdateHistory/update.history.model";
 import { UpdateProject } from "../UpdateProject/UpdateProject.model";
+import Task from "../UpdateProject/TaskModel";
 
 
 
@@ -922,42 +923,98 @@ const getAllProjectByUser = catchAsync(async (req: Request, res: Response, next:
 });
 
 
-const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+// const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-    const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
+//     const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
 
-    if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
-        throw new AppError(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+//     if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
+//         throw new AppError(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+//     }
+
+//     const findProject = await UpdateProject.findById(projectId);
+
+//     // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
+//     const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
+
+
+//     if (!checkProjectAdminOwner) throw new AppError(403, "Access denied. Insufficient Permission.");
+
+
+//     const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
+
+//     if (alreadyExist) throw new AppError(400, "He Already has collabration access");
+
+//     findProject?.sharedWith.push({
+//         userId: projectCollabrationOwnerUserId
+//     });
+
+//     await findProject?.save();
+
+
+//     sendResponse(res, {
+//         success: true,
+//         statusCode: 200,
+//         message: "Project Collabration Successfully",
+//         data: findProject
+//     })
+
+// });
+
+
+const collabrationProjectGiveAccess = catchAsync(
+    async (req: Request, res: Response, next: NextFunction) => {
+
+        const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
+
+        if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
+            throw new AppError(
+                400,
+                "projectAdminUserId, projectId and projectCollabrationOwnerUserId must be required"
+            );
+        }
+
+        const findProject = await UpdateProject.findById(projectId);
+
+        if (!findProject) throw new AppError(404, "Project not found");
+
+        const isOwner = findProject.userId.equals(projectAdminUserId);
+        if (!isOwner) throw new AppError(403, "Access denied. Insufficient Permission.");
+
+        const alreadyExist = findProject.sharedWith.some(item => {
+            if (!item.userId) return false;
+            return item.userId.equals(projectCollabrationOwnerUserId);
+        });
+
+        if (alreadyExist) {
+            throw new AppError(400, "He already has collaboration access");
+        };
+
+        findProject.sharedWith.push({
+            userId: projectCollabrationOwnerUserId
+        });
+
+        await findProject.save();
+
+        await Task.updateMany(
+            {
+                projectId: projectId,
+                "sharedWith.userId": { $ne: projectCollabrationOwnerUserId }
+            },
+            {
+                $push: {
+                    sharedWith: { userId: projectCollabrationOwnerUserId }
+                }
+            }
+        );
+
+        sendResponse(res, {
+            success: true,
+            statusCode: 200,
+            message: "Project collaboration access granted successfully",
+            data: findProject
+        });
     }
-
-    const findProject = await UpdateProject.findById(projectId);
-
-    // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
-    const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
-
-
-    if (!checkProjectAdminOwner) throw new AppError(403, "Access denied. Insufficient Permission.");
-
-
-    const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
-
-    if (alreadyExist) throw new AppError(400, "He Already has collabration access");
-
-    findProject?.sharedWith.push({
-        userId: projectCollabrationOwnerUserId
-    });
-
-    await findProject?.save();
-
-
-    sendResponse(res, {
-        success: true,
-        statusCode: 200,
-        message: "Project Collabration Successfully",
-        data: null
-    })
-
-});
+);
 
 
 const updateFullProjectAnyWhereProject = async (req: Request, res: Response, next: NextFunction) => {
@@ -1223,7 +1280,7 @@ const removeUserFromProject = catchAsync(
             throw new AppError(403, "You Are not permited access this route");
         };
 
-        const updatedProject = await Project.findByIdAndUpdate(
+        const updatedProject = await UpdateProject.findByIdAndUpdate(
             projectId,
             { $pull: { sharedWith: { userId } } },
             { new: true }
