@@ -73,6 +73,10 @@ const userSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: false
     },
+    push: {
+        type: Boolean,
+        default: true
+    },
     role: {
         type: String,
         default: user_interface_1.Role.USER

@@ -25,6 +25,8 @@ export const sendNotification = async (
             token: user.fcmToken,
         };
 
+        console.log("Message : ",message);
+
         const isPush = await NotificationModel.findOne({ userId: userId });
 
         if (isPush?.push) {
@@ -32,7 +34,7 @@ export const sendNotification = async (
             console.log("✅ Notification sent:", response);
         }
 
-
+        console.log("Is Puah : ====== ", isPush)
 
         await FirebaseNotificationModel.create({
             userId,
@@ -40,6 +42,8 @@ export const sendNotification = async (
             body,
             timestamp: new Date(),
         });
+
+        console.log("Create Message to database");
 
     } catch (err) {
         console.error("⚠️ Error sending notification:", err);

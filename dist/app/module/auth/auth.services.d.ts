@@ -18,6 +18,7 @@ export declare const authServices: {
             subscriptionTypeDate: Date | undefined;
             subscriptionType: string;
             chatUsed: number;
+            push?: boolean;
             auths: import("../user/user.interface").IAuthprovider[];
             fcmToken: string;
             URL: string;

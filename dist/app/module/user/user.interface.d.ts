@@ -25,6 +25,7 @@ export interface IUser extends Document {
     subscriptionTypeDate: Date | undefined;
     subscriptionType: string;
     chatUsed: number;
+    push?: boolean;
     auths: IAuthprovider[];
     fcmToken: string;
 }

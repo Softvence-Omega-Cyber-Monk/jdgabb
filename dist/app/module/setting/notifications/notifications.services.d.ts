@@ -1,8 +1,8 @@
 import { NotificationModel } from "./notifications.model";
 export declare const notificationServices: {
     findNotificationByUserId: (id: String) => Promise<(import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         push: boolean;
+        userId: import("mongoose").Types.ObjectId;
         inAppReminder: boolean;
         smart: boolean;
         snoozeOptions: number[];
@@ -10,8 +10,8 @@ export declare const notificationServices: {
         timestamps: true;
         versionKey: false;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         push: boolean;
+        userId: import("mongoose").Types.ObjectId;
         inAppReminder: boolean;
         smart: boolean;
         snoozeOptions: number[];
@@ -19,8 +19,8 @@ export declare const notificationServices: {
         _id: import("mongoose").Types.ObjectId;
     }) | null>;
     updateNotificationByUserID: (id: string, updatedData: Partial<typeof NotificationModel>) => Promise<(import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         push: boolean;
+        userId: import("mongoose").Types.ObjectId;
         inAppReminder: boolean;
         smart: boolean;
         snoozeOptions: number[];
@@ -28,8 +28,8 @@ export declare const notificationServices: {
         timestamps: true;
         versionKey: false;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         push: boolean;
+        userId: import("mongoose").Types.ObjectId;
         inAppReminder: boolean;
         smart: boolean;
         snoozeOptions: number[];

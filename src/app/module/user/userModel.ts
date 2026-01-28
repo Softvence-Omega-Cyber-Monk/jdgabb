@@ -70,6 +70,10 @@ const userSchema = new mongoose.Schema<IUser>({
         type: Boolean,
         default: false
     },
+    push : {
+        type : Boolean,
+        default : true
+    },
     role: {
         type: String,
         default: Role.USER
