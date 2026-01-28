@@ -70,14 +70,19 @@ const userSchema = new mongoose.Schema<IUser>({
         type: Boolean,
         default: false
     },
-    push : {
-        type : Boolean,
-        default : true
+    push: {
+        type: Boolean,
+        default: true
+    },
+    otp: {
+        type: String,
+        default: null
     },
     role: {
         type: String,
         default: Role.USER
     },
+
     auths: [authProviderSchema]
 }, {
     timestamps: true,

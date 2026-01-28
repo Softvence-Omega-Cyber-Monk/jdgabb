@@ -7,7 +7,7 @@ exports.envVers = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const envChecker = () => {
-    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL"];
+    const requiredEnv = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL", "SMTP_HOST", "SMTP_PORT", "SMTP_FORM", "SMTP_USER", "SMTP_PASS"];
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
             throw new Error(`Required env messing : ${key}`);
@@ -32,6 +32,13 @@ const envChecker = () => {
             FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
             FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
             FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY,
+        },
+        NODEMAILER: {
+            SMTP_PASS: process.env.SMTP_PASS,
+            SMTP_USER: process.env.SMTP_USER,
+            SMTP_FORM: process.env.SMTP_FORM,
+            SMTP_PORT: process.env.SMTP_PORT,
+            SMTP_HOST: process.env.SMTP_HOST,
         }
     };
 };

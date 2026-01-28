@@ -19,13 +19,20 @@ interface IEnv {
         FIREBASE_CLIENT_EMAIL: string,
         FIREBASE_PRIVATE_KEY: string
     },
+    NODEMAILER: {
+        SMTP_PASS: string,
+        SMTP_USER: string,
+        SMTP_FORM: string,
+        SMTP_PORT: string,
+        SMTP_HOST: string,
+    },
     STRIPE_SECRET_KEY: string,
     STRIPT_PUBLISHABLE_KEY: string,
     STRIPE_WEBHOOK_SECRET: string
 }
 
 const envChecker = (): IEnv => {
-    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL"];
+    const requiredEnv: string[] = ["MONGO_URI", "PORT", "DEV_ENVIRONMENT", "FRONTEND_URL", "JWT_ACCESS_SECRATE", "JWT_REFRESH_SECRATE", "OPEN_AI_API_SECRATE", "AI_ROOT_URL", "FIREBASE_PROJECT_ID", "FIREBASE_CLIENT_EMAIL", "FIREBASE_PRIVATE_KEY", "STRIPE_SECRET_KEY", "STRIPE_WEBHOOK_SECRET", "STRIPT_PUBLISHABLE_KEY", "SERVER_URL", "SMTP_HOST", "SMTP_PORT", "SMTP_FORM", "SMTP_USER", "SMTP_PASS"];
 
     requiredEnv.forEach((key) => {
         if (!process.env[key]) {
@@ -52,6 +59,13 @@ const envChecker = (): IEnv => {
             FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID as string,
             FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL as string,
             FIREBASE_PRIVATE_KEY: process.env.FIREBASE_PRIVATE_KEY as string,
+        },
+        NODEMAILER: {
+            SMTP_PASS: process.env.SMTP_PASS as string,
+            SMTP_USER: process.env.SMTP_USER as string,
+            SMTP_FORM: process.env.SMTP_FORM as string,
+            SMTP_PORT: process.env.SMTP_PORT as string,
+            SMTP_HOST: process.env.SMTP_HOST as string,
         }
     }
 };

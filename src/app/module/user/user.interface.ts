@@ -32,6 +32,7 @@ export interface IUser extends Document {
     subscriptionType: string,
     chatUsed: number,
     push ?: boolean,
+    otp ? : string | null,
     auths: IAuthprovider[],
     fcmToken: string
 };

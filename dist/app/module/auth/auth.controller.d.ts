@@ -1,4 +1,7 @@
 import { NextFunction, Request, Response } from "express";
+export declare const forgotPassword: (req: Request, res: Response) => Promise<void>;
+export declare const verifyOTP: (req: Request, res: Response) => Promise<void>;
+export declare const resetPassword: (req: Request, res: Response) => Promise<void>;
 export declare const authController: {
     loginUser: (req: Request, res: Response, next: NextFunction) => void;
     changePassword: (req: Request, res: Response, next: NextFunction) => void;

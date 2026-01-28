@@ -77,6 +77,10 @@ const userSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: true
     },
+    otp: {
+        type: String,
+        default: null
+    },
     role: {
         type: String,
         default: user_interface_1.Role.USER

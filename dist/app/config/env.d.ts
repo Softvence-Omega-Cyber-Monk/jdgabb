@@ -15,6 +15,13 @@ interface IEnv {
         FIREBASE_CLIENT_EMAIL: string;
         FIREBASE_PRIVATE_KEY: string;
     };
+    NODEMAILER: {
+        SMTP_PASS: string;
+        SMTP_USER: string;
+        SMTP_FORM: string;
+        SMTP_PORT: string;
+        SMTP_HOST: string;
+    };
     STRIPE_SECRET_KEY: string;
     STRIPT_PUBLISHABLE_KEY: string;
     STRIPE_WEBHOOK_SECRET: string;

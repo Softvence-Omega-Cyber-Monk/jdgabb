@@ -19,6 +19,7 @@ export declare const authServices: {
             subscriptionType: string;
             chatUsed: number;
             push?: boolean;
+            otp?: string | null;
             auths: import("../user/user.interface").IAuthprovider[];
             fcmToken: string;
             URL: string;
