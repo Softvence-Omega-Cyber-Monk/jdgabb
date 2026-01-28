@@ -30,7 +30,7 @@ const userLogin = async (payload: Partial<IUser>) => {
         await existUser.save();
     }
 
-    sendNotification(String(existUser?._id), "login Notification", "You are successfully login");
+    await sendNotification(String(existUser?._id), "login Notification", "You are successfully login");
 
     const tokens = createJwtToken(existUser);
 

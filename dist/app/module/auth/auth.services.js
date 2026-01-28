@@ -25,7 +25,7 @@ const userLogin = async (payload) => {
         existUser.fcmToken = payload.fcmToken;
         await existUser.save();
     }
-    (0, sendNotification_1.sendNotification)(String(existUser?._id), "login Notification", "You are successfully login");
+    await (0, sendNotification_1.sendNotification)(String(existUser?._id), "login Notification", "You are successfully login");
     const tokens = (0, createJwtToken_1.createJwtToken)(existUser);
     const isPaid = existUser?.subscriptionTypeDate && new Date(existUser.subscriptionTypeDate) > new Date() ? true : false;
     const { password, ...rest } = existUser.toObject();
