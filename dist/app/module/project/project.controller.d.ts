@@ -30,5 +30,9 @@ export declare const projectController: {
     updateFullProjectAnyWhereProject: (req: Request, res: Response, next: NextFunction) => Promise<Response<any, Record<string, any>>>;
     deleteProject: (req: Request, res: Response, next: NextFunction) => void;
     updateProjectGoal: (req: Request, res: Response, next: NextFunction) => void;
+    updateTaskTitle: (req: Request, res: Response, next: NextFunction) => void;
+    updateSubtaskTitleAbdDueDate: (req: Request, res: Response, next: NextFunction) => void;
+    seeProjectAccessUser: (req: Request, res: Response, next: NextFunction) => void;
+    removeUserFromProject: (req: Request, res: Response, next: NextFunction) => void;
 };
 //# sourceMappingURL=project.controller.d.ts.map

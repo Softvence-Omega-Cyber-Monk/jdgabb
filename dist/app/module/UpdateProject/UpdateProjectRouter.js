@@ -1,0 +1,21 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const UpdateProjectController_1 = require("./UpdateProjectController");
+const UpdateProjectRouter = (0, express_1.Router)();
+UpdateProjectRouter.post("/createProject", UpdateProjectController_1.createProjectController);
+UpdateProjectRouter.post("/createSubtaskUnerTaskOrSubtask", UpdateProjectController_1.createTaskOrSubtaskController);
+UpdateProjectRouter.get("/getProject/:projectId", UpdateProjectController_1.getProjectController);
+UpdateProjectRouter.post("/:projectId/tasks", UpdateProjectController_1.createTaskController);
+UpdateProjectRouter.delete("/:taskId/deletetask", UpdateProjectController_1.deleteTaskController);
+UpdateProjectRouter.get("/parentTaskIdChain/:taskId", UpdateProjectController_1.getTaskParentChainController);
+UpdateProjectRouter.patch("/updateprojectGoal/:projectId", UpdateProjectController_1.projectGoalUpdate);
+UpdateProjectRouter.delete("/deleteProject/:projectId", UpdateProjectController_1.projectDelete);
+UpdateProjectRouter.get("/getTaskFlagList/:userId", UpdateProjectController_1.getTaskFlagList);
+UpdateProjectRouter.get("/findSingleTask/:taskId", UpdateProjectController_1.getSingleTask);
+UpdateProjectRouter.patch("/update/tasks/:taskId", UpdateProjectController_1.updateTaskController);
+UpdateProjectRouter.get("/tasks/:taskId/parents/:projectId", UpdateProjectController_1.getAllParentTasks);
+UpdateProjectRouter.get("/tasks/child/:taskId", UpdateProjectController_1.getTaskWithChildren);
+UpdateProjectRouter.get("/all/project/:userId", UpdateProjectController_1.getSingleUserAllProject);
+exports.default = UpdateProjectRouter;
+//# sourceMappingURL=UpdateProjectRouter.js.map

@@ -219,6 +219,55 @@ const stripeWebhook = async (req: Request, res: Response) => {
   }
 };
 
+
+export const revenueCatWebhook = async (req: Request, res: Response) => {
+  try {
+    const event = req.body;
+    const eventType = event.event.type;
+
+    const userId = event.event.app_user_id;
+    const productId = event.event.product_id;
+    const expirationAtMs = event.event.expiration_at_ms;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(200).send("User not found");
+
+    switch (eventType) {
+      case "INITIAL_PURCHASE":
+      case "RENEWAL":
+        user.isPaid = true;
+        user.subscriptionTypeDate = new Date(expirationAtMs);
+        user.weellyChatLimite = 1400;
+        user.dayliChatLimit = 200;
+        user.totalChatUseInWeek = 0;
+
+        await sendNotification(
+          userId,
+          "Subscription",
+          "Subscription activated successfully"
+        );
+        break;
+
+      case "CANCELLATION":
+      case "EXPIRATION":
+        user.isPaid = false;
+        await sendNotification(
+          userId,
+          "Subscription",
+          "Subscription expired"
+        );
+        break;
+    }
+
+    await user.save();
+    // res.status(200).send("RevenueCat event processed");
+  } catch (error) {
+    console.error(error);
+    res.status(400).send("Webhook error");
+  }
+};
+
+
 const getAllPayment = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   const userId = req.params.id;
   console.log(userId);

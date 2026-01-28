@@ -1265,8 +1265,6 @@ const seeProjectAccessUser = catchAsync(
     }
 );
 
-
-
 const removeUserFromProject = catchAsync(
     async (req: Request, res: Response, next: NextFunction) => {
 

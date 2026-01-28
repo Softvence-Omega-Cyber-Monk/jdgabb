@@ -1,63 +1,138 @@
 "use strict";
+// import cron from "node-cron";
+// import { User } from "../module/user/userModel";
+// import { sendNotification } from "./sendNotification";
+// import { Project } from "../module/project/project.model";
+// import { TaskTrushModel } from "../module/taskTrash/trashModel";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// cron.schedule("0 0 * * *", async () => {
+//   console.log("🕛 Running daily jobs:", new Date());
+//   try {
+//     const today = new Date();
+//     await User.updateMany(
+//       { subscriptionTypeDate: { $gt: today } },
+//       { $set: { dayliChatLimit: 200 } }
+//     );
+//     const activeUsers = await User.find({
+//       subscriptionTypeDate: { $gt: today },
+//       fcmToken: { $exists: true, $ne: null },
+//     });
+//     for (const user of activeUsers) {
+//       await sendNotification(
+//         user._id.toString(),
+//         "Daily Chat Limit Reset 🎯",
+//         "Your daily chat limit has been refreshed! You can now use 200 messages for today."
+//       );
+//     }
+//     const nextDay = new Date(today);
+//     nextDay.setDate(today.getDate() + 1);
+//     const startOfNextDay = new Date(nextDay.setHours(0, 0, 0, 0));
+//     const endOfNextDay = new Date(nextDay.setHours(23, 59, 59, 999));
+//     const projects = await Project.find({
+//       "tasks.taskDueDate": { $gte: startOfNextDay, $lte: endOfNextDay },
+//     }).populate("userId");
+//     console.log(`📌 Found ${projects.length} projects with due tasks tomorrow.`);
+//     for (const project of projects) {
+//       const user = project.userId;
+//       const tomorrowTasks = project.tasks.filter(
+//         (t) =>
+//           t.taskDueDate &&
+//           t.taskDueDate >= startOfNextDay &&
+//           t.taskDueDate <= endOfNextDay &&
+//           !t.isComplite &&
+//           !t.isDeleted
+//       );
+//       for (const task of tomorrowTasks) {
+//         await sendNotification(
+//           user._id.toString(),
+//           "Task Reminder 🕐",
+//           `Your task "${task.task}" is due tomorrow. Please complete it soon!`
+//         );
+//       }
+//     };
+//     const thirtyDaysAgo = new Date();
+//     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+//     const trashItems = await TaskTrushModel.find({
+//       createdAt: { $lte: thirtyDaysAgo }
+//     });
+//     for (const trash of trashItems) {
+//       const { userId, taskId } = trash;
+//       const project = await Project.findOne({
+//         userId: userId,
+//         "tasks._id": taskId,
+//         "tasks.isComplite": true
+//       });
+//       if (!project) {
+//         console.log(`⏭️ Task ${taskId} skipped (not completed or not found).`);
+//         continue;
+//       }
+//       await Project.updateOne(
+//         { userId: userId },
+//         { $pull: { tasks: { _id: taskId } } }
+//       );
+//       await TaskTrushModel.deleteOne({ _id: trash._id });
+//     }
+//   } catch (error) {
+//     console.error("❌ Error in daily cron job:", error);
+//   }
+// });
 const node_cron_1 = __importDefault(require("node-cron"));
 const userModel_1 = require("../module/user/userModel");
 const sendNotification_1 = require("./sendNotification");
-const project_model_1 = require("../module/project/project.model");
-const trashModel_1 = require("../module/taskTrash/trashModel");
+const TaskModel_1 = __importDefault(require("../module/UpdateProject/TaskModel"));
+async function deleteTaskWithChildren(taskId) {
+    const task = await TaskModel_1.default.findById(taskId);
+    if (!task)
+        return;
+    if (task.subtasks?.length) {
+        for (const subId of task.subtasks) {
+            await deleteTaskWithChildren(subId.toString());
+        }
+    }
+    await TaskModel_1.default.findByIdAndDelete(taskId);
+}
 node_cron_1.default.schedule("0 0 * * *", async () => {
-    console.log("🕛 Running daily jobs:", new Date());
+    console.log("🕛 Daily cron started:", new Date());
     try {
         const today = new Date();
+        today.setHours(0, 0, 0, 0);
         await userModel_1.User.updateMany({ subscriptionTypeDate: { $gt: today } }, { $set: { dayliChatLimit: 200 } });
         const activeUsers = await userModel_1.User.find({
             subscriptionTypeDate: { $gt: today },
             fcmToken: { $exists: true, $ne: null },
         });
         for (const user of activeUsers) {
-            await (0, sendNotification_1.sendNotification)(user._id.toString(), "Daily Chat Limit Reset 🎯", "Your daily chat limit has been refreshed! You can now use 200 messages for today.");
+            await (0, sendNotification_1.sendNotification)(user._id.toString(), "Daily Chat Limit Reset 🎯", "Your daily chat limit has been refreshed! You can now use 200 messages today.");
         }
-        const nextDay = new Date(today);
-        nextDay.setDate(today.getDate() + 1);
-        const startOfNextDay = new Date(nextDay.setHours(0, 0, 0, 0));
-        const endOfNextDay = new Date(nextDay.setHours(23, 59, 59, 999));
-        const projects = await project_model_1.Project.find({
-            "tasks.taskDueDate": { $gte: startOfNextDay, $lte: endOfNextDay },
-        }).populate("userId");
-        console.log(`📌 Found ${projects.length} projects with due tasks tomorrow.`);
-        for (const project of projects) {
-            const user = project.userId;
-            const tomorrowTasks = project.tasks.filter((t) => t.taskDueDate &&
-                t.taskDueDate >= startOfNextDay &&
-                t.taskDueDate <= endOfNextDay &&
-                !t.isComplite &&
-                !t.isDeleted);
-            for (const task of tomorrowTasks) {
-                await (0, sendNotification_1.sendNotification)(user._id.toString(), "Task Reminder 🕐", `Your task "${task.task}" is due tomorrow. Please complete it soon!`);
+        const reminderDays = [3, 2, 1];
+        for (const day of reminderDays) {
+            const start = new Date(today);
+            start.setDate(today.getDate() + day);
+            start.setHours(0, 0, 0, 0);
+            const end = new Date(start);
+            end.setHours(23, 59, 59, 999);
+            const tasks = await TaskModel_1.default.find({
+                compliteTarget: { $gte: start, $lte: end },
+                isComplite: false,
+                isDeleted: false,
+                isArchived: false,
+            }).populate("userId");
+            for (const task of tasks) {
+                await (0, sendNotification_1.sendNotification)(task.userId.toString(), "⏰ Task Reminder", `"${task.title}" task is due in ${day} day(s).`);
             }
         }
-        ;
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-        const trashItems = await trashModel_1.TaskTrushModel.find({
-            createdAt: { $lte: thirtyDaysAgo }
+        thirtyDaysAgo.setHours(23, 59, 59, 999);
+        const archivedTasks = await TaskModel_1.default.find({
+            isArchived: true,
+            updatedAt: { $lte: thirtyDaysAgo },
         });
-        for (const trash of trashItems) {
-            const { userId, taskId } = trash;
-            const project = await project_model_1.Project.findOne({
-                userId: userId,
-                "tasks._id": taskId,
-                "tasks.isComplite": true
-            });
-            if (!project) {
-                console.log(`⏭️ Task ${taskId} skipped (not completed or not found).`);
-                continue;
-            }
-            await project_model_1.Project.updateOne({ userId: userId }, { $pull: { tasks: { _id: taskId } } });
-            await trashModel_1.TaskTrushModel.deleteOne({ _id: trash._id });
+        for (const task of archivedTasks) {
+            await deleteTaskWithChildren(task._id.toString());
         }
     }
     catch (error) {

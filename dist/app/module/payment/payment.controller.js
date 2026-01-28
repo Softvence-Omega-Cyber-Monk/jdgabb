@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PaymentController = void 0;
+exports.PaymentController = exports.revenueCatWebhook = void 0;
 const sendResponse_1 = require("../../utils/sendResponse");
 const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const stripe_1 = __importDefault(require("stripe"));
@@ -187,6 +187,41 @@ const stripeWebhook = async (req, res) => {
         res.status(400).send(`Webhook error: ${err.message}`);
     }
 };
+const revenueCatWebhook = async (req, res) => {
+    try {
+        const event = req.body;
+        const eventType = event.event.type;
+        const userId = event.event.app_user_id;
+        const productId = event.event.product_id;
+        const expirationAtMs = event.event.expiration_at_ms;
+        const user = await userModel_1.User.findById(userId);
+        if (!user)
+            return res.status(200).send("User not found");
+        switch (eventType) {
+            case "INITIAL_PURCHASE":
+            case "RENEWAL":
+                user.isPaid = true;
+                user.subscriptionTypeDate = new Date(expirationAtMs);
+                user.weellyChatLimite = 1400;
+                user.dayliChatLimit = 200;
+                user.totalChatUseInWeek = 0;
+                await (0, sendNotification_1.sendNotification)(userId, "Subscription", "Subscription activated successfully");
+                break;
+            case "CANCELLATION":
+            case "EXPIRATION":
+                user.isPaid = false;
+                await (0, sendNotification_1.sendNotification)(userId, "Subscription", "Subscription expired");
+                break;
+        }
+        await user.save();
+        // res.status(200).send("RevenueCat event processed");
+    }
+    catch (error) {
+        console.error(error);
+        res.status(400).send("Webhook error");
+    }
+};
+exports.revenueCatWebhook = revenueCatWebhook;
 const getAllPayment = (0, catchAsync_1.default)(async (req, res, next) => {
     const userId = req.params.id;
     console.log(userId);

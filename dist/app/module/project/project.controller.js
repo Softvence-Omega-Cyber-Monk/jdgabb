@@ -13,6 +13,8 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const openAi_1 = require("../../config/openAi");
 const update_history_model_1 = require("../UpdateHistory/update.history.model");
+const UpdateProject_model_1 = require("../UpdateProject/UpdateProject.model");
+const TaskModel_1 = __importDefault(require("../UpdateProject/TaskModel"));
 const createProject = (0, catchAsync_1.default)(async (req, res, next) => {
     const id = req.params.id;
     const goalData = req.body.goal;
@@ -727,28 +729,65 @@ const getAllProjectByUser = (0, catchAsync_1.default)(async (req, res, next) => 
     });
     res.status(200).json(result);
 });
+// const collabrationProjectGiveAccess = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+//     const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
+//     if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
+//         throw new AppError(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+//     }
+//     const findProject = await UpdateProject.findById(projectId);
+//     // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
+//     const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
+//     if (!checkProjectAdminOwner) throw new AppError(403, "Access denied. Insufficient Permission.");
+//     const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
+//     if (alreadyExist) throw new AppError(400, "He Already has collabration access");
+//     findProject?.sharedWith.push({
+//         userId: projectCollabrationOwnerUserId
+//     });
+//     await findProject?.save();
+//     sendResponse(res, {
+//         success: true,
+//         statusCode: 200,
+//         message: "Project Collabration Successfully",
+//         data: findProject
+//     })
+// });
 const collabrationProjectGiveAccess = (0, catchAsync_1.default)(async (req, res, next) => {
     const { projectAdminUserId, projectId, projectCollabrationOwnerUserId } = req.body;
     if (!projectAdminUserId || !projectId || !projectCollabrationOwnerUserId) {
-        throw new AppError_1.default(400, "projectAdminUserId , projectId and projectCollabrationOwnerUserId must be required");
+        throw new AppError_1.default(400, "projectAdminUserId, projectId and projectCollabrationOwnerUserId must be required");
     }
-    const findProject = await project_model_1.Project.findById(projectId);
-    // const checkProjectAdminOwner = findProject?.userId === projectAdminUserId;
-    const checkProjectAdminOwner = findProject?.userId.equals(projectAdminUserId);
-    if (!checkProjectAdminOwner)
+    const findProject = await UpdateProject_model_1.UpdateProject.findById(projectId);
+    if (!findProject)
+        throw new AppError_1.default(404, "Project not found");
+    const isOwner = findProject.userId.equals(projectAdminUserId);
+    if (!isOwner)
         throw new AppError_1.default(403, "Access denied. Insufficient Permission.");
-    const alreadyExist = await findProject?.sharedWith.some((item) => item.userId?.equals(projectCollabrationOwnerUserId));
-    if (alreadyExist)
-        throw new AppError_1.default(400, "He Already has collabration access");
-    findProject?.sharedWith.push({
+    const alreadyExist = findProject.sharedWith.some(item => {
+        if (!item.userId)
+            return false;
+        return item.userId.equals(projectCollabrationOwnerUserId);
+    });
+    if (alreadyExist) {
+        throw new AppError_1.default(400, "He already has collaboration access");
+    }
+    ;
+    findProject.sharedWith.push({
         userId: projectCollabrationOwnerUserId
     });
-    await findProject?.save();
+    await findProject.save();
+    await TaskModel_1.default.updateMany({
+        projectId: projectId,
+        "sharedWith.userId": { $ne: projectCollabrationOwnerUserId }
+    }, {
+        $push: {
+            sharedWith: { userId: projectCollabrationOwnerUserId }
+        }
+    });
     (0, sendResponse_1.sendResponse)(res, {
         success: true,
         statusCode: 200,
-        message: "Project Collabration Successfully",
-        data: null
+        message: "Project collaboration access granted successfully",
+        data: findProject
     });
 });
 const updateFullProjectAnyWhereProject = async (req, res, next) => {
@@ -886,6 +925,110 @@ const updateProjectGoal = (0, catchAsync_1.default)(async (req, res, next) => {
         data: null
     });
 });
+const updateTaskTitle = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, task } = req.body;
+    if (!projectId || !taskId) {
+        throw new AppError_1.default(400, "Project ID and Task ID are required");
+    }
+    if (!task || typeof task !== "string") {
+        throw new AppError_1.default(400, "Task field is required and must be a string");
+    }
+    const project = await project_model_1.Project.findById(projectId);
+    if (!project) {
+        throw new AppError_1.default(404, "Project not found");
+    }
+    const taskObj = project.tasks.id(taskId);
+    if (!taskObj) {
+        throw new AppError_1.default(404, "Task not found");
+    }
+    taskObj.task = task;
+    await project.save();
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Task field updated successfully",
+        data: taskObj,
+    });
+});
+const updateSubtaskTitleAbdDueDate = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId, taskId, subtaskId, title, subTaskDueDate } = req.body;
+    if (!projectId || !taskId || !subtaskId) {
+        throw new AppError_1.default(400, "Project ID, Task ID, and Subtask ID are required");
+    }
+    // Only update if value is not undefined, null, or empty string
+    const updates = {};
+    if (title !== undefined && title !== null && title.trim() !== "")
+        updates.title = title;
+    if (subTaskDueDate !== undefined && subTaskDueDate !== null && subTaskDueDate !== "")
+        updates.subTaskDueDate = new Date(subTaskDueDate);
+    if (Object.keys(updates).length === 0) {
+        throw new AppError_1.default(400, "No valid fields to update (title or subTaskDueDate)");
+    }
+    const project = await project_model_1.Project.findById(projectId);
+    if (!project) {
+        throw new AppError_1.default(404, "Project not found");
+    }
+    const task = project.tasks.id(taskId);
+    if (!task) {
+        throw new AppError_1.default(404, "Task not found");
+    }
+    const subtask = task.subtasks.id(subtaskId);
+    if (!subtask) {
+        throw new AppError_1.default(404, "Subtask not found");
+    }
+    // Apply updates safely
+    if (updates.title)
+        subtask.title = updates.title;
+    if (updates.subTaskDueDate)
+        subtask.subTaskDueDate = updates.subTaskDueDate;
+    await project.save();
+    (0, sendResponse_1.sendResponse)(res, {
+        statusCode: 200,
+        success: true,
+        message: "Subtask updated successfully",
+        data: subtask,
+    });
+});
+const seeProjectAccessUser = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { projectId } = req.params;
+    const project = await UpdateProject_model_1.UpdateProject.findById(projectId).populate({
+        path: "sharedWith.userId",
+        select: "username email",
+    });
+    if (!project)
+        return next(new AppError_1.default(404, "Project not found"));
+    const sharedUsers = project.sharedWith.map((item) => item.userId);
+    res.status(200).json({
+        status: "success",
+        results: sharedUsers.length,
+        data: {
+            users: sharedUsers,
+        },
+    });
+});
+const removeUserFromProject = (0, catchAsync_1.default)(async (req, res, next) => {
+    const { userId, projectId, projectAdminId } = req.body;
+    if (!userId || !projectId || !projectAdminId)
+        return next(new AppError_1.default(400, "UserId, ProjectId & projectAdminId is required"));
+    const findProject = await UpdateProject_model_1.UpdateProject.findById(projectId);
+    if (findProject && findProject.userId.toString() !== projectAdminId) {
+        throw new AppError_1.default(403, "You Are not permited access this route");
+    }
+    ;
+    const updatedProject = await UpdateProject_model_1.UpdateProject.findByIdAndUpdate(projectId, { $pull: { sharedWith: { userId } } }, { new: true }).populate({
+        path: "sharedWith.userId",
+        select: "username email",
+    });
+    if (!updatedProject)
+        return next(new AppError_1.default(404, "Project not found"));
+    res.status(200).json({
+        status: "success",
+        message: "User removed from project successfully",
+        data: {
+            sharedUsers: updatedProject.sharedWith.map((item) => item.userId),
+        },
+    });
+});
 exports.projectController = {
     createProject,
     updateProjectTitle,
@@ -917,6 +1060,10 @@ exports.projectController = {
     collabrationProjectGiveAccess,
     updateFullProjectAnyWhereProject,
     deleteProject,
-    updateProjectGoal
+    updateProjectGoal,
+    updateTaskTitle,
+    updateSubtaskTitleAbdDueDate,
+    seeProjectAccessUser,
+    removeUserFromProject
 };
 //# sourceMappingURL=project.controller.js.map

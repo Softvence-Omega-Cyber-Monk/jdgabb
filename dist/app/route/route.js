@@ -11,6 +11,7 @@ const history_route_1 = __importDefault(require("../module/hostory/history.route
 const notifecation_route_controller_1 = __importDefault(require("../module/notificationMsg/notifecation.route.controller"));
 const payment_route_1 = __importDefault(require("../module/payment/payment.route"));
 const project_route_1 = __importDefault(require("../module/project/project.route"));
+const ProjectChatRouter_1 = __importDefault(require("../module/ProjectChatHistory/ProjectChatRouter"));
 const addToArchive_route_1 = __importDefault(require("../module/setting/addToArchive/addToArchive.route"));
 const aiChat_route_1 = __importDefault(require("../module/setting/aiChat/aiChat.route"));
 const appearance_route_1 = __importDefault(require("../module/setting/appearance/appearance.route"));
@@ -20,7 +21,10 @@ const notifications_route_1 = __importDefault(require("../module/setting/notific
 const privacy_route_1 = __importDefault(require("../module/setting/privacy/privacy.route"));
 const producitivy_route_1 = __importDefault(require("../module/setting/Productivity/producitivy.route"));
 const projectTask_route_1 = __importDefault(require("../module/setting/projectTask/projectTask.route"));
+const global_undo_route_1 = __importDefault(require("../module/undu/global.undo.route"));
+const undo_router_1 = __importDefault(require("../module/undu/undo.router"));
 const update_history_route_1 = __importDefault(require("../module/UpdateHistory/update.history.route"));
+const UpdateProjectRouter_1 = __importDefault(require("../module/UpdateProject/UpdateProjectRouter"));
 const user_router_1 = __importDefault(require("../module/user/user.router"));
 exports.moduleRoute = [
     {
@@ -94,6 +98,22 @@ exports.moduleRoute = [
     {
         path: "/archive",
         routes: addToArchive_route_1.default
+    },
+    {
+        path: "/updateProject",
+        routes: UpdateProjectRouter_1.default
+    },
+    {
+        path: "/projectChatHistory",
+        routes: ProjectChatRouter_1.default
+    },
+    {
+        path: "/undo",
+        routes: undo_router_1.default
+    },
+    {
+        path: "/global",
+        routes: global_undo_route_1.default
     },
 ];
 //# sourceMappingURL=route.js.map

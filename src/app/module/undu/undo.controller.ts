@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import catchAsync from "../../utils/catchAsync";
 import { GlobalUndoModel, UndoModel } from "./undu.model";
 import { sendResponse } from "../../utils/sendResponse";
+import Task from "../UpdateProject/TaskModel";
+import { sendNotification } from "../../config/sendNotification";
+import { UpdateProject } from "../UpdateProject/UpdateProject.model";
 
 export const createUndo = catchAsync(async (req: Request, res: Response) => {
     const { userId, taskOrProjectId } = req.body;
@@ -73,6 +76,18 @@ export const pushUndoAction = catchAsync(async (req: Request, res: Response) => 
             upsert: true,
         }
     );
+
+
+    const findTask = await Task.findById(action);
+
+
+    if (findTask) {
+        await sendNotification(
+            userId,
+            "AI Task Created ✨",
+            `AI just created a new task for you: "${findTask.title}". Take a look!`
+        );
+    }
 
     sendResponse(res, {
         statusCode: 200,
@@ -180,6 +195,16 @@ export const pushGlobalUndoAction = catchAsync(async (req: Request, res: Respons
             upsert: true,
         }
     );
+
+    const findProject = await UpdateProject.findById(action);
+
+    if (findProject) {
+        await sendNotification(
+            userId,
+            "AI Project Created ✨",
+            `AI has successfully created a new project for you: "${findProject.goal}".`
+        );
+    }
 
     sendResponse(res, {
         statusCode: 200,

@@ -30,9 +30,10 @@ const findUserChat = (0, catchAsync_1.default)(async (req, res, next) => {
     });
 });
 const deleteUserChat = (0, catchAsync_1.default)(async (req, res, next) => {
-    const { userId } = req.params;
+    const { userId, chatType } = req.params;
     const result = await update_history_model_1.UpdateChatHestory.deleteMany({
-        userId: userId
+        userId: userId,
+        chatType: chatType
     });
     if (!result)
         throw new AppError_1.default(400, "User Not Found");

@@ -19,11 +19,15 @@ projectRouter.patch("/update/task_with_ai", checkChatAccess_1.checkChatAccess, p
 projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
 projectRouter.patch("/update/taskDate", project_controller_1.projectController.updateTaskDueDateController);
 // Update Work
-projectRouter.post("/createFullProject/:userId", project_controller_1.projectController.createFullProjectManualy);
 projectRouter.post("/collabration-access-Project", project_controller_1.projectController.collabrationProjectGiveAccess);
+projectRouter.patch("/projectGoalUpdate", project_controller_1.projectController.updateProjectGoal);
+projectRouter.patch("/updateTaskTitle", project_controller_1.projectController.updateTaskTitle);
+projectRouter.patch("/updateSubtaskTitleDueDate", project_controller_1.projectController.updateSubtaskTitleAbdDueDate);
+projectRouter.patch("/removeAccessFormOwnProject", project_controller_1.projectController.removeUserFromProject);
+projectRouter.get("/seeProjectAccessUser/:projectId", project_controller_1.projectController.seeProjectAccessUser);
+projectRouter.post("/createFullProject/:userId", project_controller_1.projectController.createFullProjectManualy);
 projectRouter.patch("/updateFullProjectAnyWhere/:projectId", project_controller_1.projectController.updateFullProjectAnyWhereProject);
 projectRouter.delete("/deleteProject/:projectId", project_controller_1.projectController.deleteProject);
-projectRouter.patch("/projectGoalUpdate", project_controller_1.projectController.updateProjectGoal);
 // End Update Work
 projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
