@@ -222,9 +222,15 @@ const stripeWebhook = async (req: Request, res: Response) => {
 
 export const revenueCatWebhook = async (req: Request, res: Response) => {
   try {
-    const event = req.body;
-    const eventType = event.event.type;
 
+    console.log("Req Body ---------------------------- : " , req.body);
+
+    const bodyString = req.body.toString('utf8');
+    const event = JSON.parse(bodyString);
+
+    console.log("Parse Json Event : ------------------ : ",event);
+
+    const eventType = event.event.type;
     const userId = event.event.app_user_id;
     const productId = event.event.product_id;
     const expirationAtMs = event.event.expiration_at_ms;
@@ -251,6 +257,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
       case "CANCELLATION":
       case "EXPIRATION":
         user.isPaid = false;
+
         await sendNotification(
           userId,
           "Subscription",
@@ -260,7 +267,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     }
 
     await user.save();
-    // res.status(200).send("RevenueCat event processed");
+    res.status(200).send("OK");
   } catch (error) {
     console.error(error);
     res.status(400).send("Webhook error");
