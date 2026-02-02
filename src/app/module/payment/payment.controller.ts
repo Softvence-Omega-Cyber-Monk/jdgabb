@@ -223,12 +223,12 @@ const stripeWebhook = async (req: Request, res: Response) => {
 export const revenueCatWebhook = async (req: Request, res: Response) => {
   try {
 
-    console.log("Req Body ---------------------------- : " , req.body);
+    console.log("Req Body ---------------------------- : ", req.body);
 
     const bodyString = req.body.toString('utf8');
     const event = JSON.parse(bodyString);
 
-    console.log("Parse Json Event : ------------------ : ",event);
+    console.log("Parse Json Event : ------------------ : ", event);
 
     const eventType = event.event.type;
     const userId = event.event.app_user_id;
@@ -239,31 +239,45 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     if (!user) return res.status(200).send("User not found");
 
     switch (eventType) {
-      case "INITIAL_PURCHASE":
-      case "RENEWAL":
-        user.isPaid = true;
-        user.subscriptionTypeDate = new Date(expirationAtMs);
-        user.weellyChatLimite = 1400;
-        user.dayliChatLimit = 200;
-        user.totalChatUseInWeek = 0;
 
-        await sendNotification(
-          userId,
-          "Subscription",
-          "Subscription activated successfully"
-        );
+      case "INITIAL_PURCHASE":
+        console.log("✅✅✅ Payment Purchase:", eventType);
+        break;
+
+      case "RENEWAL":
+        // user.isPaid = true;
+        // user.subscriptionTypeDate = new Date(expirationAtMs);
+        // user.weellyChatLimite = 1400;
+        // user.dayliChatLimit = 200;
+        // user.totalChatUseInWeek = 0;
+
+        // await sendNotification(
+        //   userId,
+        //   "Subscription",
+        //   "Subscription activated successfully"
+        // );
+        console.log("✅ Payment Success:", eventType);
         break;
 
       case "CANCELLATION":
-      case "EXPIRATION":
-        user.isPaid = false;
+        console.log("⚠️ Subscription cancelled (still active until expiry)");
 
-        await sendNotification(
-          userId,
-          "Subscription",
-          "Subscription expired"
-        );
         break;
+      case "EXPIRATION":
+        // user.isPaid = false;
+        console.log("❌ Subscription expired");
+
+        // await sendNotification(
+        //   userId,
+        //   "Subscription",
+        //   "Subscription expired"
+        // );
+        break;
+
+      case "TEST":
+        console.log("🧪 RevenueCat test event");
+        break;
+
     }
 
     await user.save();
