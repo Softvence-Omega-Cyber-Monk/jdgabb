@@ -231,12 +231,12 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     console.log("Parse Json Event : ------------------ : ", event);
 
     const eventType = event.event.type;
-    const userId = event.event.app_user_id;
-    const productId = event.event.product_id;
-    const expirationAtMs = event.event.expiration_at_ms;
+    // const userId = event.event.app_user_id;
+    // const productId = event.event.product_id;
+    // const expirationAtMs = event.event.expiration_at_ms;
 
-    const user = await User.findById(userId);
-    if (!user) return res.status(200).send("User not found");
+    // const user = await User.findById(userId);
+    // if (!user) return res.status(200).send("User not found");
 
     switch (eventType) {
 
@@ -280,7 +280,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
 
     }
 
-    await user.save();
+    // await user.save();
     res.status(200).send("OK");
   } catch (error) {
     console.error(error);
