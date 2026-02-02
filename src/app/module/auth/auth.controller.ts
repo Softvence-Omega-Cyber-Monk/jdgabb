@@ -44,7 +44,9 @@ const changePassword = catchAsync(async (req: Request, res: Response, next: Next
         data: null
     })
 
-})
+});
+
+
 const deleteUser = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
     await authServices.deleteUser(id as string);
@@ -220,7 +222,6 @@ export const resetPassword = async (req: Request, res: Response) => {
 
     console.log(token);
 
-    // Verify token
     let payload: any;
     try {
         payload = jwt.verify(token, envVers.JWT.JWT_REFRESH_SECRATE);
@@ -228,16 +229,13 @@ export const resetPassword = async (req: Request, res: Response) => {
         throw new AppError(401, err.message);
     }
 
-    // Find user
     const user = await User.findById(payload.id);
     if (!user) {
         throw new AppError(404, "User not found");
     }
 
-    // Update password (hashed automatically via pre-save hook)
     user.password = password;
 
-    // Clear OTP just in case
     user.otp = null;
 
     await user.save();

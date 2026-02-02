@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { notFound } from "./app/utils/notFoundRoute";
 import { moduleRoute } from "./app/route/route";
 import { globalErrorhandler } from "./app/middleware/global.error.handler";
+import { revenueCatWebhook } from "./app/module/payment/payment.controller";
 
 export const app = express();
 
@@ -25,11 +26,17 @@ app.use(cors({
 // );
 
 
+app.post(
+  '/revenueCat',
+  express.raw({ type: 'application/json' }),
+  revenueCatWebhook
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.get("/addToTrash" , (req : Request , res : Response) => {
+app.get("/addToTrash", (req: Request, res: Response) => {
   res.status(200).send("Hiting");
 })
 

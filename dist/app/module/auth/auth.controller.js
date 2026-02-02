@@ -179,7 +179,6 @@ const resetPassword = async (req, res) => {
         throw new AppError_1.default(400, "Token and password are required");
     }
     console.log(token);
-    // Verify token
     let payload;
     try {
         payload = jsonwebtoken_1.default.verify(token, env_1.envVers.JWT.JWT_REFRESH_SECRATE);
@@ -187,14 +186,11 @@ const resetPassword = async (req, res) => {
     catch (err) {
         throw new AppError_1.default(401, err.message);
     }
-    // Find user
     const user = await userModel_1.User.findById(payload.id);
     if (!user) {
         throw new AppError_1.default(404, "User not found");
     }
-    // Update password (hashed automatically via pre-save hook)
     user.password = password;
-    // Clear OTP just in case
     user.otp = null;
     await user.save();
     res.status(200).json({

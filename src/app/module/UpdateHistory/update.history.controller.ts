@@ -16,6 +16,7 @@ const createChatHistory = catchAsync(async (req: Request, res: Response, next: N
     });
 });
 
+
 const findUserChat = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
     const chatType = req.params.chatType;
@@ -36,15 +37,12 @@ const deleteUserChat = catchAsync(async (req: Request, res: Response, next: Next
 
     const { userId, chatType } = req.params;
 
-
     const result = await UpdateChatHestory.deleteMany({
         userId: userId,
         chatType: chatType
     });
 
-
     if (!result) throw new AppError(400, "User Not Found");
-
 
     sendResponse(res, {
         success: true,

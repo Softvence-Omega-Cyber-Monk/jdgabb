@@ -21,7 +21,6 @@ export const globalErrorhandler = (err: any, req: Request, res: Response, next: 
     // if(req.file){
     //     await deleteImageFormCloudinary(req.file.path);
     // };
-
     // if(req.files && Array.isArray(req.files) && req.files.length){
     //     const imageUrl = (req.files as Express.Multer.File[]).map((data) => data.path);
     //     await Promise.all(imageUrl.map((url) => deleteImageFormCloudinary(url)))
