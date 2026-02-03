@@ -12,6 +12,12 @@ export enum EPaymentType {
     PURCHASE = "PURCHASE"
 }
 
+export enum PlanName {
+    weekly = "weekly",
+    yearly = "yearly",
+    monthly = "monthly"
+}
+
 const paymentSchema = new Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +37,9 @@ const paymentSchema = new Schema({
         type: String,
         enum: [...Object.values(EPaymentType)]
     },
+    planName: {
+        type: String
+    },
     subExpireDate: {
         type: Date
     },
@@ -39,6 +48,12 @@ const paymentSchema = new Schema({
     },
     purchasedSubscriptionDate: {
         type: Date
+    },
+    transaction_id: {
+        type: String
+    },
+    app_id: {
+        type: String
     }
 
 }, {

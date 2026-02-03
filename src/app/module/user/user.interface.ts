@@ -29,11 +29,10 @@ export interface IUser extends Document {
 
     askLimite : number,
     createLimite : number,
-    
+
     push?: boolean,
     otp?: string | null,
     auths: IAuthprovider[],
     fcmToken: string,
-    app_user_id?: string,
     product_id?: string
 };

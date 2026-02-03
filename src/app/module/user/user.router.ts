@@ -11,7 +11,8 @@ const userRouter = Router();
 userRouter.post("/register", validateRequest(createUserValidationZodSchema), userController.registerUser);
 userRouter.get("/searchTerm", userController.searchUserByEmail);
 userRouter.post("/project/share", userController.addSharedUser);
-userRouter.get("/shareWith/:userId" , userController.getUserSharedProjectsFull)
+userRouter.get("/shareWith/:userId" , userController.getUserSharedProjectsFull);
+userRouter.get("/chatAccess/:userId" , userController.userChatAccessLimite);
 userRouter.get("/info/:id", userController.getSingleUser);
 userRouter.get("/setting/:id", protectUser(Role.USER), userController.userSettingInfo);
 userRouter.delete("/delete/:id", userController.userDeleted)
