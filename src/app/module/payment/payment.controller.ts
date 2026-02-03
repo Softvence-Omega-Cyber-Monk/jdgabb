@@ -503,8 +503,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     switch (eventType) {
       case "INITIAL_PURCHASE":
         paymentStatus = EPaymentStatus.PAID;
-        paymentType = EPaymentType.PURCHASE;
-        user.isPaid = true;
+        paymentType = product_id;
         user.subscriptionExpireDate = subExpireDate;
         user.username = displayName || user.username;
         user.email = email || user.email;
@@ -513,8 +512,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
 
       case "RENEWAL":
         paymentStatus = EPaymentStatus.RENEWE;
-        paymentType = EPaymentType.RENEWE;
-        user.isPaid = true;
+        paymentType = product_id;
         user.subscriptionExpireDate = subExpireDate;
         await user.save();
         break;
@@ -525,7 +523,6 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
 
       case "EXPIRATION":
         paymentStatus = EPaymentStatus.UNPAID;
-        user.isPaid = false;
         user.subscriptionExpireDate = undefined;
         await user.save();
         break;

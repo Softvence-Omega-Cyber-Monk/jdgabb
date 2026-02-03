@@ -183,7 +183,7 @@ const userChatAccessLimite = async (req: Request, res: Response) => {
             { _id: userId, isDeleted: false },
             {
                 username: 1,
-                subscriptionTypeDate: 1,
+                subscriptionExpireDate: 1,
                 askLimite: 1,
                 createLimite: 1,
                 _id: 1
