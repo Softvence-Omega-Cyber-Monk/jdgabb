@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UpdateChatHestory } from "./ProjectChatModel";
+import { User } from "../user/userModel";
 
 export const createUpdateHistoryController = async (req: Request, res: Response) => {
     try {
@@ -9,6 +10,42 @@ export const createUpdateHistoryController = async (req: Request, res: Response)
 
         if (!userId || !projectOrTaskId || isAi === undefined || !text || !chatType) {
             return res.status(400).json({ message: 'All fields (userId, projectOrTaskId, isAi, text, chatType) are required!' });
+        }
+
+        const findUser = await User.findOne({ _id: userId });
+
+        if (!findUser) {
+            return res.status(404).json({ message: 'User Not Found' });
+        }
+
+        if (isAi) {
+            const currentDate = new Date();
+
+            if (findUser.subscriptionExpireDate && findUser.subscriptionExpireDate > currentDate) {
+
+            } else {
+
+                if (chatType === "ask") {
+                    if (findUser.askLimite <= 0) {
+                        return res.status(403).json({
+                            message: "AI ask limit sesh. Please upgrade."
+                        });
+                    }
+
+                    findUser.askLimite -= 1;
+                }
+
+                if (chatType === "create") {
+                    if (findUser.createLimite <= 0) {
+                        return res.status(403).json({
+                            message: "AI create limit sesh. Please upgrade."
+                        });
+                    }
+                    findUser.createLimite -= 1;
+                }
+
+                await findUser.save();
+            }
         }
 
         const newUpdateHistory = new UpdateChatHestory({
@@ -80,7 +117,7 @@ export const deleteMultipleUpdateHistoryController = async (req: Request, res: R
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: 'No update history records found for the given user and project/task!' });
         };
-        
+
         res.status(200).json({
             message: `${result.deletedCount} update history records deleted successfully!`
         });
