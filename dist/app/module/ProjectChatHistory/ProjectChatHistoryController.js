@@ -2,11 +2,43 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteMultipleUpdateHistoryController = exports.getUpdateHistoryController = exports.createUpdateHistoryController = void 0;
 const ProjectChatModel_1 = require("./ProjectChatModel");
+const userModel_1 = require("../user/userModel");
 const createUpdateHistoryController = async (req, res) => {
     try {
         const { userId, projectOrTaskId, isAi, text, chatType } = req.body;
         if (!userId || !projectOrTaskId || isAi === undefined || !text || !chatType) {
             return res.status(400).json({ message: 'All fields (userId, projectOrTaskId, isAi, text, chatType) are required!' });
+        }
+        const findUser = await userModel_1.User.findOne({ _id: userId });
+        if (!findUser) {
+            return res.status(404).json({ message: 'User Not Found' });
+        }
+        if (isAi) {
+            const currentDate = new Date();
+            if (findUser.subscriptionExpireDate &&
+                findUser.subscriptionExpireDate > currentDate) {
+                // subscription active → limit kombe na
+            }
+            else {
+                if (chatType === "ask") {
+                    if (findUser.askLimite <= 0) {
+                        return res.status(403).json({
+                            message: "AI ask limit sesh. Please upgrade."
+                        });
+                    }
+                    findUser.askLimite -= 1;
+                    await findUser.save();
+                }
+                if (chatType === "create") {
+                    if (findUser.createLimite <= 0) {
+                        return res.status(403).json({
+                            message: "AI create limit sesh. Please upgrade."
+                        });
+                    }
+                    findUser.createLimite -= 1;
+                    await findUser.save();
+                }
+            }
         }
         const newUpdateHistory = new ProjectChatModel_1.UpdateChatHestory({
             userId,

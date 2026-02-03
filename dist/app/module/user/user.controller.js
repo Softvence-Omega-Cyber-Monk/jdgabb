@@ -134,7 +134,7 @@ const userChatAccessLimite = async (req, res) => {
         const { userId } = req.params;
         const user = await userModel_1.User.findOne({ _id: userId, isDeleted: false }, {
             username: 1,
-            subscriptionTypeDate: 1,
+            subscriptionExpireDate: 1,
             askLimite: 1,
             createLimite: 1,
             _id: 1

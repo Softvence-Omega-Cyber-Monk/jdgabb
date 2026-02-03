@@ -272,61 +272,166 @@ const createPaymentSession = (0, catchAsync_1.default)(async (req, res) => {
 //     res.status(400).send("Webhook error");
 //   }
 // };
+// export const revenueCatWebhook = async (req: Request, res: Response) => {
+//   try {
+//     const bodyString = req.body.toString("utf8");
+//     const payload = JSON.parse(bodyString);
+//     const event = payload.event;
+//     console.log(event);
+//     const {
+//       type: eventType,
+//       app_user_id: userId,
+//       app_id,
+//       price,
+//       product_id,
+//       transaction_id,
+//       event_timestamp_ms,
+//       expiration_at_ms,
+//       purchased_at_ms,
+//     } = event;
+//     console.log("----------------This is event :------------------- ", event);
+//     const eventTrigerDate = new Date(event_timestamp_ms);
+//     const subExpireDate = new Date(expiration_at_ms);
+//     const purchasedSubscriptionDate = new Date(purchased_at_ms);
+//     console.log("----------------Start subExpire Date -------------:");
+//     console.log(subExpireDate);
+//     console.log("----------------End subExpire Date -------------:");
+//     console.log("---------------------------------------------------");
+//     console.log("----------------Start eventTrigerDate Date -------------:");
+//     console.log(eventTrigerDate);
+//     console.log("----------------End eventTrigerDate Date -------------:");
+//     console.log("---------------------------------------------------");
+//     console.log("----------------Start subExpire Date -------------:");
+//     console.log(purchasedSubscriptionDate);
+//     console.log("----------------End subExpire Date -------------:");
+//     console.log("---------------------------------------------------");
+//     let paymentStatus: EPaymentStatus | null = null;
+//     let paymentType: EPaymentType | null = null;
+//     const findUser = await User.findById(userId);
+//     if (!findUser) {
+//       res.status(404).json({ message: "User not valid" });
+//     }
+//     switch (eventType) {
+//       case "INITIAL_PURCHASE":
+//         paymentStatus = EPaymentStatus.PAID;
+//         paymentType = EPaymentType.PURCHASE;
+//         if (findUser) {
+//           findUser.subscriptionExpireDate = subExpireDate;
+//         }
+//         findUser?.save();
+//         break;
+//       case "RENEWAL":
+//         paymentStatus = EPaymentStatus.RENEWE;
+//         paymentType = EPaymentType.RENEWE;
+//         if (findUser) {
+//           findUser.subscriptionExpireDate = subExpireDate;
+//         }
+//         findUser?.save();
+//         break;
+//       case "CANCELLATION":
+//         paymentStatus = EPaymentStatus.CANCEL;
+//         break;
+//       case "EXPIRATION":
+//         paymentStatus = EPaymentStatus.UNPAID;
+//         break;
+//       case "TEST":
+//         console.log("🧪 RevenueCat test webhook");
+//         paymentStatus = EPaymentStatus.UNPAID;
+//     }
+//     // 🔁 Same transaction update, new হলে create
+//     await Payment.findOneAndUpdate(
+//       { transaction_id },
+//       {
+//         userId,
+//         paymentStauts: paymentStatus,
+//         amount: price || 0,
+//         planType: product_id,
+//         subExpireDate,
+//         eventTrigerDate,
+//         purchasedSubscriptionDate,
+//         transaction_id,
+//         app_id,
+//       },
+//       { upsert: true, new: true }
+//     );
+//     console.log("✅ Payment saved:", eventType, transaction_id);
+//   } catch (error) {
+//     console.error("❌ RevenueCat Webhook Error:", error);
+//     res.status(400).send("Webhook error");
+//   }
+// };
 const revenueCatWebhook = async (req, res) => {
     try {
         const bodyString = req.body.toString("utf8");
         const payload = JSON.parse(bodyString);
         const event = payload.event;
-        const { type: eventType, app_user_id: userId, app_id, price, product_id, transaction_id, event_timestamp_ms, expiration_at_ms, purchased_at_ms, } = event;
-        console.log("----------------This is event :------------------- ", event);
+        const { type: eventType, app_user_id: userId, app_id, price, product_id, transaction_id, event_timestamp_ms, expiration_at_ms, purchased_at_ms, subscriber_attributes, } = event;
         const eventTrigerDate = new Date(event_timestamp_ms);
-        const subExpireDate = new Date(expiration_at_ms);
-        const purchasedSubscriptionDate = new Date(purchased_at_ms);
-        let paymentStatus = null;
-        let paymentType = null;
-        const findUser = await userModel_1.User.findById(userId);
-        if (!findUser) {
-            res.status(404).json({ message: "User not valid" });
+        const subExpireDate = expiration_at_ms ? new Date(expiration_at_ms) : undefined;
+        const purchasedSubscriptionDate = purchased_at_ms ? new Date(purchased_at_ms) : undefined;
+        const user = await userModel_1.User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not valid" });
         }
+        const displayName = subscriber_attributes?.$displayName?.value;
+        const email = subscriber_attributes?.$email?.value;
+        const lastPurchasePlan = subscriber_attributes?.last_purchase_plan?.value;
+        const lastPurchasePrice = subscriber_attributes?.last_purchase_price?.value;
+        const lastPurchaseProductId = subscriber_attributes?.last_purchase_product_id?.value;
+        let paymentStatus;
+        let paymentType = null;
         switch (eventType) {
             case "INITIAL_PURCHASE":
                 paymentStatus = payment_model_1.EPaymentStatus.PAID;
-                paymentType = payment_model_1.EPaymentType.PURCHASE;
-                if (findUser) {
-                    findUser.subscriptionExpireDate = subExpireDate;
-                }
-                findUser?.save();
+                paymentType = product_id;
+                user.subscriptionExpireDate = subExpireDate;
+                user.username = displayName || user.username;
+                user.email = email || user.email;
+                await user.save();
                 break;
             case "RENEWAL":
                 paymentStatus = payment_model_1.EPaymentStatus.RENEWE;
-                paymentType = payment_model_1.EPaymentType.RENEWE;
-                if (findUser) {
-                    findUser.subscriptionExpireDate = subExpireDate;
-                }
-                findUser?.save();
+                paymentType = product_id;
+                user.subscriptionExpireDate = subExpireDate;
+                await user.save();
                 break;
             case "CANCELLATION":
                 paymentStatus = payment_model_1.EPaymentStatus.CANCEL;
                 break;
             case "EXPIRATION":
                 paymentStatus = payment_model_1.EPaymentStatus.UNPAID;
+                user.subscriptionExpireDate = undefined;
+                await user.save();
                 break;
             case "TEST":
-                console.log("🧪 RevenueCat test webhook");
+                paymentStatus = payment_model_1.EPaymentStatus.UNPAID;
+                break;
+            default:
+                return res.status(200).send("Ignored");
         }
-        // 🔁 Same transaction update, new হলে create
         await payment_model_1.Payment.findOneAndUpdate({ transaction_id }, {
             userId,
             paymentStauts: paymentStatus,
             amount: price || 0,
-            planType: product_id,
+            planType: paymentType,
             subExpireDate,
             eventTrigerDate,
             purchasedSubscriptionDate,
             transaction_id,
             app_id,
         }, { upsert: true, new: true });
-        console.log("✅ Payment saved:", eventType, transaction_id);
+        console.log("✅ RevenueCat Event:", {
+            eventType,
+            userId,
+            product_id,
+            price,
+            displayName,
+            email,
+            lastPurchasePlan,
+            lastPurchasePrice,
+            lastPurchaseProductId,
+        });
+        res.status(200).send("OK");
     }
     catch (error) {
         console.error("❌ RevenueCat Webhook Error:", error);
