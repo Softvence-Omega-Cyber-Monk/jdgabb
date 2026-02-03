@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Payment = exports.EPaymentType = exports.EPaymentStatus = void 0;
+exports.Payment = exports.PlanName = exports.EPaymentType = exports.EPaymentStatus = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 var EPaymentStatus;
 (function (EPaymentStatus) {
@@ -48,6 +48,12 @@ var EPaymentType;
     EPaymentType["RENEWE"] = "RENEWE";
     EPaymentType["PURCHASE"] = "PURCHASE";
 })(EPaymentType || (exports.EPaymentType = EPaymentType = {}));
+var PlanName;
+(function (PlanName) {
+    PlanName["weekly"] = "weekly";
+    PlanName["yearly"] = "yearly";
+    PlanName["monthly"] = "monthly";
+})(PlanName || (exports.PlanName = PlanName = {}));
 const paymentSchema = new mongoose_1.Schema({
     userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
@@ -75,6 +81,12 @@ const paymentSchema = new mongoose_1.Schema({
     },
     purchasedSubscriptionDate: {
         type: Date
+    },
+    transaction_id: {
+        type: String
+    },
+    app_id: {
+        type: String
     }
 }, {
     timestamps: true,

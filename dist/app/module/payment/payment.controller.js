@@ -9,6 +9,7 @@ const catchAsync_1 = __importDefault(require("../../utils/catchAsync"));
 const stripe_1 = __importDefault(require("stripe"));
 const payment_model_1 = require("./payment.model");
 const mongoose_1 = require("mongoose");
+const userModel_1 = require("../user/userModel");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover",
 });
@@ -189,84 +190,146 @@ const createPaymentSession = (0, catchAsync_1.default)(async (req, res) => {
 //     res.status(400).send(`Webhook error: ${err.message}`);
 //   }
 // };
+// export const revenueCatWebhook = async (req: Request, res: Response) => {
+//   try {
+//     // console.log("Req Body ---------------------------- : ", req.body);
+//     const bodyString = req.body.toString('utf8');
+//     const event = JSON.parse(bodyString);
+//     // console.log("Parse Json Event : ------------------ : ", event);
+//     const eventType = event.event.type;
+//     const userId = event.event.app_user_id;
+//     const app_id = event.event.app_id;
+//     const price = event.event.price;
+//     const planName = event.event.product_id;
+//     const transaction_id = event.event.transaction_id;
+//     // weekly monthly yearly 
+//     // Date 
+//     const event_triger_timestamp_ms = event.event.event_timestamp_ms;
+//     const expiration_subscription_at_ms = event.event.expiration_at_ms;
+//     const purchased_subscription_at_ms = event.event.expiration_at_ms;
+//     // console.log(subscriber_attributes);
+//     const subExpireDate = new Date(expiration_subscription_at_ms);
+//     const eventTrigerDate = new Date(event_triger_timestamp_ms);
+//     const purchasedSubscriptionDate = new Date(purchased_subscription_at_ms);
+//     console.log("----------------Start subExpire Date -------------:");
+//     console.log(subExpireDate);
+//     console.log("----------------End subExpire Date -------------:");
+//     console.log("---------------------------------------------------");
+//     console.log("----------------Start eventTrigerDate Date -------------:");
+//     console.log(eventTrigerDate);
+//     console.log("----------------End eventTrigerDate Date -------------:");
+//     console.log("---------------------------------------------------");
+//     console.log("----------------Start subExpire Date -------------:");
+//     console.log(purchasedSubscriptionDate);
+//     console.log("----------------End subExpire Date -------------:");
+//     console.log("---------------------------------------------------");
+//     // const userId = subscriber_attributes?.user_id?.value;
+//     // const plan = subscriber_attributes?.plan?.value;
+//     // const price = subscriber_attributes?.price?.value;
+//     console.log("----------------Info Data Start-------------:");
+//     console.log("Event Type:", eventType);
+//     console.log("UserId:", userId);
+//     // console.log("Plan:", plan);
+//     console.log("Price:", price);
+//     console.log("----------------Info Data End-------------:");
+//     switch (eventType) {
+//       case "INITIAL_PURCHASE":
+//         console.log("✅✅✅ Payment Purchase:", eventType);
+//         break;
+//       case "RENEWAL":
+//         // user.isPaid = true;
+//         // user.subscriptionTypeDate = new Date(expirationAtMs);
+//         // user.weellyChatLimite = 1400;
+//         // user.dayliChatLimit = 200;
+//         // user.totalChatUseInWeek = 0;
+//         // await sendNotification(
+//         //   userId,
+//         //   "Subscription",
+//         //   "Subscription activated successfully"
+//         // );
+//         console.log("✅ Payment Success:", eventType);
+//         break;
+//       case "CANCELLATION":
+//         console.log("⚠️ Subscription cancelled (still active until expiry)");
+//         break;
+//       case "EXPIRATION":
+//         // user.isPaid = false;
+//         console.log("❌ Subscription expired");
+//         // await sendNotification(
+//         //   userId,
+//         //   "Subscription",
+//         //   "Subscription expired"
+//         // );
+//         break;
+//       case "TEST":
+//         console.log("🧪 RevenueCat test event");
+//         break;
+//     }
+//     // await user.save();
+//     res.status(200).send("OK");
+//   } catch (error) {
+//     console.error(error);
+//     res.status(400).send("Webhook error");
+//   }
+// };
 const revenueCatWebhook = async (req, res) => {
     try {
-        // console.log("Req Body ---------------------------- : ", req.body);
-        const bodyString = req.body.toString('utf8');
-        const event = JSON.parse(bodyString);
-        // console.log("Parse Json Event : ------------------ : ", event);
-        const eventType = event.event.type;
-        const userId = event.event.app_user_id;
-        const price = event.event.price;
-        const planName = event.event.product_id;
-        const transaction_id = event.event.transaction_id;
-        // Date 
-        const event_triger_timestamp_ms = event.event.event_timestamp_ms;
-        const expiration_subscription_at_ms = event.event.expiration_at_ms;
-        const purchased_subscription_at_ms = event.event.expiration_at_ms;
-        // console.log(subscriber_attributes);
-        const subExpireDate = new Date(expiration_subscription_at_ms);
-        console.log("----------------Start subExpire Date -------------:");
-        console.log(subExpireDate);
-        console.log("----------------End subExpire Date -------------:");
-        console.log("---------------------------------------------------");
-        const eventTrigerDate = new Date(event_triger_timestamp_ms);
-        console.log("----------------Start eventTrigerDate Date -------------:");
-        console.log(eventTrigerDate);
-        console.log("----------------End eventTrigerDate Date -------------:");
-        console.log("---------------------------------------------------");
-        const purchasedSubscriptionDate = new Date(purchased_subscription_at_ms);
-        console.log("----------------Start subExpire Date -------------:");
-        console.log(purchasedSubscriptionDate);
-        console.log("----------------End subExpire Date -------------:");
-        console.log("---------------------------------------------------");
-        // const userId = subscriber_attributes?.user_id?.value;
-        // const plan = subscriber_attributes?.plan?.value;
-        // const price = subscriber_attributes?.price?.value;
-        console.log("----------------Info Data Start-------------:");
-        console.log("Event Type:", eventType);
-        console.log("UserId:", userId);
-        // console.log("Plan:", plan);
-        console.log("Price:", price);
-        console.log("----------------Info Data End-------------:");
+        const bodyString = req.body.toString("utf8");
+        const payload = JSON.parse(bodyString);
+        const event = payload.event;
+        const { type: eventType, app_user_id: userId, app_id, price, product_id, transaction_id, event_timestamp_ms, expiration_at_ms, purchased_at_ms, } = event;
+        console.log("----------------This is event :------------------- ", event);
+        const eventTrigerDate = new Date(event_timestamp_ms);
+        const subExpireDate = new Date(expiration_at_ms);
+        const purchasedSubscriptionDate = new Date(purchased_at_ms);
+        let paymentStatus = null;
+        let paymentType = null;
+        const findUser = await userModel_1.User.findById(userId);
+        if (!findUser) {
+            res.status(404).json({ message: "User not valid" });
+        }
         switch (eventType) {
             case "INITIAL_PURCHASE":
-                console.log("✅✅✅ Payment Purchase:", eventType);
+                paymentStatus = payment_model_1.EPaymentStatus.PAID;
+                paymentType = payment_model_1.EPaymentType.PURCHASE;
+                if (findUser) {
+                    findUser.subscriptionExpireDate = subExpireDate;
+                }
+                findUser?.save();
                 break;
             case "RENEWAL":
-                // user.isPaid = true;
-                // user.subscriptionTypeDate = new Date(expirationAtMs);
-                // user.weellyChatLimite = 1400;
-                // user.dayliChatLimit = 200;
-                // user.totalChatUseInWeek = 0;
-                // await sendNotification(
-                //   userId,
-                //   "Subscription",
-                //   "Subscription activated successfully"
-                // );
-                console.log("✅ Payment Success:", eventType);
+                paymentStatus = payment_model_1.EPaymentStatus.RENEWE;
+                paymentType = payment_model_1.EPaymentType.RENEWE;
+                if (findUser) {
+                    findUser.subscriptionExpireDate = subExpireDate;
+                }
+                findUser?.save();
                 break;
             case "CANCELLATION":
-                console.log("⚠️ Subscription cancelled (still active until expiry)");
+                paymentStatus = payment_model_1.EPaymentStatus.CANCEL;
                 break;
             case "EXPIRATION":
-                // user.isPaid = false;
-                console.log("❌ Subscription expired");
-                // await sendNotification(
-                //   userId,
-                //   "Subscription",
-                //   "Subscription expired"
-                // );
+                paymentStatus = payment_model_1.EPaymentStatus.UNPAID;
                 break;
             case "TEST":
-                console.log("🧪 RevenueCat test event");
-                break;
+                console.log("🧪 RevenueCat test webhook");
         }
-        // await user.save();
-        res.status(200).send("OK");
+        // 🔁 Same transaction update, new হলে create
+        await payment_model_1.Payment.findOneAndUpdate({ transaction_id }, {
+            userId,
+            paymentStauts: paymentStatus,
+            amount: price || 0,
+            planType: product_id,
+            subExpireDate,
+            eventTrigerDate,
+            purchasedSubscriptionDate,
+            transaction_id,
+            app_id,
+        }, { upsert: true, new: true });
+        console.log("✅ Payment saved:", eventType, transaction_id);
     }
     catch (error) {
-        console.error(error);
+        console.error("❌ RevenueCat Webhook Error:", error);
         res.status(400).send("Webhook error");
     }
 };

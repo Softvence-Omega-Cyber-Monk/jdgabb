@@ -27,10 +27,9 @@ const userLogin = async (payload) => {
     }
     await (0, sendNotification_1.sendNotification)(String(existUser?._id), "login Notification", "You are successfully login");
     const tokens = (0, createJwtToken_1.createJwtToken)(existUser);
-    const isPaid = existUser?.subscriptionTypeDate && new Date(existUser.subscriptionTypeDate) > new Date() ? true : false;
     const { password, ...rest } = existUser.toObject();
     return {
-        user: { ...rest, isPaid },
+        user: { ...rest },
         tokens: tokens
     };
 };

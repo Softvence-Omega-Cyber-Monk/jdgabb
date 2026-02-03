@@ -25,7 +25,6 @@ export interface IUser extends Document {
     role: Role,
     isPaid: boolean,
     subscriptionExpireDate: Date | undefined,
-    subscriptionType: string,
 
     askLimite : number,
     createLimite : number,

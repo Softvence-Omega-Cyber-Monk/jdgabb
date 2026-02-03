@@ -18,15 +18,13 @@ export interface IUser extends Document {
     isVerifid?: boolean;
     role: Role;
     isPaid: boolean;
-    subscriptionTypeDate: Date | undefined | null;
-    subscriptionType: string;
+    subscriptionExpireDate: Date | undefined;
     askLimite: number;
     createLimite: number;
     push?: boolean;
     otp?: string | null;
     auths: IAuthprovider[];
     fcmToken: string;
-    app_user_id?: string;
     product_id?: string;
 }
 //# sourceMappingURL=user.interface.d.ts.map

@@ -11,6 +11,7 @@ userRouter.post("/register", (0, zodRequestValidation_1.validateRequest)(user_va
 userRouter.get("/searchTerm", user_controller_1.userController.searchUserByEmail);
 userRouter.post("/project/share", user_controller_1.userController.addSharedUser);
 userRouter.get("/shareWith/:userId", user_controller_1.userController.getUserSharedProjectsFull);
+userRouter.get("/chatAccess/:userId", user_controller_1.userController.userChatAccessLimite);
 userRouter.get("/info/:id", user_controller_1.userController.getSingleUser);
 userRouter.get("/setting/:id", (0, protect_1.protectUser)(user_interface_1.Role.USER), user_controller_1.userController.userSettingInfo);
 userRouter.delete("/delete/:id", user_controller_1.userController.userDeleted);

@@ -2,7 +2,6 @@ import { IUser } from "../user/user.interface";
 export declare const authServices: {
     userLogin: (payload: Partial<IUser>) => Promise<{
         user: {
-            isPaid: boolean;
             _id: import("mongoose").Types.ObjectId;
             oldPassword?: string;
             username: string;
@@ -11,15 +10,14 @@ export declare const authServices: {
             isDeleted?: string;
             isVerifid?: boolean;
             role: import("../user/user.interface").Role;
-            subscriptionTypeDate: Date | undefined | null;
-            subscriptionType: string;
+            isPaid: boolean;
+            subscriptionExpireDate: Date | undefined;
             askLimite: number;
             createLimite: number;
             push?: boolean;
             otp?: string | null;
             auths: import("../user/user.interface").IAuthprovider[];
             fcmToken: string;
-            app_user_id?: string;
             product_id?: string;
             URL: string;
             alinkColor: string;

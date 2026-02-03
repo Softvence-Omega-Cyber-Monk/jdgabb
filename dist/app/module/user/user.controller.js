@@ -129,6 +129,35 @@ const getUserSharedProjectsFull = (0, catchAsync_1.default)(async (req, res) => 
         },
     });
 });
+const userChatAccessLimite = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const user = await userModel_1.User.findOne({ _id: userId, isDeleted: false }, {
+            username: 1,
+            subscriptionTypeDate: 1,
+            askLimite: 1,
+            createLimite: 1,
+            _id: 1
+        });
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        res.status(200).json({
+            success: true,
+            data: user
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Something went wrong",
+            error
+        });
+    }
+};
 exports.userController = {
     registerUser,
     getSingleUser,
@@ -136,6 +165,7 @@ exports.userController = {
     userDeleted,
     searchUserByEmail,
     addSharedUser,
-    getUserSharedProjectsFull
+    getUserSharedProjectsFull,
+    userChatAccessLimite
 };
 //# sourceMappingURL=user.controller.js.map

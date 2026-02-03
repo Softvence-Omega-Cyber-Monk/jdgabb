@@ -45,7 +45,7 @@ const userSchema = new mongoose_1.default.Schema({
         type: Boolean,
         default: false
     },
-    subscriptionTypeDate: {
+    subscriptionExpireDate: {
         type: Date,
         default: null
     },
@@ -72,9 +72,6 @@ const userSchema = new mongoose_1.default.Schema({
     role: {
         type: String,
         default: user_interface_1.Role.USER
-    },
-    app_user_id: {
-        type: String,
     },
     auths: [authProviderSchema]
 }, {

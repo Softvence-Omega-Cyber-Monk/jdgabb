@@ -7,5 +7,6 @@ export declare const userController: {
     searchUserByEmail: (req: Request, res: Response, next: NextFunction) => void;
     addSharedUser: (req: Request, res: Response, next: NextFunction) => void;
     getUserSharedProjectsFull: (req: Request, res: Response, next: NextFunction) => void;
+    userChatAccessLimite: (req: Request, res: Response) => Promise<Response<any, Record<string, any>> | undefined>;
 };
 //# sourceMappingURL=user.controller.d.ts.map

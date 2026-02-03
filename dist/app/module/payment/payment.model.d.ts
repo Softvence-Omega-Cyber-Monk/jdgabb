@@ -9,6 +9,11 @@ export declare enum EPaymentType {
     RENEWE = "RENEWE",
     PURCHASE = "PURCHASE"
 }
+export declare enum PlanName {
+    weekly = "weekly",
+    yearly = "yearly",
+    monthly = "monthly"
+}
 export declare const Payment: mongoose.Model<{
     userId: mongoose.Types.ObjectId;
     paymentStauts: EPaymentStatus;
@@ -17,6 +22,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
     userId: mongoose.Types.ObjectId;
     paymentStauts: EPaymentStatus;
@@ -25,6 +32,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps, {}, {
     timestamps: true;
     versionKey: false;
@@ -36,6 +45,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps & {
     _id: mongoose.Types.ObjectId;
 }, mongoose.Schema<any, mongoose.Model<any, any, any, any, any, any>, {}, {}, {}, {}, {
@@ -49,6 +60,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     userId: mongoose.Types.ObjectId;
     paymentStauts: EPaymentStatus;
@@ -57,6 +70,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
     timestamps: true;
     versionKey: false;
@@ -68,6 +83,8 @@ export declare const Payment: mongoose.Model<{
     subExpireDate?: NativeDate | null;
     eventTrigerDate?: NativeDate | null;
     purchasedSubscriptionDate?: NativeDate | null;
+    transaction_id?: string | null;
+    app_id?: string | null;
 } & mongoose.DefaultTimestampProps> & {
     _id: mongoose.Types.ObjectId;
 }>>;
