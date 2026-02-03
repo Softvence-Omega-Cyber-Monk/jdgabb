@@ -24,13 +24,12 @@ export interface IUser extends Document {
     isVerifid?: boolean,
     role: Role,
     isPaid: boolean,
-    dayliChatLimit: Number,
-    chatLimit: number,
-    weellyChatLimite?: Number,
-    totalChatUseInWeek?: Number,
     subscriptionTypeDate: Date | undefined | null,
     subscriptionType: string,
-    chatUsed: number,
+
+    askLimite : number,
+    createLimite : number,
+    
     push?: boolean,
     otp?: string | null,
     auths: IAuthprovider[],

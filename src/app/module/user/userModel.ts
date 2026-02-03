@@ -42,30 +42,21 @@ const userSchema = new mongoose.Schema<IUser>({
         type: Boolean,
         default: false
     },
+    
     subscriptionTypeDate: {
         type: Date,
         default: null
     },
-    weellyChatLimite: {
+
+    askLimite: {
         type: Number,
-        default: 0
+        default: 10
     },
-    totalChatUseInWeek: {
+    createLimite: {
         type: Number,
-        default: 0
+        default: 1
     },
-    chatLimit: {
-        type: Number,
-        default: 20
-    },
-    chatUsed: {
-        type: Number,
-        default: 0
-    },
-    dayliChatLimit: {
-        type: Number,
-        default: 0
-    },
+
     isPaid: {
         type: Boolean,
         default: false
@@ -82,10 +73,10 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         default: Role.USER
     },
-    app_user_id : {
-        type : String,
+    app_user_id: {
+        type: String,
     },
-    
+
     auths: [authProviderSchema]
 }, {
     timestamps: true,

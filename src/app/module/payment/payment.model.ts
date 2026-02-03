@@ -1,14 +1,15 @@
 import mongoose, { Schema } from "mongoose";
 
 export enum EPaymentStatus {
-    PAID = "PAID",
+    PAID = "PURCHASE",
+    RENEWE = "RENEWE",
+    CANCEL = "CANCEL",
     UNPAID = "UNPAID",
-    CANCEL = "CANCEL"
 };
 
 export enum EPaymentType {
-    PROMPT = "PROMPT",
-    SUBSCRIPTION = "SUBSCRIPTION"
+    RENEWE = "RENEWE",
+    PURCHASE = "PURCHASE"
 }
 
 const paymentSchema = new Schema({
@@ -17,9 +18,8 @@ const paymentSchema = new Schema({
         ref: "user",
         required: true
     },
-    sessionId: {
+    app_user_id: {
         type: String,
-        unique: true,
         required: true
     },
     paymentStauts: {
@@ -31,7 +31,7 @@ const paymentSchema = new Schema({
         type: Number,
         required: true
     },
-    paymentType: {
+    planType: {
         type: String,
         enum: [...Object.values(EPaymentType)]
     }

@@ -152,93 +152,111 @@ const createPaymentSession = catchAsync(async (req: Request, res: Response) => {
 //   }
 // };
 
-const stripeWebhook = async (req: Request, res: Response) => {
-  const sig = req.headers["stripe-signature"] as string;
-  let event: Stripe.Event;
+// const stripeWebhook = async (req: Request, res: Response) => {
+//   const sig = req.headers["stripe-signature"] as string;
+//   let event: Stripe.Event;
 
-  try {
-    event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET as string
-    );
-  } catch (err: any) {
-    return res.status(400).send(`Webhook Error: ${err.message}`);
-  }
+//   try {
+//     event = stripe.webhooks.constructEvent(
+//       req.body,
+//       sig,
+//       process.env.STRIPE_WEBHOOK_SECRET as string
+//     );
+//   } catch (err: any) {
+//     return res.status(400).send(`Webhook Error: ${err.message}`);
+//   }
 
-  try {
-    if (event.type === "payment_intent.succeeded") {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+//   try {
+//     if (event.type === "payment_intent.succeeded") {
+//       const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-      const sessionId = paymentIntent.id;
-      const userId = paymentIntent.metadata?.userId;
-      const paymentType = paymentIntent.metadata?.paymentType || "PROMPT";
-      const amount = paymentIntent.amount / 100;
+//       const sessionId = paymentIntent.id;
+//       const userId = paymentIntent.metadata?.userId;
+//       const paymentType = paymentIntent.metadata?.paymentType || "PROMPT";
+//       const amount = paymentIntent.amount / 100;
 
-      // Update local Payment record
-      await Payment.findOneAndUpdate(
-        { sessionId },
-        { $set: { paymentStauts: "PAID" } },
-        { new: true }
-      );
+//       // Update local Payment record
+//       await Payment.findOneAndUpdate(
+//         { sessionId },
+//         { $set: { paymentStauts: "PAID" } },
+//         { new: true }
+//       );
 
-      // Update User data
-      const user = await User.findById(userId);
-      if (user) {
-        if (paymentType === "PROMPT") {
-          user.chatLimit = (user.chatLimit || 0) + 300;
-          await sendNotification(String(user?._id), "Payment", "Prompt payment success");
-        } else if (paymentType === "SUBSCRIPTION") {
-          const now = new Date();
-          let newExpiryDate: Date;
+//       // Update User data
+//       const user = await User.findById(userId);
+//       if (user) {
+//         if (paymentType === "PROMPT") {
+//           user.chatLimit = (user.chatLimit || 0) + 300;
+//           await sendNotification(String(user?._id), "Payment", "Prompt payment success");
+//         } else if (paymentType === "SUBSCRIPTION") {
+//           const now = new Date();
+//           let newExpiryDate: Date;
 
-          if (user.subscriptionTypeDate && user.subscriptionTypeDate > now) {
-            newExpiryDate = new Date(user.subscriptionTypeDate);
-            newExpiryDate.setDate(newExpiryDate.getDate() + 7);
-          } else {
-            newExpiryDate = new Date(now);
-            newExpiryDate.setDate(newExpiryDate.getDate() + 7);
-          }
+//           if (user.subscriptionTypeDate && user.subscriptionTypeDate > now) {
+//             newExpiryDate = new Date(user.subscriptionTypeDate);
+//             newExpiryDate.setDate(newExpiryDate.getDate() + 7);
+//           } else {
+//             newExpiryDate = new Date(now);
+//             newExpiryDate.setDate(newExpiryDate.getDate() + 7);
+//           }
 
-          user.subscriptionTypeDate = newExpiryDate;
-          user.isPaid = true;
-          user.weellyChatLimite = 1400;
-          user.totalChatUseInWeek = 0;
-          user.dayliChatLimit = 200;
-          await sendNotification(String(user?._id), "Payment", "Subscription payment success");
-        }
+//           user.subscriptionTypeDate = newExpiryDate;
+//           user.isPaid = true;
+//           user.weellyChatLimite = 1400;
+//           user.totalChatUseInWeek = 0;
+//           user.dayliChatLimit = 200;
+//           await sendNotification(String(user?._id), "Payment", "Subscription payment success");
+//         }
 
-        await user.save();
-      }
-    }
+//         await user.save();
+//       }
+//     }
 
-    res.status(200).send("✅ Event processed");
-  } catch (err: any) {
-    console.error(err);
-    res.status(400).send(`Webhook error: ${err.message}`);
-  }
-};
+//     res.status(200).send("✅ Event processed");
+//   } catch (err: any) {
+//     console.error(err);
+//     res.status(400).send(`Webhook error: ${err.message}`);
+//   }
+// };
 
 
 export const revenueCatWebhook = async (req: Request, res: Response) => {
   try {
 
-    console.log("Req Body ---------------------------- : ", req.body);
+    // console.log("Req Body ---------------------------- : ", req.body);
 
     const bodyString = req.body.toString('utf8');
     const event = JSON.parse(bodyString);
 
-    console.log("Parse Json Event : ------------------ : ", event);
+    // console.log("Parse Json Event : ------------------ : ", event);
 
     const eventType = event.event.type;
-    // const userId = event.event.app_user_id;
-    // const productId = event.event.product_id;
-    // const expirationAtMs = event.event.expiration_at_ms;
-    // const subscriber_attributes = event.event.subscriber_attributes;
-    // const user = await User.findById(userId);
-    // if (!user) return res.status(200).send("User not found");
+    const revenueCatUserId = event.event.app_user_id;
+    const productId = event.event.product_id;
+    const expirationAtMs = event.event.expiration_at_ms;
+    const subscriber_attributes = event.event.subscriber_attributes;
 
     // console.log(subscriber_attributes);
+
+    const makeReadableDate = new Date(expirationAtMs);
+    console.log("----------------Start Date -------------:");
+    console.log(makeReadableDate);
+
+    console.log("----------------End Date Date -------------:");
+
+    const userId = subscriber_attributes?.user_id?.value;
+    const plan = subscriber_attributes?.plan?.value;
+    const price = subscriber_attributes?.price?.value;
+
+
+    console.log("----------------Info Data Start-------------:");
+
+    console.log("Event Type:", eventType);
+    console.log("UserId:", userId);
+    console.log("Plan:", plan);
+    console.log("Price:", price);
+
+    console.log("----------------Info Data End-------------:");
 
     switch (eventType) {
 
@@ -305,6 +323,6 @@ const getAllPayment = catchAsync(async (req: Request, res: Response, next: NextF
 
 export const PaymentController = {
   createPaymentSession,
-  stripeWebhook,
+  // stripeWebhook,
   getAllPayment
 };
