@@ -355,34 +355,46 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
       app_user_id: userId,
       app_id,
       price,
-      product_id: planType,
+      product_id,
       transaction_id,
       event_timestamp_ms,
       expiration_at_ms,
       purchased_at_ms,
     } = event;
 
-    const eventTrigerDate = new Date(event_timestamp_ms);
-    const subExpireDate = expiration_at_ms
-      ? new Date(expiration_at_ms)
-      : null;
+    console.log("----------------This is event :------------------- ", event);
 
-    const purchasedSubscriptionDate = purchased_at_ms
-      ? new Date(purchased_at_ms)
-      : null;
+    const eventTrigerDate = new Date(event_timestamp_ms);
+    const subExpireDate = new Date(expiration_at_ms);
+    const purchasedSubscriptionDate = new Date(purchased_at_ms);
+
 
     let paymentStatus: EPaymentStatus | null = null;
     let paymentType: EPaymentType | null = null;
+
+    const findUser = await User.findById(userId);
+
+    if (!findUser) {
+      res.status(404).json({ message: "User not valid" });
+    }
 
     switch (eventType) {
       case "INITIAL_PURCHASE":
         paymentStatus = EPaymentStatus.PAID;
         paymentType = EPaymentType.PURCHASE;
+        if (findUser) {
+          findUser.subscriptionExpireDate = subExpireDate;
+        }
+        findUser?.save();
         break;
 
       case "RENEWAL":
         paymentStatus = EPaymentStatus.RENEWE;
         paymentType = EPaymentType.RENEWE;
+        if (findUser) {
+          findUser.subscriptionExpireDate = subExpireDate;
+        }
+        findUser?.save();
         break;
 
       case "CANCELLATION":
@@ -404,7 +416,7 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
         userId,
         paymentStauts: paymentStatus,
         amount: price || 0,
-        planType: paymentType,
+        planType: product_id,
         subExpireDate,
         eventTrigerDate,
         purchasedSubscriptionDate,
@@ -416,7 +428,6 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
 
     console.log("✅ Payment saved:", eventType, transaction_id);
 
-    res.status(200).send("OK");
   } catch (error) {
     console.error("❌ RevenueCat Webhook Error:", error);
     res.status(400).send("Webhook error");

@@ -24,7 +24,7 @@ export interface IUser extends Document {
     isVerifid?: boolean,
     role: Role,
     isPaid: boolean,
-    subscriptionTypeDate: Date | undefined | null,
+    subscriptionExpireDate: Date | undefined,
     subscriptionType: string,
 
     askLimite : number,

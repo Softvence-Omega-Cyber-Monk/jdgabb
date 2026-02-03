@@ -37,9 +37,6 @@ const paymentSchema = new Schema({
         type: String,
         enum: [...Object.values(EPaymentType)]
     },
-    planName: {
-        type: String
-    },
     subExpireDate: {
         type: Date
     },

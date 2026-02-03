@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema<IUser>({
         default: false
     },
 
-    subscriptionTypeDate: {
+    subscriptionExpireDate: {
         type: Date,
         default: null
     },
