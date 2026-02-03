@@ -350,6 +350,8 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     const payload = JSON.parse(bodyString);
     const event = payload.event;
 
+    console.log(event);
+
     const {
       type: eventType,
       app_user_id: userId,
