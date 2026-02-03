@@ -37,25 +37,21 @@ exports.Payment = exports.EPaymentType = exports.EPaymentStatus = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 var EPaymentStatus;
 (function (EPaymentStatus) {
-    EPaymentStatus["PAID"] = "PAID";
-    EPaymentStatus["UNPAID"] = "UNPAID";
+    EPaymentStatus["PAID"] = "PURCHASE";
+    EPaymentStatus["RENEWE"] = "RENEWE";
     EPaymentStatus["CANCEL"] = "CANCEL";
+    EPaymentStatus["UNPAID"] = "UNPAID";
 })(EPaymentStatus || (exports.EPaymentStatus = EPaymentStatus = {}));
 ;
 var EPaymentType;
 (function (EPaymentType) {
-    EPaymentType["PROMPT"] = "PROMPT";
-    EPaymentType["SUBSCRIPTION"] = "SUBSCRIPTION";
+    EPaymentType["RENEWE"] = "RENEWE";
+    EPaymentType["PURCHASE"] = "PURCHASE";
 })(EPaymentType || (exports.EPaymentType = EPaymentType = {}));
 const paymentSchema = new mongoose_1.Schema({
     userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
         ref: "user",
-        required: true
-    },
-    sessionId: {
-        type: String,
-        unique: true,
         required: true
     },
     paymentStauts: {
@@ -67,9 +63,18 @@ const paymentSchema = new mongoose_1.Schema({
         type: Number,
         required: true
     },
-    paymentType: {
+    planType: {
         type: String,
         enum: [...Object.values(EPaymentType)]
+    },
+    subExpireDate: {
+        type: Date
+    },
+    eventTrigerDate: {
+        type: Date
+    },
+    purchasedSubscriptionDate: {
+        type: Date
     }
 }, {
     timestamps: true,

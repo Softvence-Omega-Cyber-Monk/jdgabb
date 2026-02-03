@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const project_controller_1 = require("./project.controller");
-const checkChatAccess_1 = require("../../middleware/checkChatAccess");
 const projectRouter = (0, express_1.Router)();
 projectRouter.get("/getSingletask", project_controller_1.projectController.findSingleTask);
 projectRouter.patch("/addTask", project_controller_1.projectController.addTask);
@@ -11,11 +10,11 @@ projectRouter.patch("/updateTaskStar", project_controller_1.projectController.up
 projectRouter.patch("/updateSubTaskStar", project_controller_1.projectController.updateSubtaskStar);
 projectRouter.patch("/addSubTask", project_controller_1.projectController.addSubTask);
 projectRouter.patch("/addDetails", project_controller_1.projectController.addDetails);
-projectRouter.post("/generateTitle", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.createProjectWithAi);
+projectRouter.post("/generateTitle", project_controller_1.projectController.createProjectWithAi);
 projectRouter.patch("/answer", project_controller_1.projectController.ansQuestion);
 projectRouter.get("/findSingleSubTask", project_controller_1.projectController.findSingleSubtask);
 projectRouter.delete("/deleteTask", project_controller_1.projectController.permanentDeleteTask);
-projectRouter.patch("/update/task_with_ai", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.updateTaskWithAi);
+projectRouter.patch("/update/task_with_ai", project_controller_1.projectController.updateTaskWithAi);
 projectRouter.delete("/delete/suTask", project_controller_1.projectController.permanentDeleteSubTask);
 projectRouter.patch("/update/taskDate", project_controller_1.projectController.updateTaskDueDateController);
 // Update Work
@@ -29,14 +28,14 @@ projectRouter.post("/createFullProject/:userId", project_controller_1.projectCon
 projectRouter.patch("/updateFullProjectAnyWhere/:projectId", project_controller_1.projectController.updateFullProjectAnyWhereProject);
 projectRouter.delete("/deleteProject/:projectId", project_controller_1.projectController.deleteProject);
 // End Update Work
-projectRouter.post("/createtTaskSubTaskWithAi/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.createProjectTaskSubtaskWithAi);
+projectRouter.post("/createtTaskSubTaskWithAi/:id", project_controller_1.projectController.createProjectTaskSubtaskWithAi);
 projectRouter.get("/get/:id", project_controller_1.projectController.getProject);
 projectRouter.get("/user/project/:id", project_controller_1.projectController.getAllProjectByUser);
 projectRouter.post("/create/:id", project_controller_1.projectController.createProject);
-projectRouter.get("/askQuestion/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.askQuestion);
-projectRouter.patch("/update/title/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.updateProjectTitle);
+projectRouter.get("/askQuestion/:id", project_controller_1.projectController.askQuestion);
+projectRouter.patch("/update/title/:id", project_controller_1.projectController.updateProjectTitle);
 projectRouter.get("/starred-tasks/:userId", project_controller_1.projectController.getStarredTasks);
 projectRouter.get("/completed-tasks/:projectId", project_controller_1.projectController.getCompletedTasks);
-projectRouter.get("/askQuestionAiNotHistory/:id", checkChatAccess_1.checkChatAccess, project_controller_1.projectController.askQuestionNotHistory);
+projectRouter.get("/askQuestionAiNotHistory/:id", project_controller_1.projectController.askQuestionNotHistory);
 exports.default = projectRouter;
 //# sourceMappingURL=project.route.js.map

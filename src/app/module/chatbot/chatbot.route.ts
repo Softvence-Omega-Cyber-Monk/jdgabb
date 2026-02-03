@@ -1,11 +1,10 @@
 import { Router } from "express";
 import { AichatBotController } from "./chatbot.controller";
-import { checkChatAccess } from "../../middleware/checkChatAccess";
 
 
 
 const chatbotRouter = Router();
 chatbotRouter.post("/addToTrash" , AichatBotController.addTaskToTrash)
-chatbotRouter.post("/chatbot" , checkChatAccess , AichatBotController.chatbot)
+chatbotRouter.post("/chatbot"  , AichatBotController.chatbot)
 
 export default chatbotRouter;

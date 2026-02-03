@@ -231,29 +231,53 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
     // console.log("Parse Json Event : ------------------ : ", event);
 
     const eventType = event.event.type;
-    const revenueCatUserId = event.event.app_user_id;
-    const productId = event.event.product_id;
-    const expirationAtMs = event.event.expiration_at_ms;
-    const subscriber_attributes = event.event.subscriber_attributes;
+    const userId = event.event.app_user_id;
+    const price = event.event.price;
+    const planName = event.event.product_id;
+    const transaction_id = event.event.transaction_id;
+
+
+    // Date 
+    const event_triger_timestamp_ms = event.event.event_timestamp_ms;
+    const expiration_subscription_at_ms = event.event.expiration_at_ms;
+    const purchased_subscription_at_ms = event.event.expiration_at_ms;
 
     // console.log(subscriber_attributes);
 
-    const makeReadableDate = new Date(expirationAtMs);
-    console.log("----------------Start Date -------------:");
-    console.log(makeReadableDate);
+    const subExpireDate = new Date(expiration_subscription_at_ms);
+    console.log("----------------Start subExpire Date -------------:");
+    console.log(subExpireDate);
+    console.log("----------------End subExpire Date -------------:");
 
-    console.log("----------------End Date Date -------------:");
+    console.log("---------------------------------------------------");
 
-    const userId = subscriber_attributes?.user_id?.value;
-    const plan = subscriber_attributes?.plan?.value;
-    const price = subscriber_attributes?.price?.value;
+    const eventTrigerDate = new Date(event_triger_timestamp_ms);
+    console.log("----------------Start eventTrigerDate Date -------------:");
+    console.log(eventTrigerDate);
+    console.log("----------------End eventTrigerDate Date -------------:");
+
+
+    console.log("---------------------------------------------------");
+
+
+    const purchasedSubscriptionDate = new Date(purchased_subscription_at_ms);
+    console.log("----------------Start subExpire Date -------------:");
+    console.log(purchasedSubscriptionDate);
+    console.log("----------------End subExpire Date -------------:");
+
+    console.log("---------------------------------------------------");
+
+
+    // const userId = subscriber_attributes?.user_id?.value;
+    // const plan = subscriber_attributes?.plan?.value;
+    // const price = subscriber_attributes?.price?.value;
 
 
     console.log("----------------Info Data Start-------------:");
 
     console.log("Event Type:", eventType);
     console.log("UserId:", userId);
-    console.log("Plan:", plan);
+    // console.log("Plan:", plan);
     console.log("Price:", price);
 
     console.log("----------------Info Data End-------------:");

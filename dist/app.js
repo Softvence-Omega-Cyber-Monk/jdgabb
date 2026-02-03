@@ -10,6 +10,7 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const notFoundRoute_1 = require("./app/utils/notFoundRoute");
 const route_1 = require("./app/route/route");
 const global_error_handler_1 = require("./app/middleware/global.error.handler");
+const payment_controller_1 = require("./app/module/payment/payment.controller");
 exports.app = (0, express_1.default)();
 exports.app.use((0, cors_1.default)({
     origin: ["http://localhost:5173", "*"],
@@ -21,6 +22,7 @@ exports.app.use((0, cors_1.default)({
 //   express.raw({ type: 'application/json' }),
 //   PaymentController.stripeWebhook
 // );
+exports.app.post('/revenueCat', express_1.default.raw({ type: 'application/json' }), payment_controller_1.revenueCatWebhook);
 exports.app.use(express_1.default.json());
 exports.app.use(express_1.default.urlencoded({ extended: true }));
 exports.app.use((0, cookie_parser_1.default)());

@@ -18,16 +18,15 @@ export interface IUser extends Document {
     isVerifid?: boolean;
     role: Role;
     isPaid: boolean;
-    dayliChatLimit: Number;
-    chatLimit: number;
-    weellyChatLimite?: Number;
-    totalChatUseInWeek?: Number;
-    subscriptionTypeDate: Date | undefined;
+    subscriptionTypeDate: Date | undefined | null;
     subscriptionType: string;
-    chatUsed: number;
+    askLimite: number;
+    createLimite: number;
     push?: boolean;
     otp?: string | null;
     auths: IAuthprovider[];
     fcmToken: string;
+    app_user_id?: string;
+    product_id?: string;
 }
 //# sourceMappingURL=user.interface.d.ts.map

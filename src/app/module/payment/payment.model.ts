@@ -18,10 +18,6 @@ const paymentSchema = new Schema({
         ref: "user",
         required: true
     },
-    app_user_id: {
-        type: String,
-        required: true
-    },
     paymentStauts: {
         type: String,
         enum: [...Object.values(EPaymentStatus)],
@@ -34,6 +30,15 @@ const paymentSchema = new Schema({
     planType: {
         type: String,
         enum: [...Object.values(EPaymentType)]
+    },
+    subExpireDate: {
+        type: Date
+    },
+    eventTrigerDate: {
+        type: Date
+    },
+    purchasedSubscriptionDate: {
+        type: Date
     }
 
 }, {
