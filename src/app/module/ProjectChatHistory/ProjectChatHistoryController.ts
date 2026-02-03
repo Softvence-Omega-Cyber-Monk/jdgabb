@@ -18,7 +18,7 @@ export const createUpdateHistoryController = async (req: Request, res: Response)
             return res.status(404).json({ message: 'User Not Found' });
         }
 
-        if (isAi) {
+        if (!isAi) {
             const currentDate = new Date();
 
             if (findUser.subscriptionExpireDate && findUser.subscriptionExpireDate > currentDate) {
