@@ -28,11 +28,13 @@ export interface IUser extends Document {
     chatLimit: number,
     weellyChatLimite?: Number,
     totalChatUseInWeek?: Number,
-    subscriptionTypeDate: Date | undefined,
+    subscriptionTypeDate: Date | undefined | null,
     subscriptionType: string,
     chatUsed: number,
-    push ?: boolean,
-    otp ? : string | null,
+    push?: boolean,
+    otp?: string | null,
     auths: IAuthprovider[],
-    fcmToken: string
+    fcmToken: string,
+    app_user_id?: string,
+    product_id?: string
 };

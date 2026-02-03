@@ -82,7 +82,10 @@ const userSchema = new mongoose.Schema<IUser>({
         type: String,
         default: Role.USER
     },
-
+    app_user_id : {
+        type : String,
+    },
+    
     auths: [authProviderSchema]
 }, {
     timestamps: true,
