@@ -430,17 +430,6 @@ const revenueCatWebhook = async (req, res) => {
             transaction_id,
             app_id,
         }, { upsert: true, new: true });
-        console.log("✅ RevenueCat Event:", {
-            eventType,
-            userId,
-            product_id,
-            price,
-            displayName,
-            email,
-            lastPurchasePlan,
-            lastPurchasePrice,
-            lastPurchaseProductId,
-        });
         res.status(200).send("OK");
     }
     catch (error) {

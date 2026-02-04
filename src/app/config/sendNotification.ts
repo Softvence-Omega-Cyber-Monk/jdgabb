@@ -25,13 +25,13 @@ export const sendNotification = async (
             token: user.fcmToken,
         };
 
-        console.log("Message : ",message);
+        // console.log("Message : ", message);
 
         const isPush = await NotificationModel.findOne({ userId: userId });
 
         if (isPush?.push) {
-            const response = await messaging.send(message);
-            console.log("✅ Notification sent:", response);
+            await messaging.send(message);
+            // console.log("✅ Notification sent:", response);
         }
 
         console.log("Is Puah : ====== ", isPush)
@@ -43,7 +43,7 @@ export const sendNotification = async (
             timestamp: new Date(),
         });
 
-        console.log("Create Message to database");
+        // console.log("Create Message to database");
 
     } catch (err) {
         console.error("⚠️ Error sending notification:", err);

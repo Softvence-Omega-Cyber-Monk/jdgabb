@@ -18,11 +18,11 @@ const sendNotification = async (userId, title, body) => {
             notification: { title, body },
             token: user.fcmToken,
         };
-        console.log("Message : ", message);
+        // console.log("Message : ", message);
         const isPush = await notifications_model_1.NotificationModel.findOne({ userId: userId });
         if (isPush?.push) {
-            const response = await fireBase_config_1.messaging.send(message);
-            console.log("✅ Notification sent:", response);
+            await fireBase_config_1.messaging.send(message);
+            // console.log("✅ Notification sent:", response);
         }
         console.log("Is Puah : ====== ", isPush);
         await firebaseNotifacation_mode_1.FirebaseNotificationModel.create({
@@ -31,7 +31,7 @@ const sendNotification = async (userId, title, body) => {
             body,
             timestamp: new Date(),
         });
-        console.log("Create Message to database");
+        // console.log("Create Message to database");
     }
     catch (err) {
         console.error("⚠️ Error sending notification:", err);
