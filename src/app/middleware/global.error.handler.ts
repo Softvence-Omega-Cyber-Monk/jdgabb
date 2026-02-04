@@ -14,9 +14,14 @@ export const globalErrorhandler = (err: any, req: Request, res: Response, next: 
     let message = "Something went wrong";
     let errorStore: IErrorStore[] = [];
 
-      if(envVers.DEV_ENVIRONMENT === "development"){
-        console.log(err)
-    };
+    if (envVers.DEV_ENVIRONMENT === "development") {
+        if (err instanceof Error) {
+            console.error('Error message:', err.message);
+            console.error('Stack trace:', err.stack);
+        } else {
+            console.error('Unknown error:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+        }
+    }
 
     // if(req.file){
     //     await deleteImageFormCloudinary(req.file.path);
@@ -78,7 +83,7 @@ export const globalErrorhandler = (err: any, req: Request, res: Response, next: 
     res.status(statusCode).json({
         success: false,
         statusCode: statusCode,
-        message : message,
+        message: message,
         errors: errorStore,
         stack: envVers.DEV_ENVIRONMENT === "development" ? err.stack : null,
         err: envVers.DEV_ENVIRONMENT === "development" ? err : null
