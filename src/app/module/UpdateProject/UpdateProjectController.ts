@@ -156,7 +156,7 @@ export const getProjectController = async (req: Request, res: Response) => {
 export const createTaskController = async (req: Request, res: Response) => {
     try {
         const { projectId } = req.params;
-        const { title, description, parentTaskId, userId, isStar } = req.body;
+        const { title, description, parentTaskId, userId, isStar, compliteTarget } = req.body;
 
         if (!title || !userId) {
             return res.status(400).json({ message: 'Title and userId are required!' });
@@ -169,7 +169,8 @@ export const createTaskController = async (req: Request, res: Response) => {
             parentTaskId: parentTaskId || null,
             userId: userId,
             projectId: projectId,
-            isStar: isStar
+            isStar: isStar,
+            compliteTarget: compliteTarget
         });
 
         const savedTask = await newTask.save();
