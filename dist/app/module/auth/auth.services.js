@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.authServices = void 0;
-const sendNotification_1 = require("../../config/sendNotification");
 const AppError_1 = __importDefault(require("../../utils/AppError"));
 const createJwtToken_1 = require("../../utils/createJwtToken");
 const userModel_1 = require("../user/userModel");
@@ -25,7 +24,6 @@ const userLogin = async (payload) => {
         existUser.fcmToken = payload.fcmToken;
         await existUser.save();
     }
-    await (0, sendNotification_1.sendNotification)(String(existUser?._id), "login Notification", "You are successfully login");
     const tokens = (0, createJwtToken_1.createJwtToken)(existUser);
     const { password, ...rest } = existUser.toObject();
     return {

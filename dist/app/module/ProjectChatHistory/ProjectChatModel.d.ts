@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 export declare const UpdateChatHestory: mongoose.Model<{
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;
@@ -15,8 +15,8 @@ export declare const UpdateChatHestory: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }> & {
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;
@@ -26,14 +26,14 @@ export declare const UpdateChatHestory: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }, {
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;
@@ -41,8 +41,8 @@ export declare const UpdateChatHestory: mongoose.Model<{
     timestamps: true;
     versionKey: false;
 }>> & mongoose.FlatRecord<{
-    userId: mongoose.Types.ObjectId;
     text: string;
+    userId: mongoose.Types.ObjectId;
     isAi: boolean;
     projectOrTaskId: mongoose.Types.ObjectId;
     chatType?: "ask" | "create" | null;

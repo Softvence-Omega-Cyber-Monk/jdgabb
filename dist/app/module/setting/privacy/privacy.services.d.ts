@@ -1,8 +1,8 @@
 import { PrivacyModel } from "./privacy.model";
 export declare const praivicyServices: {
     findPrivicyByUserId: (id: String) => Promise<(import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         localStorage: boolean;
+        userId: import("mongoose").Types.ObjectId;
         autoDelete: "none" | "7d" | "30d" | "90d";
         deletionMethod: "archive" | "permanent";
         excludeFromAI: boolean;
@@ -11,8 +11,8 @@ export declare const praivicyServices: {
         timestamps: true;
         versionKey: false;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         localStorage: boolean;
+        userId: import("mongoose").Types.ObjectId;
         autoDelete: "none" | "7d" | "30d" | "90d";
         deletionMethod: "archive" | "permanent";
         excludeFromAI: boolean;
@@ -21,8 +21,8 @@ export declare const praivicyServices: {
         _id: import("mongoose").Types.ObjectId;
     }) | null>;
     updatePrivicyByUserID: (id: string, updatedData: Partial<typeof PrivacyModel>) => Promise<(import("mongoose").Document<unknown, {}, {
-        userId: import("mongoose").Types.ObjectId;
         localStorage: boolean;
+        userId: import("mongoose").Types.ObjectId;
         autoDelete: "none" | "7d" | "30d" | "90d";
         deletionMethod: "archive" | "permanent";
         excludeFromAI: boolean;
@@ -31,8 +31,8 @@ export declare const praivicyServices: {
         timestamps: true;
         versionKey: false;
     }> & {
-        userId: import("mongoose").Types.ObjectId;
         localStorage: boolean;
+        userId: import("mongoose").Types.ObjectId;
         autoDelete: "none" | "7d" | "30d" | "90d";
         deletionMethod: "archive" | "permanent";
         excludeFromAI: boolean;

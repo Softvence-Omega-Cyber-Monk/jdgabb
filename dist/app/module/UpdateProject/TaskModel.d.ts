@@ -2,10 +2,9 @@ import mongoose from "mongoose";
 declare const Task: mongoose.Model<{
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -17,15 +16,15 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps, {}, {}, {}, mongoose.Document<unknown, {}, {
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -37,6 +36,7 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps, {}, {
@@ -45,10 +45,9 @@ declare const Task: mongoose.Model<{
 }> & {
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -60,6 +59,7 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps & {
@@ -70,10 +70,9 @@ declare const Task: mongoose.Model<{
 }, {
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -85,15 +84,15 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps, mongoose.Document<unknown, {}, mongoose.FlatRecord<{
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -105,6 +104,7 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps>, {}, mongoose.ResolveSchemaOptions<{
@@ -113,10 +113,9 @@ declare const Task: mongoose.Model<{
 }>> & mongoose.FlatRecord<{
     isDeleted: boolean;
     title: string;
-    userId: mongoose.Types.ObjectId;
     description: string;
-    projectId: mongoose.Types.ObjectId;
     status: "pending" | "in-progress" | "completed" | "archived";
+    userId: mongoose.Types.ObjectId;
     isComplite: boolean;
     isArchived: boolean;
     isStar: boolean;
@@ -128,6 +127,7 @@ declare const Task: mongoose.Model<{
     }> & {
         userId?: mongoose.Types.ObjectId | null;
     }>;
+    projectId: mongoose.Types.ObjectId;
     compliteTarget: NativeDate;
     parentTaskId: mongoose.Types.ObjectId;
 } & mongoose.DefaultTimestampProps> & {

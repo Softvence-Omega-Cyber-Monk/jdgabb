@@ -1,4 +1,3 @@
-import { sendNotification } from "../../config/sendNotification";
 import AppError from "../../utils/AppError";
 import { createJwtToken } from "../../utils/createJwtToken";
 import { IUser } from "../user/user.interface";
@@ -29,8 +28,6 @@ const userLogin = async (payload: Partial<IUser>) => {
         existUser.fcmToken = payload.fcmToken;
         await existUser.save();
     }
-
-    await sendNotification(String(existUser?._id), "login Notification", "You are successfully login");
 
     const tokens = createJwtToken(existUser);
 
