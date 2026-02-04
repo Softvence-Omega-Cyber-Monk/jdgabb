@@ -127,7 +127,7 @@ async function deleteTaskWithChildren(taskId: string) {
   await Task.findByIdAndDelete(taskId);
 }
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("0 15 * * *", async () => {
   console.log("🕛 Daily cron started:", new Date());
 
   try {
@@ -136,24 +136,41 @@ cron.schedule("0 0 * * *", async () => {
 
 
     await User.updateMany(
-      { subscriptionTypeDate: { $gt: today } },
-      { $set: { dayliChatLimit: 200 } }
+      { isDeleted: false },
+      { $set: { askLimite: 10, createLimite: 1 } }
     );
 
     const activeUsers = await User.find({
-      subscriptionTypeDate: { $gt: today },
+      subscriptionExpireDate: { $gt: today },
       fcmToken: { $exists: true, $ne: null },
     });
 
     for (const user of activeUsers) {
       await sendNotification(
         user._id.toString(),
-        "Daily Chat Limit Reset 🎯",
-        "Your daily chat limit has been refreshed! You can now use 200 messages today."
+        "Daily Limit Reset 🎯",
+        "Your daily ask limit has been refreshed! Ask 10 questions and create 1 task today."
       );
     }
 
     const reminderDays = [3, 2, 1];
+    for (const day of reminderDays) {
+      const targetDate = new Date(today);
+      targetDate.setDate(today.getDate() + day);
+
+      const usersToNotify = await User.find({
+        subscriptionExpireDate: { $gte: targetDate, $lt: new Date(targetDate.getTime() + 24 * 60 * 60 * 1000) },
+        fcmToken: { $exists: true, $ne: null },
+      });
+
+      for (const user of usersToNotify) {
+        await sendNotification(
+          user._id.toString(),
+          "⏳ Subscription Expiry Reminder",
+          `Your subscription will expire in ${day} day(s). Renew soon!`
+        );
+      }
+    }
 
     for (const day of reminderDays) {
       const start = new Date(today);
@@ -172,12 +189,13 @@ cron.schedule("0 0 * * *", async () => {
 
       for (const task of tasks) {
         await sendNotification(
-          task.userId.toString(),
+          task.userId._id.toString(),
           "⏰ Task Reminder",
-          `"${task.title}" task is due in ${day} day(s).`
+          `"${task.title}" is due in ${day} day(s).`
         );
       }
     }
+
 
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -192,6 +210,7 @@ cron.schedule("0 0 * * *", async () => {
       await deleteTaskWithChildren(task._id.toString());
     }
 
+    console.log("✅ Daily cron completed successfully.");
   } catch (error) {
     console.error("❌ Error in daily cron job:", error);
   }

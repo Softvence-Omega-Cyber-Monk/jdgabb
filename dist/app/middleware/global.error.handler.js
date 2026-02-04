@@ -13,9 +13,14 @@ const globalErrorhandler = (err, req, res, next) => {
     let message = "Something went wrong";
     let errorStore = [];
     if (env_1.envVers.DEV_ENVIRONMENT === "development") {
-        console.log(err);
+        if (err instanceof Error) {
+            console.error('Error message:', err.message);
+            console.error('Stack trace:', err.stack);
+        }
+        else {
+            console.error('Unknown error:', JSON.stringify(err, Object.getOwnPropertyNames(err), 2));
+        }
     }
-    ;
     // if(req.file){
     //     await deleteImageFormCloudinary(req.file.path);
     // };

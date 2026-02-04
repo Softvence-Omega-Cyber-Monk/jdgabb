@@ -137,6 +137,7 @@ const userChatAccessLimite = async (req, res) => {
             subscriptionExpireDate: 1,
             askLimite: 1,
             createLimite: 1,
+            role: 1,
             _id: 1
         });
         if (!user) {

@@ -10,6 +10,7 @@ const stripe_1 = __importDefault(require("stripe"));
 const payment_model_1 = require("./payment.model");
 const mongoose_1 = require("mongoose");
 const userModel_1 = require("../user/userModel");
+const sendNotification_1 = require("../../config/sendNotification");
 const stripe = new stripe_1.default(process.env.STRIPE_SECRET_KEY, {
     apiVersion: "2025-09-30.clover",
 });
@@ -388,12 +389,18 @@ const revenueCatWebhook = async (req, res) => {
                 user.username = displayName || user.username;
                 user.email = email || user.email;
                 await user.save();
+                if (user.fcmToken) {
+                    await (0, sendNotification_1.sendNotification)(user._id.toString(), "🎉 Subscription Activated", "Thank you! Your subscription has been activated successfully.");
+                }
                 break;
             case "RENEWAL":
                 paymentStatus = payment_model_1.EPaymentStatus.RENEWE;
                 paymentType = product_id;
                 user.subscriptionExpireDate = subExpireDate;
                 await user.save();
+                if (user.fcmToken) {
+                    await (0, sendNotification_1.sendNotification)(user._id.toString(), "🔄 Subscription Renewed", "Your subscription has been renewed successfully.");
+                }
                 break;
             case "CANCELLATION":
                 paymentStatus = payment_model_1.EPaymentStatus.CANCEL;
@@ -402,6 +409,9 @@ const revenueCatWebhook = async (req, res) => {
                 paymentStatus = payment_model_1.EPaymentStatus.UNPAID;
                 user.subscriptionExpireDate = undefined;
                 await user.save();
+                if (user.fcmToken) {
+                    await (0, sendNotification_1.sendNotification)(user._id.toString(), "⚠️ Subscription Expired", "Your subscription has expired. Please renew to continue using premium features.");
+                }
                 break;
             case "TEST":
                 paymentStatus = payment_model_1.EPaymentStatus.UNPAID;

@@ -508,6 +508,15 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
         user.username = displayName || user.username;
         user.email = email || user.email;
         await user.save();
+
+        if (user.fcmToken) {
+          await sendNotification(
+            user._id.toString(),
+            "🎉 Subscription Activated",
+            "Thank you! Your subscription has been activated successfully."
+          );
+        }
+
         break;
 
       case "RENEWAL":
@@ -515,6 +524,15 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
         paymentType = product_id;
         user.subscriptionExpireDate = subExpireDate;
         await user.save();
+
+        if (user.fcmToken) {
+          await sendNotification(
+            user._id.toString(),
+            "🔄 Subscription Renewed",
+            "Your subscription has been renewed successfully."
+          );
+        }
+
         break;
 
       case "CANCELLATION":
@@ -525,6 +543,15 @@ export const revenueCatWebhook = async (req: Request, res: Response) => {
         paymentStatus = EPaymentStatus.UNPAID;
         user.subscriptionExpireDate = undefined;
         await user.save();
+
+        if (user.fcmToken) {
+          await sendNotification(
+            user._id.toString(),
+            "⚠️ Subscription Expired",
+            "Your subscription has expired. Please renew to continue using premium features."
+          );
+        }
+
         break;
 
       case "TEST":

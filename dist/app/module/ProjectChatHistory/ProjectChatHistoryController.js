@@ -13,30 +13,32 @@ const createUpdateHistoryController = async (req, res) => {
         if (!findUser) {
             return res.status(404).json({ message: 'User Not Found' });
         }
-        if (isAi) {
-            const currentDate = new Date();
-            if (findUser.subscriptionExpireDate &&
-                findUser.subscriptionExpireDate > currentDate) {
-                // subscription active → limit kombe na
-            }
-            else {
-                if (chatType === "ask") {
-                    if (findUser.askLimite <= 0) {
-                        return res.status(403).json({
-                            message: "AI ask limit sesh. Please upgrade."
-                        });
-                    }
-                    findUser.askLimite -= 1;
-                    await findUser.save();
+        if (findUser.role === "USER") {
+            if (isAi) {
+                const currentDate = new Date();
+                if (findUser.subscriptionExpireDate &&
+                    findUser.subscriptionExpireDate > currentDate) {
+                    // subscription active → limit kombe na
                 }
-                if (chatType === "create") {
-                    if (findUser.createLimite <= 0) {
-                        return res.status(403).json({
-                            message: "AI create limit sesh. Please upgrade."
-                        });
+                else {
+                    if (chatType === "ask") {
+                        if (findUser.askLimite <= 0) {
+                            return res.status(403).json({
+                                message: "AI ask limit sesh. Please upgrade."
+                            });
+                        }
+                        findUser.askLimite -= 1;
+                        await findUser.save();
                     }
-                    findUser.createLimite -= 1;
-                    await findUser.save();
+                    if (chatType === "create") {
+                        if (findUser.createLimite <= 0) {
+                            return res.status(403).json({
+                                message: "AI create limit sesh. Please upgrade."
+                            });
+                        }
+                        findUser.createLimite -= 1;
+                        await findUser.save();
+                    }
                 }
             }
         }
